@@ -1,0 +1,83 @@
+<project name="MouseFeed" default="dist" basedir=".">
+  <description>MouseFeed Eclipse Plugin</description>
+
+  <!-- XXX: the build name file was changed to build1.xml -->
+  <!-- because otherwise it is affected by Eclipse bug -->
+  <!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=82302 -->
+
+  <property name="src" location="src"/>
+  <property name="tmp" location="ztemp"/>
+  <property name="build" location="${tmp}/build"/>
+  <property name="dist"  location="${tmp}/dist"/>
+
+  <taskdef resource="checkstyletask.properties">
+    <classpath>
+      <pathelement location="lib/antlr-2.7.7.jar"/>
+      <pathelement location="lib/checkstyle-4.3.jar"/>
+      <pathelement location="lib/commons-beanutils-1.7.0.jar"/>
+      <pathelement location="lib/commons-collections-3.2.jar"/>
+      <pathelement location="lib/commons-logging-1.1.jar"/>
+    </classpath>
+  </taskdef>
+
+  <!-- Loads data from the manifest file -->
+  <target name="loadManifest">
+    <!-- Extracts eclipse plugin version from the manifest -->
+    <loadfile srcfile="META-INF/MANIFEST.MF" property="version">
+      <filterchain>
+        <linecontains>
+          <contains value="Bundle-Version:"/>
+        </linecontains>
+        <replacestring from="Bundle-Version:"/>
+      	<striplinebreaks/>
+      	<trim/>
+      </filterchain>
+    </loadfile>
+  </target>
+
+  <target name="init" depends="loadManifest">
+    <exec executable="hostname" outputproperty="host.name"/>
+
+    <!-- see global.properties for all the description of all build settings -->
+    <property file="${host.name}.properties"/>
+    <property file="global.properties"/>
+
+    <property name="eclipse.plugins" location="${eclipse}/plugins"/>
+    <path id="compile.class.path">
+      <fileset dir="lib">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${eclipse.plugins}">
+        <include name="org.eclipse.core.commands_*.jar"/>
+        <include name="org.eclipse.core.runtime_*.jar"/>
+        <include name="org.eclipse.equinox.common_*.jar"/>
+        <include name="org.eclipse.equinox.preferences_*.jar"/>
+        <include name="org.eclipse.jface_*.jar"/>
+        <include name="org.eclipse.osgi_*.jar"/>
+        <include name="org.eclipse.swt.*x86_*.jar"/>
+        <include name="org.eclipse.ui.workbench_*.jar"/>
+      </fileset>
+    </path>
+  </target>
+
+  <target name="compile" depends="init" description="Compiles the source.">
+    <mkdir dir="${build}"/>
+    <javac srcdir="${src}" destdir="${build}" classpathref="compile.class.path"/>
+  </target>
+
+  <!-- Checks that code formatting confirms to the conventions. -->
+  <target name="validateCodeFormatting" depends="init">
+    <checkstyle config="checkstyle.xml" classpathref="compile.class.path">
+      <fileset dir="src" includes="**/*.java"/>
+    </checkstyle>
+  </target>
+
+  <target name="dist" depends="compile, validateCodeFormatting"
+      description="Generates the distribution.">
+    <mkdir dir="${dist}"/>
+  </target>
+
+  <target name="clean" description="Clean up.">
+    <delete dir="${tmp}"/>
+  </target>
+</project>

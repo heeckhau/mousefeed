@@ -1,0 +1,24 @@
+Start Eclipse Application
+
+SHORTCUT REMINDER
+
+Click File/Refresh menu item
+
+    The reminder popup "F5 (Refresh)" shows up near the cursor.
+    It disappears in a few seconds.
+
+Click on the "Search" ToolBar button.
+
+    The reminder popup "Ctrl+H (Search...)" shows up near the cursor.
+
+PREFERENCES
+
+- PROMOTE KEYS CHECKBOX
+
+Uncheck it, click File/Refresh menu item
+
+    No reminder popup
+
+Check it, click File/Refresh menu item
+
+    Reminder popup
