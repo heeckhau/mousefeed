@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description url="http://update.mousefeed.com">
+      The main MouseFeed Eclipse Update server.
+   </description>
+   <feature url="features/com.mousefeed.feature_0.4.0.jar" id="com.mousefeed.feature" version="0.4.0">
+      <category name="MouseFeed"/>
+   </feature>
+   <category-def name="MouseFeed" label="MouseFeed Plugin">
+      <description>
+         The MouseFeed Eclipse Plugin
+      </description>
+   </category-def>
+</site>
