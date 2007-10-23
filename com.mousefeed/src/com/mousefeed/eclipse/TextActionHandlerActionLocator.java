@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html. If redistributing this code,
  * this entire header must remain intact.
  */
-package com.mousefeed;
+package com.mousefeed.eclipse;
 
 import java.lang.reflect.Field;
 import java.util.Collections;

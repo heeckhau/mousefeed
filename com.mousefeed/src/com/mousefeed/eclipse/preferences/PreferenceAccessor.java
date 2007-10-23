@@ -7,11 +7,12 @@
  * http://www.eclipse.org/legal/epl-v10.html. If redistributing this code,
  * this entire header must remain intact.
  */
-package com.mousefeed.preferences;
+package com.mousefeed.eclipse.preferences;
 
-import static com.mousefeed.preferences.PreferenceConstants.P_PROMOTE_KEYS;
+import static com.mousefeed.eclipse.preferences.PreferenceConstants.P_PROMOTE_KEYS;
 
-import com.mousefeed.Activator;
+import com.mousefeed.eclipse.Activator;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /**

@@ -7,9 +7,9 @@
  * http://www.eclipse.org/legal/epl-v10.html. If redistributing this code,
  * this entire header must remain intact.
  */
-package com.mousefeed;
+package com.mousefeed.eclipse;
 
-import com.mousefeed.preferences.PreferenceAccessor;
+import com.mousefeed.eclipse.preferences.PreferenceAccessor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;

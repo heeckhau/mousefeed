@@ -7,12 +7,12 @@
  * http://www.eclipse.org/legal/epl-v10.html. If redistributing this code,
  * this entire header must remain intact.
  */
-package com.mousefeed.preferences;
+package com.mousefeed.eclipse.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import com.mousefeed.Activator;
+import com.mousefeed.eclipse.Activator;
 
 /**
  * Initializes default preference values.

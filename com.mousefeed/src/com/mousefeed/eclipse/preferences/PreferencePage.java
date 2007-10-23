@@ -7,14 +7,14 @@
  * http://www.eclipse.org/legal/epl-v10.html. If redistributing this code,
  * this entire header must remain intact.
  */
-package com.mousefeed.preferences;
+package com.mousefeed.eclipse.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import com.mousefeed.Activator;
+import com.mousefeed.eclipse.Activator;
 
 /**
  * Main MouseFeed preferences page.
