@@ -6,20 +6,38 @@
 <!--
   The project code conventions. Derived from the Sun
   coding conventions configuration, distributed with Checkstyle.
+
+  Initial settings were set as strict as possible.
+  The plan is to loose restrictions as necessary.
+  Experience shows that it is much easier to loose control,
+  than to make it more strict.
 -->
 
 <module name="Checker">
-  <!-- module name="PackageHtml"/-->
+  <module name="PackageHtml"/>
   <module name="Translation"/>
+  <module name="StrictDuplicateCode"/>
+
+  <!-- suppresses checks in code areas -->
+  <!-- delimited by comments CHECKSTYLE:OFF and CHECKSTYLE:ON -->
+  <module name="SuppressionCommentFilter"/>
 
   <module name="TreeWalker">
+    <!-- needed for the checks suppression filter -->
+    <module name="FileContentsHolder"/>
+
     <!-- Javadoc comments. -->
+    <module name="JavadocType">
+      <property name="authorFormat" value="\S"/>
+    </module>
     <module name="JavadocMethod">
       <property name="scope" value="protected"/>
     </module>
-    <module name="JavadocType"/>
     <module name="JavadocVariable"/>
     <module name="JavadocStyle"/>
+    
+    <!-- non-Javadoc comments -->
+    <module name="TrailingComment"/>
 
     <!-- Naming Conventions. -->
     <module name="ConstantName"/>
@@ -35,7 +53,7 @@
     <!-- Headers. -->
     <!-- See http://checkstyle.sf.net/config_header.html   -->
     <!-- <module name="Header">                            -->
-    <!-- The follow property value demonstrates the ability     -->
+    <!-- The following property value demonstrates the ability  -->
     <!-- to have access to ANT properties. In this case it uses -->
     <!-- the ${basedir} property to allow Checkstyle to be run  -->
     <!-- from any directory within a project. See property      -->
@@ -83,14 +101,12 @@
     <module name="RedundantModifier"/>
 
     <!-- Blocks. -->
-    <module name="AvoidNestedBlocks"/>
     <module name="EmptyBlock">
-     <property name="option" value="text"/>
+      <property name="option" value="text"/>
     </module>
     <module name="LeftCurly"/>
     <module name="NeedBraces"/>
     <module name="RightCurly"/>
-
 
     <!-- Common coding problems. -->
     <module name="AvoidInlineConditionals"/>
@@ -101,23 +117,59 @@
     <module name="HiddenField">
       <property name="ignoreConstructorParameter" value="true"/>
     </module>
-    <module name="IllegalInstantiation"/>
+    <module name="IllegalInstantiation">
+      <property name="classes" value="java.lang.Boolean"/>
+    </module>
     <module name="InnerAssignment"/>
     <module name="MagicNumber"/>
     <module name="MissingSwitchDefault"/>
     <module name="RedundantThrows"/>
     <module name="SimplifyBooleanExpression"/>
     <module name="SimplifyBooleanReturn"/>
+    <module name="ModifiedControlVariable"/>
+    <module name="StringLiteralEquality"/>
+    <module name="NestedIfDepth">
+      <property name="max" value="2"/>
+    </module>
+    <module name="NestedTryDepth"/>
+    <module name="SuperClone"/>
+    <module name="SuperFinalize"/>
+    <module name="IllegalCatch"/>
+    <module name="IllegalThrows"/>
+    <module name="JUnitTestCase"/>
+    <module name="ReturnCount">
+       <property name="max" value="3"/>
+    </module>
+    <module name="IllegalType"/>
+    <module name="DeclarationOrder"/>
+    <module name="ExplicitInitialization"/>
+    <module name="DefaultComesLast"/>
+    <module name="FallThrough"/>
+    <module name="MultipleStringLiterals">
+      <property name="ignoreStringsRegexp" value="unused"/>
+    </module>
+    <module name="MultipleVariableDeclarations"/>
+    <module name="UnnecessaryParentheses"/>
 
     <!-- Class design. -->
     <module name="FinalClass"/>
     <module name="HideUtilityClassConstructor"/>
     <module name="InterfaceIsType"/>
     <module name="VisibilityModifier"/>
+    <module name="MutableException"/>
+    
+    <!-- Metrics. -->
+    <module name="BooleanExpressionComplexity"/>
+    <module name="ClassDataAbstractionCoupling"/>
+    <module name="ClassFanOutComplexity"/>
+    <!-- 1-4 is considered good, 5-7 ok, 8-10 consider re-factoring -->
+    <module name="CyclomaticComplexity"/>
+    <module name="NPathComplexity"/>
 
     <!-- Misc. -->
     <module name="ArrayTypeStyle"/>
     <module name="TodoComment"/>
     <module name="UpperEll"/>
+    <module name="UncommentedMain"/>
   </module>
 </module>

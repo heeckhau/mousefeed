@@ -19,6 +19,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 /**
  * The activator class controls the plug-in life cycle.
  * Implements {@link IStartup} to hook up the plugin listeners.
+ * @author Andriy Palamarchuk
  */
 public class Activator extends AbstractUIPlugin implements IStartup {
 
@@ -57,7 +58,7 @@ public class Activator extends AbstractUIPlugin implements IStartup {
      * Not <code>null</code>.
      */
     private Display getDisplay() {
-       return PlatformUI.getWorkbench().getDisplay();
+        return PlatformUI.getWorkbench().getDisplay();
     }
 
     /**

@@ -36,6 +36,8 @@ import org.eclipse.ui.actions.RetargetAction;
 import org.eclipse.ui.activities.IActivityManager;
 import org.eclipse.ui.keys.IBindingService;
 
+//CHECKSTYLE:OFF
+
 /**
  * Globally listens for the selection events.
  * 
@@ -317,4 +319,5 @@ public class GlobalSelectionListener implements Listener {
     private IWorkbench getWorkbench() {
         return PlatformUI.getWorkbench();
     }
+//CHECKSTYLE:ON
 }

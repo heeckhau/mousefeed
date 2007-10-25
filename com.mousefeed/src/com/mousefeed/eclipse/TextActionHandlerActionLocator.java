@@ -105,7 +105,7 @@ public class TextActionHandlerActionLocator {
     /**
      * Retrieves an action from the provided action field.
      */
-    private IAction getActionFromField(final Object o, final String fieldName)
+    private IAction getActionFromField(Object o, String fieldName)
             throws NoSuchFieldException, IllegalAccessException {
         final Field actionField =
                 o.getClass().getDeclaredField(fieldName);

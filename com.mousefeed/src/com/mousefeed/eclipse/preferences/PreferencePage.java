@@ -18,8 +18,9 @@ import com.mousefeed.eclipse.Activator;
 
 /**
  * Main MouseFeed preferences page.
+ *
+ * @author Andriy Palamarchuk
  */
-
 public class PreferencePage
     extends FieldEditorPreferencePage
     implements IWorkbenchPreferencePage {
@@ -40,12 +41,12 @@ public class PreferencePage
      * restore itself.
      */
     @Override
-   public void createFieldEditors() {
+    public void createFieldEditors() {
        
-       addField(new BooleanFieldEditor(
-             PreferenceConstants.P_PROMOTE_KEYS,
-             "Promote &keys",
-             getFieldEditorParent()));
+        addField(new BooleanFieldEditor(
+                PreferenceConstants.P_PROMOTE_KEYS,
+                "Promote &keys",
+                getFieldEditorParent()));
     }
 
     /**

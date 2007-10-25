@@ -143,7 +143,7 @@ public class NagPopUp extends PopupDialog {
     private void configureBigFont(Control c) {
         final FontData[] fontData = c.getFont().getFontData();
         for (int i = 0; i < fontData.length; i++) {
-          fontData[i].setHeight(fontData[i].getHeight() * FONT_INCREASE_MULT);
+            fontData[i].setHeight(fontData[i].getHeight() * FONT_INCREASE_MULT);
         }
         final Font newFont = new Font(getDisplay(), fontData);
         c.setFont(newFont);

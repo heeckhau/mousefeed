@@ -11,6 +11,8 @@ package com.mousefeed.eclipse.preferences;
 
 /**
  * Constant definitions for plug-in preferences.
+ *
+ * @author Andriy Palamarchuk
  */
 public class PreferenceConstants {
 

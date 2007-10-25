@@ -16,6 +16,8 @@ import com.mousefeed.eclipse.Activator;
 
 /**
  * Initializes default preference values.
+ *
+ * @author Andriy Palamarchuk
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
