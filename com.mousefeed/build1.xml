@@ -9,6 +9,7 @@
   <property name="tmp" location="ztemp"/>
   <property name="build" location="${tmp}/build"/>
   <property name="dist"  location="${tmp}/dist"/>
+  <property name="javadoc"  location="${tmp}/javadoc"/>
 
   <taskdef resource="checkstyletask.properties">
     <classpath>
@@ -72,7 +73,16 @@
     </checkstyle>
   </target>
 
-  <target name="dist" depends="compile, validateCodeFormatting"
+  <target name="javadoc" depends="init"
+      description="Generates the project JavaDoc">
+    <mkdir dir="${javadoc}"/>
+    <javadoc destdir="${javadoc}" windowtitle="MouseFeed" failonerror="true"
+        classpathref="compile.class.path" additionalparam="-quiet">
+      <fileset dir="src"/>
+    </javadoc>
+  </target>
+
+  <target name="dist" depends="compile, validateCodeFormatting, javadoc"
       description="Generates the distribution.">
     <mkdir dir="${dist}"/>
   </target>
