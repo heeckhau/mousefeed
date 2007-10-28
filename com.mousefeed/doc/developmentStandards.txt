@@ -1,0 +1,31 @@
+DEVELOPMENT PRINCIPLES
+Always do "The Right Thing".
+Zero-tolerance policy for warnings and errors from development
+and code validation tools.
+Review the existing code in the com.mousefeed.client package to get a feel
+of the approaches described in this document.
+
+Test Driven Development. Strive for good tests, 100% test code coverage
+(as practical). Remember, high test coverage does not mean good tests.
+At the current stage Eclipse UI is not automatically tested. 
+
+DEVELOPMENT ENVIRONMENT
+Code is being developed using Ecipse IDE with following code validation plugins:
+* CheckSyle - uses the checkstyle.xml configuration file.
+* FindBugs - turned on to maximum sensitivity.
+* EclEmma - the plugin for Emma code coverage tool.
+The configurations for these tools are checked in with the project.
+The existing validations are not set in stone.
+They are subject to discussion and change. 
+
+BEFORE CHECKING IN
+Rebuild the project, make sure there are no messages from the validation
+tools described in the "Development Environment" section.
+Make sure the "dist" target runs successfully. 
+
+CODING CONVENTIONS
+Are based on the standard Sun Java coding conventions.
+
+All classes, methods except the private ones must have *full* Javadoc comments.
+Methods should indicate whether null values are acceptable for the method
+parameters, whether method can return null.
