@@ -17,11 +17,11 @@ import java.util.ResourceBundle;
 
 /**
  * Provides localized messages.
- * Messages are retrieved with {@link #get(String)}.
+ * Messages are retrieved with {@link #get(String, Object...)}.
  * If it is be provided with a class to retrieve the messages for, one can drop
  * this class name from the key names.  
  *
- * @see #get(String)
+ * @see #get(String, Object...)
  * @author Andriy Palamarchuk
  */
 public class Messages {
@@ -44,7 +44,7 @@ public class Messages {
 
     /**
      * Constructor. For an object created by this constructor it is necessary
-     * to pass full message key to {@link #get(String)}.
+     * to pass full message key to {@link #get(String, Object...)}.
      * @see #Messages(Class)
      */
     public Messages() {
@@ -55,10 +55,10 @@ public class Messages {
      * Constructor. For an object created by this constructor the messages
      * associated with the specified class can be retrieved by passing a key
      * part after class base name as well as full message key to
-     * {@link #get(String)}.
+     * {@link #get(String, Object...)}.
      * @param forClass the class to retrieve messages for.
      * Passing <code>null</code> value is equivalent to {@link #Messages()}.
-     * @see #get(String)
+     * @see #get(String, Object...)
      */
     public Messages(Class<?> forClass) {
         this.forClass =

@@ -17,14 +17,9 @@ package com.mousefeed.eclipse.preferences;
 public class PreferenceConstants {
 
     /**
-     * 
+     * Indicates how to deal with actions called with wrong access mode if there
+     * is no specific handling defined.
      */
-    public static final String P_PATH = "pathPreference";
-
-    /**
-     * Indicator, whether to enable key promotion support.
-     * When turned on will nag a user when he uses a mouse for an action,
-     * which has a key defined.  
-     */
-    public static final String P_PROMOTE_KEYS = "promoteKeys";
+    public static final String P_DEFAULT_ON_WRONG_ACCESS_MODE =
+            "DefaultOnWrongAccessMode";
 }

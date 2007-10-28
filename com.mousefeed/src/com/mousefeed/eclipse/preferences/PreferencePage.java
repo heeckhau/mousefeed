@@ -9,12 +9,13 @@
  */
 package com.mousefeed.eclipse.preferences;
 
-import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.mousefeed.client.Messages;
+import com.mousefeed.client.OnWrongAccessMode;
 import com.mousefeed.eclipse.Activator;
 
 /**
@@ -29,7 +30,7 @@ public class PreferencePage
     /**
      * Provides messages text.
      */
-    private final Messages messages = new Messages(PreferencePage.class);
+    private static final Messages MESSAGES = new Messages(PreferencePage.class);
 
     /**
      * Creates new preference page.
@@ -37,7 +38,7 @@ public class PreferencePage
     public PreferencePage() {
         super(GRID);
         setPreferenceStore(Activator.getDefault().getPreferenceStore());
-        setDescription(messages.get("description"));
+        setDescription(MESSAGES.get("description"));
     }
 
     /**
@@ -49,9 +50,10 @@ public class PreferencePage
     @Override
     public void createFieldEditors() {
        
-        addField(new BooleanFieldEditor(
-                PreferenceConstants.P_PROMOTE_KEYS,
-                messages.get("field.promoteKeys.label"),
+        addField(new ComboFieldEditor(
+                PreferenceConstants.P_DEFAULT_ON_WRONG_ACCESS_MODE,
+                MESSAGES.get("field.defaultOnWrongAccessMode.label"),
+                OnWrongAccessMode.getLabelsAndNames(),
                 getFieldEditorParent()));
     }
 

@@ -9,8 +9,9 @@
  */
 package com.mousefeed.eclipse.preferences;
 
-import static com.mousefeed.eclipse.preferences.PreferenceConstants.P_PROMOTE_KEYS;
+import static com.mousefeed.eclipse.preferences.PreferenceConstants.P_DEFAULT_ON_WRONG_ACCESS_MODE;
 
+import com.mousefeed.client.OnWrongAccessMode;
 import com.mousefeed.eclipse.Activator;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -22,12 +23,15 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class PreferenceAccessor {
     /**
-     * @return <code>true</code> if the preference is on
-     * to show reminders when an action having a keyboard shortcut associated
-     * with is called by mouse click.
+     * The default preference what to do by default on wrong access mode.
+     * @return the global access mode preference.
+     * @see PreferenceConstants#P_DEFAULT_ON_WRONG_ACCESS_MODE
      */
-    public boolean getPromoteKeys() {
-        return getPreferenceStore().getBoolean(P_PROMOTE_KEYS);
+    public OnWrongAccessMode getPromoteKeys() {
+        final String stored =
+                getPreferenceStore().getString(P_DEFAULT_ON_WRONG_ACCESS_MODE);
+        // TODO if null?
+        return OnWrongAccessMode.valueOf(stored);
     }
 
     /**

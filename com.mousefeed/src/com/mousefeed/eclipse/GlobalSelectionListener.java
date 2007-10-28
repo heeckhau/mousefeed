@@ -9,10 +9,10 @@
  */
 package com.mousefeed.eclipse;
 
-import com.mousefeed.eclipse.preferences.PreferenceAccessor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.IHandler;
@@ -35,6 +35,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.RetargetAction;
 import org.eclipse.ui.activities.IActivityManager;
 import org.eclipse.ui.keys.IBindingService;
+
+import com.mousefeed.eclipse.preferences.PreferenceAccessor;
 
 //CHECKSTYLE:OFF
 
@@ -256,9 +258,20 @@ public class GlobalSelectionListener implements Listener {
             String acceleratorStr) {
         assert StringUtils.isNotBlank(actionName);
         assert StringUtils.isNotBlank(acceleratorStr);
-        
-        if (preferences.getPromoteKeys()) {
+
+        switch (preferences.getPromoteKeys()) {
+        case DO_NOTHING:
+            // go on
+            break;
+        case REMIND:
             new NagPopUp(actionName, acceleratorStr).open();
+            break;
+        case ENFORCE:
+            // TODO implement
+            new NagPopUp(actionName, acceleratorStr + "").open();
+            break;
+        default:
+            throw new AssertionError();
         }
     }
 
