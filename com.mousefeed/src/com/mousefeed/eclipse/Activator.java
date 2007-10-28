@@ -37,7 +37,7 @@ public class Activator extends AbstractUIPlugin implements IStartup {
      * The constructor.
      */
     public Activator() {
-        assert plugin != null;
+        assert plugin == null;
         plugin = this;
     }
 

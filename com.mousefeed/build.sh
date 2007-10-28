@@ -1,4 +1,6 @@
 #!/bin/bash
 # runs build
 
-ant -f build1.xml $@
+CP="lib/ant-1.7.0.jar:lib/ant-launcher-1.7.0.jar:lib/ant-junit-1.7.0.jar"
+java -cp $CP org.apache.tools.ant.launch.Launcher -f build1.xml $@ 
+     

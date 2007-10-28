@@ -6,10 +6,13 @@
   <!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=82302 -->
 
   <property name="src" location="src"/>
+  <property name="test.src" location="test"/>
   <property name="tmp" location="ztemp"/>
   <property name="build" location="${tmp}/build"/>
+  <property name="test.build" location="${tmp}/test-build"/>
   <property name="dist"  location="${tmp}/dist"/>
   <property name="javadoc"  location="${tmp}/javadoc"/>
+  <property name="test.report" location="${tmp}/test-report"/>
 
   <taskdef resource="checkstyletask.properties">
     <classpath>
@@ -44,6 +47,7 @@
     <property file="global.properties"/>
 
     <property name="eclipse.plugins" location="${eclipse}/plugins"/>
+
     <path id="compile.class.path">
       <fileset dir="lib">
         <include name="*.jar"/>
@@ -59,11 +63,28 @@
         <include name="org.eclipse.ui.workbench_*.jar"/>
       </fileset>
     </path>
+
+    <path id="compile.test.class.path">
+      <path refid="compile.class.path"/>
+      <pathelement location="${build}"/>
+    </path>
   </target>
 
   <target name="compile" depends="init" description="Compiles the source.">
     <mkdir dir="${build}"/>
-    <javac srcdir="${src}" destdir="${build}" classpathref="compile.class.path"/>
+    <mkdir dir="${test.build}"/>
+
+    <javac srcdir="${src}" destdir="${build}" classpathref="compile.class.path"
+        target="1.5"/>
+    <javac srcdir="${test.src}" destdir="${test.build}"
+        classpathref="compile.test.class.path"/>
+
+    <!-- copy resources -->
+    <copy todir="${build}">
+      <fileset dir="${src}">
+        <exclude name="**/*.java"/>
+      </fileset>
+    </copy>
   </target>
 
   <!-- Checks that code formatting confirms to the conventions. -->
@@ -82,7 +103,28 @@
     </javadoc>
   </target>
 
-  <target name="dist" depends="compile, validateCodeFormatting, javadoc"
+  <target name="test" depends="compile" description="Runs unit tests">
+    <mkdir dir="${test.report}"/>
+
+    <junit printsummary="yes" haltonfailure="yes" fork="yes" forkmode="once">
+      <jvmarg value="-enableassertions"/>
+
+      <classpath>
+        <path refid="compile.test.class.path"/>
+        <pathelement location="${test.build}"/>
+      </classpath>
+
+      <formatter type="xml"/>
+
+      <batchtest todir="${test.report}">
+        <fileset dir="${test.src}">
+          <include name="**/*Test.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="dist" depends="compile, validateCodeFormatting, javadoc, test"
       description="Generates the distribution.">
     <mkdir dir="${dist}"/>
   </target>

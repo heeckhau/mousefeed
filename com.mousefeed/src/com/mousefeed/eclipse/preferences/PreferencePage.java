@@ -14,6 +14,7 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import com.mousefeed.client.Messages;
 import com.mousefeed.eclipse.Activator;
 
 /**
@@ -24,6 +25,11 @@ import com.mousefeed.eclipse.Activator;
 public class PreferencePage
     extends FieldEditorPreferencePage
     implements IWorkbenchPreferencePage {
+    
+    /**
+     * Provides messages text.
+     */
+    private final Messages messages = new Messages(PreferencePage.class);
 
     /**
      * Creates new preference page.
@@ -31,7 +37,7 @@ public class PreferencePage
     public PreferencePage() {
         super(GRID);
         setPreferenceStore(Activator.getDefault().getPreferenceStore());
-        setDescription("MouseFeed preferences");
+        setDescription(messages.get("description"));
     }
 
     /**
@@ -45,7 +51,7 @@ public class PreferencePage
        
         addField(new BooleanFieldEditor(
                 PreferenceConstants.P_PROMOTE_KEYS,
-                "Promote &keys",
+                messages.get("field.promoteKeys.label"),
                 getFieldEditorParent()));
     }
 
@@ -54,5 +60,4 @@ public class PreferencePage
      * @param workbench not used.
      */
     public void init(@SuppressWarnings("unused") IWorkbench workbench) {}
-    
 }

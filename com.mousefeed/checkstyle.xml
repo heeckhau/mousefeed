@@ -109,7 +109,6 @@
     <module name="RightCurly"/>
 
     <!-- Common coding problems. -->
-    <module name="AvoidInlineConditionals"/>
     <module name="ParameterAssignment"/>
     <module name="DoubleCheckedLocking"/>
     <module name="EmptyStatement"/>
@@ -123,7 +122,9 @@
     <module name="InnerAssignment"/>
     <module name="MagicNumber"/>
     <module name="MissingSwitchDefault"/>
-    <module name="RedundantThrows"/>
+    <module name="RedundantThrows">
+      <property name="allowUnchecked" value="true"/>
+    </module>
     <module name="SimplifyBooleanExpression"/>
     <module name="SimplifyBooleanReturn"/>
     <module name="ModifiedControlVariable"/>
