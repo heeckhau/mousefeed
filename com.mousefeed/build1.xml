@@ -83,6 +83,7 @@
     <copy todir="${build}">
       <fileset dir="${src}">
         <exclude name="**/*.java"/>
+        <exclude name="**/package.html"/>
       </fileset>
     </copy>
   </target>
@@ -99,7 +100,9 @@
     <mkdir dir="${javadoc}"/>
     <javadoc destdir="${javadoc}" windowtitle="MouseFeed" failonerror="true"
         classpathref="compile.class.path" additionalparam="-quiet">
-      <fileset dir="src"/>
+      <fileset dir="src">
+        <include name="**/*.java"/>
+      </fileset>
     </javadoc>
   </target>
 
