@@ -3,12 +3,17 @@
    <description url="http://update.mousefeed.com">
       The main MouseFeed Eclipse Update server.
    </description>
-   <feature url="features/com.mousefeed.feature_0.4.0.jar" id="com.mousefeed.feature" version="0.4.0">
-      <category name="MouseFeed"/>
+   <feature url="features/com.hlsoft.clickclose.feature_2.0.0.jar" id="com.hlsoft.clickclose.feature" version="2.0.0">
+      <category name="Click Close"/>
    </feature>
    <category-def name="MouseFeed" label="MouseFeed Plugin">
       <description>
-         The MouseFeed Eclipse Plugin
+         MouseFeed Eclipse plugin. Helps to remember keyboard shortcuts. Shows a popup with the keyboard shortcut for the actions called with a menu or a toolbar button.
+      </description>
+   </category-def>
+   <category-def name="Click Close" label="Click Close Plugin">
+      <description>
+         Speeds up tabs closing, allowing to close them with a middle click. Closing tabs this way is much faster than using the tab close button, because of the much bigger target area.
       </description>
    </category-def>
 </site>
