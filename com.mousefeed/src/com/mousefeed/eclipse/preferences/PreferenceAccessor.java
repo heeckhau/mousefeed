@@ -30,8 +30,9 @@ public class PreferenceAccessor {
     public OnWrongAccessMode getPromoteKeys() {
         final String stored =
                 getPreferenceStore().getString(P_DEFAULT_ON_WRONG_ACCESS_MODE);
-        // TODO if null?
-        return OnWrongAccessMode.valueOf(stored);
+        return stored == null
+                ? OnWrongAccessMode.REMIND
+                : OnWrongAccessMode.valueOf(stored);
     }
 
     /**
