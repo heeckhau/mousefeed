@@ -53,11 +53,14 @@ public final class Layout {
      * @param aboveControl the control to place under.
      * If <code>null</code>, <code>control</code> is placed
      * {@link #WINDOW_MARGIN} pixels from the left side of the container,
-     * and <code>gap</code> is interpreted as 0. 
-     * @param gap distance in pixels between the bottom of <code>previous</code>
-     * and top of <code>control</code>. Greater than 0.
+     * and <code>gap</code> is interpreted as 0.
+     * This is done to eliminate a special treatment of the topmost controls
+     * in the client code. 
+     * @param gap distance in pixels between the bottom of
+     * <code>aboveControl</code> and top of <code>control</code>.
+     * Greater than 0.
      */
-    public static void placeUnder(final Control control, Control aboveControl,
+    public static void placeUnder(Control control, Control aboveControl,
             int gap) {
         notNull(control);
         isTrue(aboveControl == null
