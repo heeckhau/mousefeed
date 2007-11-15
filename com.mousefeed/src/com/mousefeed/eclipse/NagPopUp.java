@@ -9,6 +9,8 @@
  */
 package com.mousefeed.eclipse;
 
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
 import static org.apache.commons.lang.time.DateUtils.MILLIS_PER_SECOND;
 
 import org.apache.commons.lang.StringUtils;
@@ -99,8 +101,8 @@ public class NagPopUp extends PopupDialog {
         super((Shell) null, PopupDialog.HOVER_SHELLSTYLE,
                 false, false, false, false,
                 null, null);
-        assert StringUtils.isNotBlank(actionName);
-        assert StringUtils.isNotBlank(accelerator);
+        isTrue(StringUtils.isNotBlank(actionName));
+        isTrue(StringUtils.isNotBlank(accelerator));
 
         this.actionName = actionName.replace("&", "");
         this.accelerator = accelerator;
@@ -214,7 +216,7 @@ public class NagPopUp extends PopupDialog {
      * Must be called only after dialog shell is created.
      */
     private Display getDisplay() {
-        assert getParentShell() != null;
+        notNull(getParentShell());
         return getParentShell().getDisplay();
     }
 

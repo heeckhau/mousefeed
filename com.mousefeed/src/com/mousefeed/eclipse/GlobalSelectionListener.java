@@ -9,10 +9,13 @@
  */
 package com.mousefeed.eclipse;
 
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
+
+import com.mousefeed.eclipse.preferences.PreferenceAccessor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.IHandler;
@@ -35,8 +38,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.RetargetAction;
 import org.eclipse.ui.activities.IActivityManager;
 import org.eclipse.ui.keys.IBindingService;
-
-import com.mousefeed.eclipse.preferences.PreferenceAccessor;
 
 //CHECKSTYLE:OFF
 
@@ -101,7 +102,7 @@ public class GlobalSelectionListener implements Listener {
      * Not <code>null</code>.
      */
     private void maybeReportActionAccelerator(IAction action) {
-        assert action != null;
+        notNull(action);
 
         if (reportAcceleratorForAction(action)) {
             return;
@@ -231,7 +232,7 @@ public class GlobalSelectionListener implements Listener {
      */
     private boolean reportAcceleratorForActionDefinition(
             final String definitionId, final String actionName) {
-        assert StringUtils.isNotBlank(actionName);
+        isTrue(StringUtils.isNotBlank(actionName));
         
         if (StringUtils.isBlank(definitionId)) {
             return false;
@@ -256,8 +257,8 @@ public class GlobalSelectionListener implements Listener {
      */
     private void reportActionAccelerator(String actionName,
             String acceleratorStr) {
-        assert StringUtils.isNotBlank(actionName);
-        assert StringUtils.isNotBlank(acceleratorStr);
+        isTrue(StringUtils.isNotBlank(actionName));
+        isTrue(StringUtils.isNotBlank(acceleratorStr));
 
         switch (preferences.getPromoteKeys()) {
         case DO_NOTHING:
@@ -320,7 +321,7 @@ public class GlobalSelectionListener implements Listener {
      * string representation that should be displayed to the user.
      */
     private String getActionDefinitionAccelerator(String actionDefinitionId) {
-        assert StringUtils.isNotBlank(actionDefinitionId);
+        isTrue(StringUtils.isNotBlank(actionDefinitionId));
         final ICallback callback =
                 ExternalActionManager.getInstance().getCallback();
         return callback.getAcceleratorText(actionDefinitionId);

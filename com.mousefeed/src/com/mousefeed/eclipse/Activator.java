@@ -9,6 +9,8 @@
  */
 package com.mousefeed.eclipse;
 
+import static org.apache.commons.lang.Validate.isTrue;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -37,7 +39,7 @@ public class Activator extends AbstractUIPlugin implements IStartup {
      * The constructor.
      */
     public Activator() {
-        assert plugin == null;
+        isTrue(plugin == null);
         plugin = this;
     }
 

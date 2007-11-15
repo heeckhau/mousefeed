@@ -9,6 +9,9 @@
  */
 package com.mousefeed.eclipse;
 
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
+
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,7 +55,7 @@ public class TextActionHandlerActionLocator {
      * of the search target.
      */
     public boolean isSearchable(IAction searchTarget) {
-        assert searchTarget != null;
+        notNull(searchTarget);
         return searchTarget.getClass().getName().startsWith(
                 HANDLER_CLASS_NAME + "$");
     }
@@ -84,8 +87,8 @@ public class TextActionHandlerActionLocator {
     private String doFindActionDefinitionId(IAction action,
             IAction searchTarget)
             throws NoSuchFieldException, IllegalAccessException {
-        assert action != null;
-        assert searchTarget != null;
+        notNull(action);
+        notNull(searchTarget);
 
         final Object handler = getTextActionHandler(searchTarget);
         for (final String fieldName : HANDLER_ACTIONS.keySet()) {
@@ -121,15 +124,15 @@ public class TextActionHandlerActionLocator {
      */
     private Object getTextActionHandler(IAction action)
             throws NoSuchFieldException, IllegalAccessException {
-        assert action != null;
+        notNull(action);
         final Field handlerField =
                 action.getClass().getDeclaredField("this$0");
-        assert handlerField != null;
+        notNull(handlerField);
         handlerField.setAccessible(true);
 
         final Object handler = handlerField.get(action);
-        assert handler != null;
-        assert handler.getClass().getName().equals(HANDLER_CLASS_NAME);
+        notNull(handler);
+        isTrue(handler.getClass().getName().equals(HANDLER_CLASS_NAME));
         return handler;
     }
 }
