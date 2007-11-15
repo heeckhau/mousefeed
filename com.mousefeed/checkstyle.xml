@@ -32,6 +32,7 @@
     </module>
     <module name="JavadocMethod">
       <property name="scope" value="protected"/>
+      <property name="allowMissingJavadoc" value="true"/>
     </module>
     <module name="JavadocVariable"/>
     <module name="JavadocStyle"/>
