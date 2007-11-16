@@ -12,18 +12,13 @@ package com.mousefeed.eclipse;
 import static org.apache.commons.lang.Validate.isTrue;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IStartup;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * The activator class controls the plug-in life cycle.
- * Implements {@link IStartup} to hook up the plugin listeners.
  * @author Andriy Palamarchuk
  */
-public class Activator extends AbstractUIPlugin implements IStartup {
+public class Activator extends AbstractUIPlugin {
 
     /**
      * The plug-in ID.
@@ -41,26 +36,6 @@ public class Activator extends AbstractUIPlugin implements IStartup {
     public Activator() {
         isTrue(plugin == null);
         plugin = this;
-    }
-
-    /**
-     * On startup hooks up event listeners.
-     */
-    public void earlyStartup() {
-        getDisplay().asyncExec(new Runnable() {
-            public void run() {
-                getDisplay().addFilter(
-                      SWT.Selection, new GlobalSelectionListener());
-            }
-        });
-    }
-
-    /**
-     * Current workbench display.
-     * Not <code>null</code>.
-     */
-    private Display getDisplay() {
-        return PlatformUI.getWorkbench().getDisplay();
     }
 
     /**

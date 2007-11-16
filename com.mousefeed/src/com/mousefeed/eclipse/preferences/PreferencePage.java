@@ -9,14 +9,11 @@
  */
 package com.mousefeed.eclipse.preferences;
 
-import org.eclipse.jface.preference.ComboFieldEditor;
+import com.mousefeed.client.Messages;
+import com.mousefeed.eclipse.Activator;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-
-import com.mousefeed.client.Messages;
-import com.mousefeed.client.OnWrongAccessMode;
-import com.mousefeed.eclipse.Activator;
 
 /**
  * Main MouseFeed preferences page.
@@ -26,7 +23,7 @@ import com.mousefeed.eclipse.Activator;
 public class PreferencePage
     extends FieldEditorPreferencePage
     implements IWorkbenchPreferencePage {
-    
+
     /**
      * Provides messages text.
      */
@@ -49,12 +46,6 @@ public class PreferencePage
      */
     @Override
     public void createFieldEditors() {
-       
-        addField(new ComboFieldEditor(
-                PreferenceConstants.P_DEFAULT_ON_WRONG_ACCESS_MODE,
-                MESSAGES.get("field.defaultOnWrongAccessMode.label"),
-                OnWrongAccessMode.getLabelsAndNames(),
-                getFieldEditorParent()));
     }
 
     /**

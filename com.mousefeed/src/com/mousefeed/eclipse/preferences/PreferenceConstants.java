@@ -17,9 +17,9 @@ package com.mousefeed.eclipse.preferences;
 public class PreferenceConstants {
 
     /**
-     * Indicates how to deal with actions called with wrong access mode if there
-     * is no specific handling defined.
+     * Indicates how to deal with actions called with wrong action invocation
+     * mode if there is no specific handling defined.
      */
-    public static final String P_DEFAULT_ON_WRONG_ACCESS_MODE =
-            "DefaultOnWrongAccessMode";
+    public static final String P_DEFAULT_ON_WRONG_INVOCATION_MODE =
+            "DefaultOnWrongInvocationMode";
 }

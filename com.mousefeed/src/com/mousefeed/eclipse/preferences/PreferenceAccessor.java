@@ -9,11 +9,11 @@
  */
 package com.mousefeed.eclipse.preferences;
 
-import static com.mousefeed.eclipse.preferences.PreferenceConstants.P_DEFAULT_ON_WRONG_ACCESS_MODE;
+import static com.mousefeed.eclipse.preferences.PreferenceConstants.P_DEFAULT_ON_WRONG_INVOCATION_MODE;
+import static org.apache.commons.lang.Validate.notNull;
 
-import com.mousefeed.client.OnWrongAccessMode;
+import com.mousefeed.client.OnWrongInvocationMode;
 import com.mousefeed.eclipse.Activator;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
@@ -23,16 +23,26 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class PreferenceAccessor {
     /**
-     * The default preference what to do by default on wrong access mode.
-     * @return the global access mode preference.
-     * @see PreferenceConstants#P_DEFAULT_ON_WRONG_ACCESS_MODE
+     * The default preference what to do by default on wrong invocation mode.
+     * @return the global invocation mode preference.
+     * @see PreferenceConstants#P_DEFAULT_ON_WRONG_INVOCATION_MODE
      */
-    public OnWrongAccessMode getPromoteKeys() {
-        final String stored =
-                getPreferenceStore().getString(P_DEFAULT_ON_WRONG_ACCESS_MODE);
+    public OnWrongInvocationMode getOnWrongInvocationMode() {
+        final String stored = getPreferenceStore().getString(
+                P_DEFAULT_ON_WRONG_INVOCATION_MODE);
         return stored == null
-                ? OnWrongAccessMode.REMIND
-                : OnWrongAccessMode.valueOf(stored);
+                ? OnWrongInvocationMode.DEFAULT
+                : OnWrongInvocationMode.valueOf(stored);
+    }
+    
+    /**
+     * Stores the provided preference.
+     * @param value the new value. Not <code>null</code>.
+     */
+    public void storeOnWrongInvocationMode(OnWrongInvocationMode value) {
+        notNull(value);
+        getPreferenceStore().setValue(
+                P_DEFAULT_ON_WRONG_INVOCATION_MODE, value.name());
     }
 
     /**

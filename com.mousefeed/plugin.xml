@@ -28,6 +28,12 @@
             class="com.mousefeed.eclipse.preferences.PreferencePage"
             id="com.mousefeed.eclipse.preferences.PreferencePage">
       </page>
+      <page
+            category="com.mousefeed.eclipse.preferences.PreferencePage"
+            class="com.mousefeed.eclipse.preferences.ActionInvocationPreferencePage"
+            id="com.mousefeed.eclipse.preferences.ActionInvocationPreferencePage"
+            name="%actionInvocation">
+      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
@@ -37,6 +43,9 @@
    </extension>
    <extension
          point="org.eclipse.ui.startup">
+      <startup
+            class="com.mousefeed.eclipse.Startup">
+      </startup>
    </extension>
 
 </plugin>

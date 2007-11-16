@@ -260,7 +260,7 @@ public class GlobalSelectionListener implements Listener {
         isTrue(StringUtils.isNotBlank(actionName));
         isTrue(StringUtils.isNotBlank(acceleratorStr));
 
-        switch (preferences.getPromoteKeys()) {
+        switch (preferences.getOnWrongInvocationMode()) {
         case DO_NOTHING:
             // go on
             break;

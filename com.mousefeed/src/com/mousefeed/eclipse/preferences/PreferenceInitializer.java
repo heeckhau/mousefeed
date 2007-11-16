@@ -12,7 +12,7 @@ package com.mousefeed.eclipse.preferences;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import com.mousefeed.client.OnWrongAccessMode;
+import com.mousefeed.client.OnWrongInvocationMode;
 import com.mousefeed.eclipse.Activator;
 
 /**
@@ -28,7 +28,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         final IPreferenceStore store =
                Activator.getDefault().getPreferenceStore();
         store.setDefault(
-                PreferenceConstants.P_DEFAULT_ON_WRONG_ACCESS_MODE,
-                OnWrongAccessMode.REMIND.name());
+                PreferenceConstants.P_DEFAULT_ON_WRONG_INVOCATION_MODE,
+                OnWrongInvocationMode.DEFAULT.name());
     }
 }

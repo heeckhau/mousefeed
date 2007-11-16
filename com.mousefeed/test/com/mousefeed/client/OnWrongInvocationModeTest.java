@@ -10,39 +10,28 @@
 package com.mousefeed.client;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
-import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 /**
  * @author Andriy Palamarchuk
  */
-public class OnWrongAccessModeTest {
+public class OnWrongInvocationModeTest {
     @Test public void general() {
         assert values().length > 1;
     }
 
     @Test public void getLabel() {
-        for (OnWrongAccessMode e : values()) {
+        for (OnWrongInvocationMode e : values()) {
             assert isNotBlank(e.getLabel());
             assert !e.name().equals(e.getLabel());
         }
     }
     
-    @Test public void getLabelsAndNames() {
-        final String[][] arr = OnWrongAccessMode.getLabelsAndNames();
-        assertEquals(values().length, arr.length);
-        assertEquals(2, arr[0].length);
-        for (int i = 0; i < arr.length; i++) {
-            assertEquals(values()[i].getLabel(), arr[i][0]);
-            assertEquals(values()[i].name(), arr[i][1]);
-        }
-    }
-
     /**
-     * Same as call to OnWrongAccessMode.values().
+     * Same as call to {@link OnWrongInvocationMode#values()}.
      */
-    private OnWrongAccessMode[] values() {
-        return OnWrongAccessMode.values();
+    private OnWrongInvocationMode[] values() {
+        return OnWrongInvocationMode.values();
     }
 }

@@ -12,6 +12,7 @@ package com.mousefeed.eclipse;
 import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -39,6 +40,11 @@ public final class Layout {
      * Margin around the borders of a window.
      */
     public static final int WINDOW_MARGIN = 10;
+    
+    /**
+     * Numerator of 100% of width when denominator is 100.
+     */
+    public static final int FULL_WIDTH = 100;
 
     /**
      * Private constructor to insure no instances are ever created.
@@ -71,10 +77,9 @@ public final class Layout {
         final FormData formData = new FormData();
         formData.left = aboveControl == null
                 ? getLeftAttachment()
-                : new FormAttachment(control);
-
-        final int finalOffset = aboveControl == null ? 0 : gap; 
-        formData.top = new FormAttachment(aboveControl, finalOffset);
+                : new FormAttachment(aboveControl, 0, SWT.LEFT);
+        final int offset = aboveControl == null ? 0 : gap; 
+        formData.top = new FormAttachment(aboveControl, offset);
         control.setLayoutData(formData);
     }
 

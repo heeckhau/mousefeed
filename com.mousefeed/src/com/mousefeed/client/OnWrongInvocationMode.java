@@ -16,7 +16,7 @@ package com.mousefeed.client;
  * 
  * @author Andriy Palamarchuk
  */
-public enum OnWrongAccessMode {
+public enum OnWrongInvocationMode {
     /**
      * Allow user to proceed.
      */
@@ -31,12 +31,17 @@ public enum OnWrongAccessMode {
      * Prevent the action from running, remind the user.
      */
     ENFORCE;
+    
+    /**
+     * The default access mode.
+     */
+    public static final OnWrongInvocationMode DEFAULT = REMIND;
 
     /**
      * Provides label text. 
      */
     private static final Messages MESSAGES =
-            new Messages(OnWrongAccessMode.class);
+            new Messages(OnWrongInvocationMode.class);
 
     /**
      * Human-readable label text.
@@ -44,22 +49,5 @@ public enum OnWrongAccessMode {
      */
     public String getLabel() {
         return MESSAGES.get(name());
-    }
-
-    /**
-     * The modes labels and names.
-     * @return the enumeration labels and names as a 2-dimensional array
-     * arranged as: { {label1, name1}, {label2, name2}, ...}.
-     * The first dimension of the array has the same length as number of the
-     * element enumerations.
-     */
-    public static String[][] getLabelsAndNames() {
-        final String[][] result = new String[values().length][2];
-        final OnWrongAccessMode[] values = OnWrongAccessMode.values();
-        for (int i = 0; i < values.length; i++) {
-            result[i][0] = values[i].getLabel(); 
-            result[i][1] = values[i].name(); 
-        }
-        return result;
     }
 }
