@@ -162,7 +162,9 @@
     
     <!-- Metrics. -->
     <module name="BooleanExpressionComplexity"/>
-    <module name="ClassDataAbstractionCoupling"/>
+    <module name="ClassDataAbstractionCoupling">
+    	<property name="max" value="10"/>
+    </module>
     <module name="ClassFanOutComplexity"/>
     <!-- 1-4 is considered good, 5-7 ok, 8-10 consider re-factoring -->
     <module name="CyclomaticComplexity"/>

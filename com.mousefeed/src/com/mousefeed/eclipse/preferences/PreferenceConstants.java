@@ -17,6 +17,20 @@ package com.mousefeed.eclipse.preferences;
 public class PreferenceConstants {
 
     /**
+     * Whether invocation control is enabled preference.
+     * The preference indicates whether to help to learn the desired way to
+     * invoke actions.
+     */
+    public static final String P_INVOCATION_CONTROL_ENABLED =
+            "InvocationControlEnabled";
+    
+    /**
+     * The default value for the setting {@link #P_INVOCATION_CONTROL_ENABLED}
+     * setting.
+     */
+    public static final boolean INVOCATION_CONTROL_ENABLED_DEFAULT = true;
+
+    /**
      * Indicates how to deal with actions called with wrong action invocation
      * mode if there is no specific handling defined.
      */

@@ -259,6 +259,10 @@ public class GlobalSelectionListener implements Listener {
             String acceleratorStr) {
         isTrue(StringUtils.isNotBlank(actionName));
         isTrue(StringUtils.isNotBlank(acceleratorStr));
+        
+        if (!preferences.isInvocationControlEnabled()) {
+            return;
+        }
 
         switch (preferences.getOnWrongInvocationMode()) {
         case DO_NOTHING:

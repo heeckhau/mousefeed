@@ -15,6 +15,7 @@ import static com.mousefeed.eclipse.Layout.STACKED_LABEL_V_OFFSET;
 import static com.mousefeed.eclipse.Layout.STACKED_V_OFFSET;
 import static com.mousefeed.eclipse.Layout.WINDOW_MARGIN;
 import static com.mousefeed.eclipse.Layout.placeUnder;
+import static com.mousefeed.eclipse.preferences.PreferenceConstants.INVOCATION_CONTROL_ENABLED_DEFAULT;
 import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 
@@ -24,9 +25,12 @@ import com.mousefeed.eclipse.Activator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -52,12 +56,17 @@ public class ActionInvocationPreferencePage extends PreferencePage
      */
     private static final Messages MESSAGES =
         new Messages(ActionInvocationPreferencePage.class);
-    
-    
+
     /**
      * Provides access to the plugin preferences.
      */
     private final PreferenceAccessor preferences = new PreferenceAccessor();
+
+    /**
+     * Setting whether to control action invocation at all.
+     * If turned off, no other options on this page are used.
+     */
+    private Button invocationControlEnabledCheckbox;
 
     /**
      * Setting what to do when user invokes an action using wrong invocation
@@ -80,16 +89,21 @@ public class ActionInvocationPreferencePage extends PreferencePage
         
         final Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new FormLayout());
-        
+
         Control c;
-        c = createOnWrongInvocationModeLabel(composite, null);
+        invocationControlEnabledCheckbox =
+                createInvocationControlEnabledCheckbox(composite, null);
+        c = invocationControlEnabledCheckbox;
+
+        c = createOnWrongInvocationModeLabel(composite, c);
         onWrongInvocationModeCombo =
                 createOnWrongInvocationModeCombo(composite, c);
         updateOnWrongInvocationModeCombo(
                 preferences.getOnWrongInvocationMode());
+        updateInvocationControlEnabled(
+                preferences.isInvocationControlEnabled());
 
-//        c = onWrongInvocationModeCombo;
-
+        onInvocationControlEnabledCheckboxSelected();
         Dialog.applyDialogFont(composite);
 
         // set F1 help
@@ -103,12 +117,15 @@ public class ActionInvocationPreferencePage extends PreferencePage
     protected void performDefaults() {
         super.performDefaults();
         updateOnWrongInvocationModeCombo(OnWrongInvocationMode.DEFAULT);
+        updateInvocationControlEnabled(
+                INVOCATION_CONTROL_ENABLED_DEFAULT);
     }
 
     @Override
     public boolean performOk() {
         preferences.storeOnWrongInvocationMode(
                 getSelectedOnWrongInvocationMode());
+        preferences.storeInvocationControlEnabled(isInvocationControlEnabled());
         return super.performOk();
     }
 
@@ -119,7 +136,30 @@ public class ActionInvocationPreferencePage extends PreferencePage
     public void init(@SuppressWarnings("unused") IWorkbench workbench) {}
 
     /**
-     * Creates a label for the combo.
+     * Creates the control for {@link #invocationControlEnabledCheckbox}.
+     */
+    private Button createInvocationControlEnabledCheckbox(
+            Composite container, Control above) {
+        notNull(container);
+        
+        final Button checkbox = new Button(container, SWT.CHECK | SWT.LEAD);
+        checkbox.setText(
+                MESSAGES.get("field.invocationControlEnabledCheckbox.label"));
+        checkbox.setToolTipText(
+                MESSAGES.get("field.invocationControlEnabledCheckbox.tooltip"));
+        placeUnder(checkbox, above, STACKED_V_OFFSET);
+        checkbox.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                onInvocationControlEnabledCheckboxSelected();
+            }
+        });
+        return checkbox;
+    }
+
+    /**
+     * Creates a label for {@link #onWrongInvocationModeCombo}.
      */
     private Control createOnWrongInvocationModeLabel(
             Composite container, Control above) {
@@ -150,6 +190,19 @@ public class ActionInvocationPreferencePage extends PreferencePage
     }
 
     /**
+     * Is called when the {@link #invocationControlEnabledCheckbox} selection
+     * changed.
+     */
+    private void onInvocationControlEnabledCheckboxSelected() {
+        final Button checkbox = invocationControlEnabledCheckbox;
+        for (Control c : checkbox.getParent().getChildren()) {
+            if (!c.equals(invocationControlEnabledCheckbox)) {
+                c.setEnabled(isInvocationControlEnabled());
+            }
+        }
+    }
+
+    /**
      * The currently selected wrong invocation mode handling.
      * @return the wrong invocation mode handling. Never <code>null</code>.
      */
@@ -168,4 +221,20 @@ public class ActionInvocationPreferencePage extends PreferencePage
         onWrongInvocationModeCombo.setText(mode.getLabel());
     }
 
+    /**
+     * The currently selected value of the preference
+     * whether action invocation control is enabled.
+     * @return the action invocation control preference.
+     */
+    private boolean isInvocationControlEnabled() {
+        return invocationControlEnabledCheckbox.getSelection();
+    }
+    
+    /**
+     * Make UI indicate whether to enable action control.
+     * @param enabled the value shown by UI. 
+     */
+    private void updateInvocationControlEnabled(boolean enabled) {
+        invocationControlEnabledCheckbox.setSelection(enabled);
+    }
 }

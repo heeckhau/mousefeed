@@ -30,5 +30,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(
                 PreferenceConstants.P_DEFAULT_ON_WRONG_INVOCATION_MODE,
                 OnWrongInvocationMode.DEFAULT.name());
+        store.setDefault(
+                PreferenceConstants.P_INVOCATION_CONTROL_ENABLED,
+                PreferenceConstants.INVOCATION_CONTROL_ENABLED_DEFAULT);
     }
 }
