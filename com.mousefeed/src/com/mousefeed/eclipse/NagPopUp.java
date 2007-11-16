@@ -10,7 +10,6 @@
 package com.mousefeed.eclipse;
 
 import static org.apache.commons.lang.Validate.isTrue;
-import static org.apache.commons.lang.Validate.notNull;
 import static org.apache.commons.lang.time.DateUtils.MILLIS_PER_SECOND;
 
 import org.apache.commons.lang.StringUtils;
@@ -75,9 +74,19 @@ public class NagPopUp extends PopupDialog {
     private final String accelerator;
     
     /**
+     * Indicates whether MouseFeed canceled the action the popup notifies about.
+     */
+    private final boolean actionCancelled;
+
+    /**
      * Is <code>true</code> when the dialog is already open, but not closed yet.
      */
     private boolean open;
+    
+    /**
+     * The notification text.
+     */
+    private Text actionDescriptionText;
 
     /**
      * Closes the dialog on any outside action, such as click, key press, etc.
@@ -96,8 +105,11 @@ public class NagPopUp extends PopupDialog {
      *            the action name. If necessary, the method removes '&'
      *            characters from the action name. Not blank.
      * @param accelerator the string describing the accelerator. Not blank.
+     * @param actionCancelled indicates whether MouseFeed canceled the action
+     * the popup notifies about. 
      */
-    public NagPopUp(String actionName, String accelerator) {
+    public NagPopUp(
+            String actionName, String accelerator, boolean actionCancelled) {
         super((Shell) null, PopupDialog.HOVER_SHELLSTYLE,
                 false, false, false, false,
                 null, null);
@@ -106,6 +118,7 @@ public class NagPopUp extends PopupDialog {
 
         this.actionName = actionName.replace("&", "");
         this.accelerator = accelerator;
+        this.actionCancelled = actionCancelled;
     }
 
     /**
@@ -114,28 +127,44 @@ public class NagPopUp extends PopupDialog {
      */
     @Override
     protected Control createDialogArea(Composite parent) {
-        final Text text = new Text(parent, SWT.READ_ONLY | SWT.NO_FOCUS);
+        actionDescriptionText = new Text(parent, SWT.READ_ONLY | SWT.NO_FOCUS);
 
         // Use the compact margins employed by PopupDialog.
         GridData gd = new GridData(GridData.BEGINNING
                 | GridData.FILL_BOTH);
         gd.horizontalIndent = HORIZONTAL_INDENT;
         gd.verticalIndent = POPUP_VERTICALSPACING;
-        text.setLayoutData(gd);
-        text.setText(accelerator + " (" + actionName + ")");
+        actionDescriptionText.setLayoutData(gd);
+        actionDescriptionText.setText(accelerator + " (" + actionName + ")");
         
-        configureBigFont(text);
+        configureBigFont(actionDescriptionText);
 
         // since SWT.NO_FOCUS is only a hint...
-        text.addFocusListener(new FocusAdapter() {
+        actionDescriptionText.addFocusListener(new FocusAdapter() {
             @Override
             @SuppressWarnings("unused")
             public void focusGained(FocusEvent event) {
                 NagPopUp.this.close();
             }
         });
-        text.pack(true);
-        return text;
+        actionDescriptionText.pack(true);
+        return actionDescriptionText;
+    }
+    
+    /**
+     * Set the text color here, not in {@link #createDialogArea(Composite)},
+     * because it is redefined after that method is called.
+     * @param parent the control parent. Not <code>null</code>.
+     * @return the super value.
+     */
+    @Override
+    protected Control createContents(Composite parent) {
+        final Control control = super.createContents(parent);
+        if (actionCancelled) {
+            actionDescriptionText.setForeground(
+                    getDisplay().getSystemColor(SWT.COLOR_DARK_RED));
+        }
+        return control;
     }
 
     /**
@@ -159,7 +188,10 @@ public class NagPopUp extends PopupDialog {
     @Override
     public int open() {
         open = true;
-        setParentShell(PlatformUI.getWorkbench().getDisplay().getActiveShell());
+        setParentShell(getDisplay().getActiveShell());
+        if (actionCancelled) {
+            getDisplay().beep();
+        }
         getDisplay().timerExec(CLOSE_TIMEOUT,
                 new Runnable() {
                     public void run() {
@@ -213,11 +245,9 @@ public class NagPopUp extends PopupDialog {
 
     /**
      * Current dialog display. Never <code>null</code>.
-     * Must be called only after dialog shell is created.
      */
     private Display getDisplay() {
-        notNull(getParentShell());
-        return getParentShell().getDisplay();
+        return PlatformUI.getWorkbench().getDisplay();
     }
 
     /** {@inheritDoc} */

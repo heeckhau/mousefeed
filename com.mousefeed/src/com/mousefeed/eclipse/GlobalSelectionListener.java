@@ -28,6 +28,7 @@ import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.jface.bindings.keys.KeySequence;
 import org.eclipse.jface.bindings.keys.SWTKeySupport;
 import org.eclipse.jface.commands.ActionHandler;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
@@ -87,7 +88,7 @@ public class GlobalSelectionListener implements Listener {
             if (widget.getData() instanceof ActionContributionItem) {
                 final ActionContributionItem item =
                         (ActionContributionItem) widget.getData();
-                maybeReportActionAccelerator(item.getAction());
+                maybeReportActionAccelerator(item.getAction(), event);
             } else {
                 // no action contribution item on the widget data
             }
@@ -100,41 +101,45 @@ public class GlobalSelectionListener implements Listener {
      * Notifies user if the action has has an associated accelerator.  
      * @param action the action to report about.
      * Not <code>null</code>.
+     * @param event the event triggering the action. Not <code>null</code>.
      */
-    private void maybeReportActionAccelerator(IAction action) {
+    private void maybeReportActionAccelerator(IAction action, Event event) {
         notNull(action);
+        notNull(event);
 
-        if (reportAcceleratorForAction(action)) {
+        if (reportAcceleratorForAction(action, event)) {
             return;
         }
         
-        final TriggerSequence triggerSequence = findActionBinding(action);
-        if (triggerSequence != null) {
+        final TriggerSequence sequence = findActionBinding(action, event);
+        if (sequence != null) {
             reportActionAccelerator(
-                    action.getText(), triggerSequence.toString());
+                    action.getText(), sequence.toString(), event);
         }
     }
 
     /**
      * Scans current bindings, returns a trigger sequence, associated with this
-     * action. Uses euristic to find an association.
+     * action. Uses heuristic to find an association.
      * Assumes that if a binding action and the provided action are the same,
      * if they have same class.
      * This logic can potentially fail if an action class is used for
      * different actions.
      * @param action the action to search trigger sequence for.
      * Returns <code>null</code> if the action is <code>null</code>.
+     * @param event the event triggering action.
+     * Is disabled depending on settings. Not <code>null</code>. 
      * @return the trigger sequence associated with the action
      * or <code>null</code> if such sequence was not found.
      */
     @SuppressWarnings("unchecked")
-    private TriggerSequence findActionBinding(IAction action) {
+    private TriggerSequence findActionBinding(IAction action, Event event) {
         if (action == null) {
             return null;
         }
         if (action instanceof RetargetAction) {
             return findActionBinding(
-                    ((RetargetAction) action).getActionHandler());
+                    ((RetargetAction) action).getActionHandler(), event);
         }
 
         final Map matches = bindingService.getPartialMatches(
@@ -173,7 +178,8 @@ public class GlobalSelectionListener implements Listener {
                 if (actionSearcher.isSearchable(searchTarget)) {
                     final String id = actionSearcher.findActionDefinitionId(
                             action, searchTarget);
-                    reportAcceleratorForActionDefinition(id, action.getText());
+                    reportAcceleratorForActionDefinition(
+                            id, action.getText(), event);
                 }
             }
         }
@@ -184,22 +190,24 @@ public class GlobalSelectionListener implements Listener {
      * Reports an accelerator for an action.
      * @param action the action to report an accelerator for.
      * Not <code>null</code>.
+     * @param event the event to report action for.
+     * Disabled depending on settings. Not <code>null</code>
      * @return <code>true</code> if no further processing is required.
      * This happens when an accelerator for an action is found.
      */
-    private boolean reportAcceleratorForAction(IAction action) {
+    private boolean reportAcceleratorForAction(IAction action, Event event) {
         if (action.getAccelerator() != 0) {
             reportActionAccelerator(action.getText(),
-                    convertAcceleratorToStr(action.getAccelerator()));
+                    convertAcceleratorToStr(action.getAccelerator()), event);
             return true;
         } else if (reportAcceleratorForActionDefinition(
-                action.getActionDefinitionId(), action.getText())) {
+                action.getActionDefinitionId(), action.getText(), event)) {
             return true;
         } else if (action instanceof RetargetAction) {
             
             final RetargetAction a = (RetargetAction) action;
             if (a.getActionHandler() != null) {
-                return reportAcceleratorForAction(a.getActionHandler());
+                return reportAcceleratorForAction(a.getActionHandler(), event);
             } else {
                 return false;
             }
@@ -227,11 +235,13 @@ public class GlobalSelectionListener implements Listener {
      * away.
      * @param actionName the name to report action for.
      * Not blank;
+     * @param event the event to report data for. Optionally disabled.
+     * Not <code>null</code>.
      * @return <code>true</code> if no further analysis is required.
      * This happens when action has a definition id.
      */
     private boolean reportAcceleratorForActionDefinition(
-            final String definitionId, final String actionName) {
+            final String definitionId, final String actionName, Event event) {
         isTrue(StringUtils.isNotBlank(actionName));
         
         if (StringUtils.isBlank(definitionId)) {
@@ -240,14 +250,14 @@ public class GlobalSelectionListener implements Listener {
         final String acceleratorStr =
             getActionDefinitionAccelerator(definitionId);
         if (StringUtils.isNotBlank(acceleratorStr)) {
-            reportActionAccelerator(actionName, acceleratorStr);
+            reportActionAccelerator(actionName, acceleratorStr, event);
         }
         return true;
     }
 
     /**
      * Reports to the user that action could be called by the provided
-     * accelerator.
+     * accelerator. Depending on the settings disables the event.
      * 
      * @param actionName
      *            the action name. If necessary, the method removes '&'
@@ -256,28 +266,37 @@ public class GlobalSelectionListener implements Listener {
      *            the string describing the accelerator. Not blank.
      */
     private void reportActionAccelerator(String actionName,
-            String acceleratorStr) {
+            String acceleratorStr, Event event) {
         isTrue(StringUtils.isNotBlank(actionName));
         isTrue(StringUtils.isNotBlank(acceleratorStr));
         
         if (!preferences.isInvocationControlEnabled()) {
             return;
         }
-
+        
         switch (preferences.getOnWrongInvocationMode()) {
         case DO_NOTHING:
             // go on
             break;
         case REMIND:
-            new NagPopUp(actionName, acceleratorStr).open();
+            new NagPopUp(actionName, acceleratorStr, false).open();
             break;
         case ENFORCE:
-            // TODO implement
-            new NagPopUp(actionName, acceleratorStr + "").open();
+            disableEvent(event);
+            new NagPopUp(actionName, acceleratorStr + "", true).open();
             break;
         default:
             throw new AssertionError();
         }
+    }
+
+    /**
+     * Disables the specified event.
+     * @param event the event to disable. Assumed not <code>null</code>.
+     */
+    private void disableEvent(Event event) {
+        event.type = SWT.None;
+        event.doit = false;
     }
 
     /**

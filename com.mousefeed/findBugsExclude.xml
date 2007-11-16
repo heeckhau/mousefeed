@@ -1,0 +1,7 @@
+<!-- Filter of checks to exclude from the FindBugs validation. -->
+<FindBugsFilter>
+    <Match>
+        <!-- UwF - not initialized in constructor -->
+        <Bug code="UwF"/>
+    </Match>
+</FindBugsFilter>
