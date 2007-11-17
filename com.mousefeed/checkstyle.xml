@@ -21,6 +21,11 @@
   <!-- suppresses checks in code areas -->
   <!-- delimited by comments CHECKSTYLE:OFF and CHECKSTYLE:ON -->
   <module name="SuppressionCommentFilter"/>
+  <module name="SuppressionCommentFilter">
+    <property name="offCommentFormat" value="RETURNCOUNT\:OFF"/>
+    <property name="onCommentFormat" value="RETURNCOUNT\:ON"/>
+    <property name="checkFormat" value="ReturnCount"/>
+  </module>
 
   <module name="TreeWalker">
     <!-- needed for the checks suppression filter -->
@@ -116,6 +121,7 @@
     <module name="EqualsHashCode"/>
     <module name="HiddenField">
       <property name="ignoreConstructorParameter" value="true"/>
+      <property name="ignoreSetter" value="true"/>
     </module>
     <module name="IllegalInstantiation">
       <property name="classes" value="java.lang.Boolean"/>

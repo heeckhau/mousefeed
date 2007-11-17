@@ -13,34 +13,15 @@ import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 
 import com.mousefeed.eclipse.preferences.PreferenceAccessor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Map;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.commands.Command;
-import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.ExternalActionManager;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.ExternalActionManager.ICallback;
-import org.eclipse.jface.bindings.Binding;
-import org.eclipse.jface.bindings.TriggerSequence;
-import org.eclipse.jface.bindings.keys.KeySequence;
-import org.eclipse.jface.bindings.keys.SWTKeySupport;
-import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.RetargetAction;
-import org.eclipse.ui.activities.IActivityManager;
-import org.eclipse.ui.keys.IBindingService;
-
-//CHECKSTYLE:OFF
 
 /**
  * Globally listens for the selection events.
@@ -48,47 +29,30 @@ import org.eclipse.ui.keys.IBindingService;
  * @author Andriy Palamarchuk
  */
 public class GlobalSelectionListener implements Listener {
-
-    /**
-     * Searches for an action inside of
-     * <code>org.eclipse.ui.actions.TextActionHandler</code> utility actions.
-     */
-    private final TextActionHandlerActionLocator actionSearcher =
-        new TextActionHandlerActionLocator();
-    
-    /**
-     * The activity manager for the associated workbench.
-     */
-    private final IActivityManager activityManager;
-
-    /**
-     * The binding service for the associated workbench.
-     */
-    private final IBindingService bindingService;
-    
     /**
      * Provides access to the plugin preferences.
      */
     private final PreferenceAccessor preferences = new PreferenceAccessor();
+    
+    /**
+     * Finds keyboard shortcut for an action.
+     */
+    private final ActionAcceleratorFinder acceleratorFinder =
+            new ActionAcceleratorFinder();
 
     /**
-     * The constructor.
+     * Processes an event.  
+     * @param event the event. Not <code>null</code>.
      */
-    public GlobalSelectionListener() {
-        bindingService =
-            (IBindingService) getWorkbench().getAdapter(IBindingService.class);
-        activityManager =
-            getWorkbench().getActivitySupport().getActivityManager();
-    }
-
-    /** {@inheritDoc} */
     public void handleEvent(Event event) {
         final Widget widget = event.widget;
         if (widget instanceof ToolItem || widget instanceof MenuItem) {
             if (widget.getData() instanceof ActionContributionItem) {
                 final ActionContributionItem item =
                         (ActionContributionItem) widget.getData();
-                maybeReportActionAccelerator(item.getAction(), event);
+                final ActionDesc actionDesc =
+                        generateActionDesc(item.getAction());
+                giveActionFeedback(actionDesc, event);
             } else {
                 // no action contribution item on the widget data
             }
@@ -98,192 +62,49 @@ public class GlobalSelectionListener implements Listener {
     }
 
     /**
-     * Notifies user if the action has has an associated accelerator.  
-     * @param action the action to report about.
-     * Not <code>null</code>.
-     * @param event the event triggering the action. Not <code>null</code>.
+     * Generates action description from the action.
+     * @param action
+     * @return
      */
-    private void maybeReportActionAccelerator(IAction action, Event event) {
+    private ActionDesc generateActionDesc(IAction action) {
         notNull(action);
-        notNull(event);
 
-        if (reportAcceleratorForAction(action, event)) {
+        final ActionDesc actionDesc = new ActionDesc();
+        actionDesc.setLabel(action.getText());
+        actionDesc.setAccelerator(acceleratorFinder.find(action));
+        return actionDesc;
+    }
+
+    /**
+     * Depending on the settings reports to the user that action can be called
+     * by the action accelerator, cancels the action.
+     *
+     * @param actionDesc the populated action description.
+     * Must have a keyboard shortcut defined. Not <code>null</code>.
+     */
+    private void giveActionFeedback(ActionDesc actionDesc, Event event) {
+        notNull(actionDesc);
+        isTrue(StringUtils.isNotBlank(actionDesc.getLabel()));
+
+        if (!actionDesc.hasAccelerator()) {
             return;
         }
-        
-        final TriggerSequence sequence = findActionBinding(action, event);
-        if (sequence != null) {
-            reportActionAccelerator(
-                    action.getText(), sequence.toString(), event);
-        }
-    }
-
-    /**
-     * Scans current bindings, returns a trigger sequence, associated with this
-     * action. Uses heuristic to find an association.
-     * Assumes that if a binding action and the provided action are the same,
-     * if they have same class.
-     * This logic can potentially fail if an action class is used for
-     * different actions.
-     * @param action the action to search trigger sequence for.
-     * Returns <code>null</code> if the action is <code>null</code>.
-     * @param event the event triggering action.
-     * Is disabled depending on settings. Not <code>null</code>. 
-     * @return the trigger sequence associated with the action
-     * or <code>null</code> if such sequence was not found.
-     */
-    @SuppressWarnings("unchecked")
-    private TriggerSequence findActionBinding(IAction action, Event event) {
-        if (action == null) {
-            return null;
-        }
-        if (action instanceof RetargetAction) {
-            return findActionBinding(
-                    ((RetargetAction) action).getActionHandler(), event);
-        }
-
-        final Map matches = bindingService.getPartialMatches(
-                KeySequence.getInstance());
-        final Class<? extends IAction> actionClass = action.getClass();
-        for (Object o : matches.keySet()) {
-            final TriggerSequence triggerSequence = (TriggerSequence) o;
-            final Binding binding = (Binding) matches.get(triggerSequence);
-            final Command command =
-                    binding.getParameterizedCommand().getCommand();
-            final IHandler handler = getCommandHandler(command);
-            if (!(handler instanceof ActionHandler)) {
-                continue;
-            }
-
-            if (isCommandEnabled(command)) {
-                final ActionHandler actionHandler = (ActionHandler) handler;
-                final IAction boundAction = actionHandler.getAction();
-                if (boundAction == null) {
-                    continue;
-                }
-                if (boundAction.getClass().equals(actionClass)) {
-                    return triggerSequence;
-                }
-                if (!(boundAction instanceof RetargetAction)) {
-                    continue;
-                }
-                final IAction searchTarget =
-                        ((RetargetAction) boundAction).getActionHandler(); 
-                if (searchTarget == null) {
-                    continue;
-                }
-                if (searchTarget.getClass().equals(actionClass)) {
-                    return triggerSequence;
-                }
-                if (actionSearcher.isSearchable(searchTarget)) {
-                    final String id = actionSearcher.findActionDefinitionId(
-                            action, searchTarget);
-                    reportAcceleratorForActionDefinition(
-                            id, action.getText(), event);
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Reports an accelerator for an action.
-     * @param action the action to report an accelerator for.
-     * Not <code>null</code>.
-     * @param event the event to report action for.
-     * Disabled depending on settings. Not <code>null</code>
-     * @return <code>true</code> if no further processing is required.
-     * This happens when an accelerator for an action is found.
-     */
-    private boolean reportAcceleratorForAction(IAction action, Event event) {
-        if (action.getAccelerator() != 0) {
-            reportActionAccelerator(action.getText(),
-                    convertAcceleratorToStr(action.getAccelerator()), event);
-            return true;
-        } else if (reportAcceleratorForActionDefinition(
-                action.getActionDefinitionId(), action.getText(), event)) {
-            return true;
-        } else if (action instanceof RetargetAction) {
-            
-            final RetargetAction a = (RetargetAction) action;
-            if (a.getActionHandler() != null) {
-                return reportAcceleratorForAction(a.getActionHandler(), event);
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Converts the provided key combination code to accelerator.
-     * @param accelerator The accelerator to convert; should be a valid SWT
-     * accelerator value.
-     * @return The equivalent key stroke; never <code>null</code>.
-     */
-    private String convertAcceleratorToStr(final int accelerator) {
-        return
-            SWTKeySupport.convertAcceleratorToKeyStroke(accelerator).format();
-    }
-
-    /**
-     * Calls {@link #reportActionAccelerator(String, String)} for the provided
-     * action, if the action definition is associated with accelerator. 
-     * @param definitionId the action to report for.
-     * If <code>null</code> or empty the method returns <code>false</code> right
-     * away.
-     * @param actionName the name to report action for.
-     * Not blank;
-     * @param event the event to report data for. Optionally disabled.
-     * Not <code>null</code>.
-     * @return <code>true</code> if no further analysis is required.
-     * This happens when action has a definition id.
-     */
-    private boolean reportAcceleratorForActionDefinition(
-            final String definitionId, final String actionName, Event event) {
-        isTrue(StringUtils.isNotBlank(actionName));
-        
-        if (StringUtils.isBlank(definitionId)) {
-            return false;
-        }
-        final String acceleratorStr =
-            getActionDefinitionAccelerator(definitionId);
-        if (StringUtils.isNotBlank(acceleratorStr)) {
-            reportActionAccelerator(actionName, acceleratorStr, event);
-        }
-        return true;
-    }
-
-    /**
-     * Reports to the user that action could be called by the provided
-     * accelerator. Depending on the settings disables the event.
-     * 
-     * @param actionName
-     *            the action name. If necessary, the method removes '&'
-     *            characters from the action name. Not blank.
-     * @param acceleratorStr
-     *            the string describing the accelerator. Not blank.
-     */
-    private void reportActionAccelerator(String actionName,
-            String acceleratorStr, Event event) {
-        isTrue(StringUtils.isNotBlank(actionName));
-        isTrue(StringUtils.isNotBlank(acceleratorStr));
-        
         if (!preferences.isInvocationControlEnabled()) {
             return;
         }
-        
+
         switch (preferences.getOnWrongInvocationMode()) {
         case DO_NOTHING:
             // go on
             break;
         case REMIND:
-            new NagPopUp(actionName, acceleratorStr, false).open();
+            new NagPopUp(actionDesc.getLabel(),
+                    actionDesc.getAccelerator(), false).open();
             break;
         case ENFORCE:
-            disableEvent(event);
-            new NagPopUp(actionName, acceleratorStr + "", true).open();
+            cancelEvent(event);
+            new NagPopUp(actionDesc.getLabel(),
+                    actionDesc.getAccelerator() + "", true).open();
             break;
         default:
             throw new AssertionError();
@@ -291,70 +112,11 @@ public class GlobalSelectionListener implements Listener {
     }
 
     /**
-     * Disables the specified event.
+     * Stops further processing of the specified event.
      * @param event the event to disable. Assumed not <code>null</code>.
      */
-    private void disableEvent(Event event) {
+    private void cancelEvent(Event event) {
         event.type = SWT.None;
         event.doit = false;
     }
-
-    /**
-     * Retrieves command handler from a command.
-     * @param command the command to retrieve the handler from.
-     * Not <code>null</code>.
-     * @return the handler. Returns <code>null</code>,
-     * if can't retrieve a handler. 
-     */
-    private IHandler getCommandHandler(Command command) {
-        try {
-            final Method method = Command.class.getDeclaredMethod("getHandler");
-            method.setAccessible(true);
-            return (IHandler) method.invoke(command);
-        } catch (SecurityException e) {
-            // want to know when this happens
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-            // should never happen
-            throw new AssertionError(e);
-        } catch (IllegalAccessException e) {
-            // should never happen
-            throw new AssertionError(e);
-        } catch (InvocationTargetException e) {
-            // should never happen
-            throw new AssertionError(e);
-        }
-    }
-
-    /**
-     * Returns <code>true</code> if the command is defined and is enabled. 
-     * @param command the command to check. Not <code>null</code>.
-     */
-    private boolean isCommandEnabled(Command command) {
-        return command.isDefined()
-                && activityManager.getIdentifier(command.getId()).isEnabled();
-    }
-
-    /**
-     * Finds action definition accelerator.
-     * @param actionDefinitionId the action definition id to search accelerator
-     * for.
-     * Not blank.
-     * @return A string representation of the accelerator. This is the
-     * string representation that should be displayed to the user.
-     */
-    private String getActionDefinitionAccelerator(String actionDefinitionId) {
-        isTrue(StringUtils.isNotBlank(actionDefinitionId));
-        final ICallback callback =
-                ExternalActionManager.getInstance().getCallback();
-        return callback.getAcceleratorText(actionDefinitionId);
-    }
-
-    /**
-     * Current workbench. Not <code>null</code>.
-     */
-    private IWorkbench getWorkbench() {
-        return PlatformUI.getWorkbench();
-    }
-//CHECKSTYLE:ON
 }

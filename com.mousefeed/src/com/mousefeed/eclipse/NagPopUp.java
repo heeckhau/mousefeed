@@ -101,9 +101,7 @@ public class NagPopUp extends PopupDialog {
      * Creates a pop-up with notification for the specified accelerator
      * and action.
      *
-     * @param actionName
-     *            the action name. If necessary, the method removes '&'
-     *            characters from the action name. Not blank.
+     * @param actionName the action label. Not blank.
      * @param accelerator the string describing the accelerator. Not blank.
      * @param actionCancelled indicates whether MouseFeed canceled the action
      * the popup notifies about. 
@@ -116,7 +114,7 @@ public class NagPopUp extends PopupDialog {
         isTrue(StringUtils.isNotBlank(actionName));
         isTrue(StringUtils.isNotBlank(accelerator));
 
-        this.actionName = actionName.replace("&", "");
+        this.actionName = actionName;
         this.accelerator = accelerator;
         this.actionCancelled = actionCancelled;
     }
