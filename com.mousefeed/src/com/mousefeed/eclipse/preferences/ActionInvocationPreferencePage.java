@@ -10,7 +10,7 @@
 
 package com.mousefeed.eclipse.preferences;
 
-import static com.mousefeed.eclipse.Layout.FULL_WIDTH;
+import static com.mousefeed.eclipse.Layout.WHOLE_SIZE;
 import static com.mousefeed.eclipse.Layout.STACKED_LABEL_V_OFFSET;
 import static com.mousefeed.eclipse.Layout.STACKED_V_OFFSET;
 import static com.mousefeed.eclipse.Layout.WINDOW_MARGIN;
@@ -185,7 +185,7 @@ public class ActionInvocationPreferencePage extends PreferencePage
         
         placeUnder(combo, aboveControl, STACKED_LABEL_V_OFFSET);
         final FormData formData = (FormData) combo.getLayoutData();
-        formData.right = new FormAttachment(FULL_WIDTH, -WINDOW_MARGIN);
+        formData.right = new FormAttachment(WHOLE_SIZE, -WINDOW_MARGIN);
         return combo;
     }
 

@@ -9,12 +9,18 @@
  */
 package com.mousefeed.eclipse;
 
+import static com.mousefeed.eclipse.Layout.WHOLE_SIZE;
+import static com.mousefeed.eclipse.Layout.WINDOW_MARGIN;
 import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
 import static org.apache.commons.lang.time.DateUtils.MILLIS_PER_SECOND;
 
+import com.mousefeed.client.Messages;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
@@ -22,15 +28,18 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
+
+//COUPLING:OFF - just uses a lot of other classes. It's Ok.
 /**
  * Pop-up dialog, which notifies a user about wrong mouse/accelerator usage. 
  *
@@ -41,11 +50,6 @@ public class NagPopUp extends PopupDialog {
      * How close to cursor along X axis the popup will be shown.
      */
     private static final int DISTANCE_TO_CURSOR = 50;
-
-    /**
-     * Horizontal indent for the dialog layout.
-     */
-    private static final int HORIZONTAL_INDENT = 5;
 
     /**
      * Number of times to increase font size in.
@@ -62,6 +66,11 @@ public class NagPopUp extends PopupDialog {
      * Is necessary to skip events caused by the current user action.
      */
     private static final int CLOSE_LISTENER_TIMEOUT = 250;
+
+    /**
+     * Provides messages text.
+     */
+    private static final Messages MESSAGES = new Messages(NagPopUp.class);
 
     /**
      * @see NagPopUp#NagPopUp(String, String)
@@ -86,7 +95,7 @@ public class NagPopUp extends PopupDialog {
     /**
      * The notification text.
      */
-    private Text actionDescriptionText;
+    private StyledText actionDescriptionText;
 
     /**
      * Closes the dialog on any outside action, such as click, key press, etc.
@@ -110,7 +119,8 @@ public class NagPopUp extends PopupDialog {
             String actionName, String accelerator, boolean actionCancelled) {
         super((Shell) null, PopupDialog.HOVER_SHELLSTYLE,
                 false, false, false, false,
-                null, null);
+                getTitleText(actionCancelled),
+                getActionCongigurationReminder());
         isTrue(StringUtils.isNotBlank(actionName));
         isTrue(StringUtils.isNotBlank(accelerator));
 
@@ -125,28 +135,49 @@ public class NagPopUp extends PopupDialog {
      */
     @Override
     protected Control createDialogArea(Composite parent) {
-        actionDescriptionText = new Text(parent, SWT.READ_ONLY | SWT.NO_FOCUS);
-
-        // Use the compact margins employed by PopupDialog.
-        GridData gd = new GridData(GridData.BEGINNING
-                | GridData.FILL_BOTH);
-        gd.horizontalIndent = HORIZONTAL_INDENT;
-        gd.verticalIndent = POPUP_VERTICALSPACING;
-        actionDescriptionText.setLayoutData(gd);
-        actionDescriptionText.setText(accelerator + " (" + actionName + ")");
+        final Composite composite = new Composite(parent, SWT.NO_FOCUS);
+        composite.setLayout(new FormLayout());
         
-        configureBigFont(actionDescriptionText);
+        actionDescriptionText = createActionDescriptionText(composite);
+        composite.pack(true);
+
+        return composite;
+    }
+
+    /**
+     * Creates the text control to show action description.
+     * @param parent the parent control. Not <code>null</code>. 
+     * @return the text control. Not <code>null</code>.
+     */
+    private StyledText createActionDescriptionText(Composite parent) {
+        notNull(parent);
+        final StyledText text = new StyledText(parent, SWT.READ_ONLY);
+        final FormData formData = new FormData();
+        formData.left = new FormAttachment(WINDOW_MARGIN);
+        formData.right = new FormAttachment(WHOLE_SIZE, -WINDOW_MARGIN);
+        formData.top = new FormAttachment(WINDOW_MARGIN);
+        formData.bottom = new FormAttachment(WHOLE_SIZE, -WINDOW_MARGIN);
+        text.setLayoutData(formData);
+        text.setText(accelerator + " (" + actionName + ")");
+        if (actionCancelled) {
+            final StyleRange style = new StyleRange();
+            style.start = 0;
+            style.length = text.getText().length();
+            style.strikeout = true;
+            text.setStyleRange(style);
+        }
+
+        configureBigFont(text);
 
         // since SWT.NO_FOCUS is only a hint...
-        actionDescriptionText.addFocusListener(new FocusAdapter() {
+        text.addFocusListener(new FocusAdapter() {
             @Override
             @SuppressWarnings("unused")
             public void focusGained(FocusEvent event) {
                 NagPopUp.this.close();
             }
         });
-        actionDescriptionText.pack(true);
-        return actionDescriptionText;
+        return text;
     }
     
     /**
@@ -160,7 +191,7 @@ public class NagPopUp extends PopupDialog {
         final Control control = super.createContents(parent);
         if (actionCancelled) {
             actionDescriptionText.setForeground(
-                    getDisplay().getSystemColor(SWT.COLOR_DARK_RED));
+                    getDisplay().getSystemColor(SWT.COLOR_RED));
         }
         return control;
     }
@@ -258,6 +289,27 @@ public class NagPopUp extends PopupDialog {
     }
 
     /**
+     * Text to show in the title.
+     * Is static to make sure it does not rely on the instance members because
+     * is called before calling "super" constructor.
+     * @param canceled whether the action was canceled.
+     * @return the title text. Can be <code>null</code>.
+     */
+    private static String getTitleText(boolean canceled) {
+        return canceled ? MESSAGES.get("canceled") : null;
+    }
+
+    /**
+     * Generates the text shown at the bottom of the popup.
+     * Is static to make sure it does not rely on the instance members because
+     * is called before calling "super" constructor.
+     * @return the text. Never <code>null</code>.
+     */
+    private static String getActionCongigurationReminder() {
+        return MESSAGES.get("info");
+    }
+
+    /**
      * Disposes the provided font when the widget it listens to is disposed. 
      */
     private static class DestroyFontDisposeListener implements DisposeListener {
@@ -276,3 +328,4 @@ public class NagPopUp extends PopupDialog {
         }
     }
 }
+//COUPLING:ON

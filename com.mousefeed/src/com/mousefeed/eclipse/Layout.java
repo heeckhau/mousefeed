@@ -42,9 +42,9 @@ public final class Layout {
     public static final int WINDOW_MARGIN = 10;
     
     /**
-     * Numerator of 100% of width when denominator is 100.
+     * Numerator of 100% when denominator is 100.
      */
-    public static final int FULL_WIDTH = 100;
+    public static final int WHOLE_SIZE = 100;
 
     /**
      * Private constructor to insure no instances are ever created.
