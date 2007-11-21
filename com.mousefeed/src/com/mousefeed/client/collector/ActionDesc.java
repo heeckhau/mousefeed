@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html. If redistributing this code,
  * this entire header must remain intact.
  */
-package com.mousefeed.eclipse;
+package com.mousefeed.client.collector;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.commons.lang.Validate.isTrue;
@@ -16,7 +16,7 @@ import static org.apache.commons.lang.Validate.isTrue;
  * 
  * @author Andriy Palamarchuk
  */
-public class ActionDesc {
+public abstract class ActionDesc {
     /**
      * @see #getLabel()
      */
@@ -26,6 +26,17 @@ public class ActionDesc {
      * @see #getAccelerator()
      */
     private String accelerator;
+
+    /**
+     * The id of the user action.
+     * @return the string identifying the action invoked by the user.
+     * The default behavior is to return {@link #getLabel()}.
+     * Subclasses should provide better values.
+     * Never blank.
+     */
+    public String getId() {
+        return getLabel();
+    }
 
     /**
      * The action human-readable label.
