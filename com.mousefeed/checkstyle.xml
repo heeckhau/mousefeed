@@ -28,7 +28,7 @@
   <module name="SuppressionCommentFilter">
     <property name="offCommentFormat" value="COUPLING\:OFF"/>
     <property name="onCommentFormat" value="COUPLING\:ON"/>
-    <property name="checkFormat" value="ClassDataAbstractionCoupling"/>
+    <property name="checkFormat" value="ClassDataAbstractionCoupling|ClassFanOutComplexity"/>
   </module>
 
   <module name="TreeWalker">

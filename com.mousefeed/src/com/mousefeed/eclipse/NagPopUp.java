@@ -17,12 +17,11 @@ import static org.apache.commons.lang.time.DateUtils.MILLIS_PER_SECOND;
 
 import com.mousefeed.client.Messages;
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.graphics.Font;
@@ -37,7 +36,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.keys.IBindingService;
 
 //COUPLING:OFF - just uses a lot of other classes. It's Ok.
 /**
@@ -306,26 +307,22 @@ public class NagPopUp extends PopupDialog {
      * @return the text. Never <code>null</code>.
      */
     private static String getActionCongigurationReminder() {
-        return MESSAGES.get("info");
+        final IBindingService bindingService =
+            (IBindingService) getWorkbench().getAdapter(IBindingService.class);
+        final TriggerSequence[] bindings =
+            bindingService.getActiveBindingsFor(
+                    "com.mousefeed.commands.configureActionInvocation");
+        final String binding = bindings.length == 0
+                ? MESSAGES.get("configureActionInvocation-noBinding")
+                : bindings[0].format();
+        return MESSAGES.get("info", binding);
     }
 
     /**
-     * Disposes the provided font when the widget it listens to is disposed. 
+     * Current workbench. Not <code>null</code>.
      */
-    private static class DestroyFontDisposeListener implements DisposeListener {
-        /**
-         * The font to destroy.
-         */
-        private final Font newFont;
-
-        public DestroyFontDisposeListener(Font newFont) {
-            this.newFont = newFont;
-        }
-
-        @SuppressWarnings("unused")
-        public void widgetDisposed(DisposeEvent e) {
-            newFont.dispose();
-        }
+    private static IWorkbench getWorkbench() {
+        return PlatformUI.getWorkbench();
     }
 }
 //COUPLING:ON

@@ -16,7 +16,7 @@ import static org.apache.commons.lang.Validate.isTrue;
  * 
  * @author Andriy Palamarchuk
  */
-public abstract class ActionDesc {
+public abstract class ActionDescBase {
     /**
      * @see #getLabel()
      */

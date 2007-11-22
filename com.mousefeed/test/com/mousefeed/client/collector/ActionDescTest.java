@@ -26,7 +26,7 @@ public class ActionDescTest {
     }
 
     @Test public void setLabel() {
-        final ActionDesc d = new TestActionDesc();
+        final ActionDescBase d = new TestActionDesc();
         final String s1 = "abc";
         d.setLabel(s1);
         assertEquals(s1, d.getLabel());
@@ -37,7 +37,7 @@ public class ActionDescTest {
     }
 
     @Test public void setAccelerator() {
-        final ActionDesc d = new TestActionDesc();
+        final ActionDescBase d = new TestActionDesc();
         assertFalse(d.hasAccelerator());
         d.setAccelerator(null);
         assertFalse(d.hasAccelerator());
@@ -46,5 +46,5 @@ public class ActionDescTest {
         assertTrue(d.hasAccelerator());
     }
     
-    private static class TestActionDesc extends ActionDesc {}
+    private static class TestActionDesc extends ActionDescBase {}
 }

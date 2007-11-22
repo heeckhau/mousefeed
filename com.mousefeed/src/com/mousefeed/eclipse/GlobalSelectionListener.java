@@ -12,16 +12,24 @@ package com.mousefeed.eclipse;
 import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 
+import com.mousefeed.client.collector.ActionDescBase;
+import com.mousefeed.client.collector.Collector;
 import com.mousefeed.eclipse.preferences.PreferenceAccessor;
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.keys.IBindingService;
+import org.eclipse.ui.menus.CommandContributionItem;
 
 /**
  * Globally listens for the selection events.
@@ -29,6 +37,13 @@ import org.eclipse.swt.widgets.Widget;
  * @author Andriy Palamarchuk
  */
 public class GlobalSelectionListener implements Listener {
+    /**
+     * The id of the command/action to configure invocation mode for other
+     * actions.
+     */
+    private static final String CONFIGURE_ACTION_INVOCATION_DEF =
+            "com.mousefeed.commands.configureActionInvocation";
+
     /**
      * Provides access to the plugin preferences.
      */
@@ -39,6 +54,17 @@ public class GlobalSelectionListener implements Listener {
      */
     private final ActionAcceleratorFinder acceleratorFinder =
             new ActionAcceleratorFinder();
+    
+    /**
+     * Collects user activity data.
+     */
+    private final Collector collector = Activator.getDefault().getCollector();
+    
+    /**
+     * Retrieves a command from a command contribution item. 
+     */
+    private final CommandContributionItemCommandLocator locator =
+            new CommandContributionItemCommandLocator();
 
     /**
      * Processes an event.  
@@ -50,9 +76,13 @@ public class GlobalSelectionListener implements Listener {
             if (widget.getData() instanceof ActionContributionItem) {
                 final ActionContributionItem item =
                         (ActionContributionItem) widget.getData();
-                final ActionDesc actionDesc =
+                final ActionDescBase actionDesc =
                         generateActionDesc(item.getAction());
-                giveActionFeedback(actionDesc, event);
+                processActionDesc(actionDesc, event);
+            } else if (widget.getData() instanceof CommandContributionItem) {
+                final ActionDescBase actionDesc = generateActionDesc(
+                        (CommandContributionItem) widget.getData());
+                processActionDesc(actionDesc, event);
             } else {
                 // no action contribution item on the widget data
             }
@@ -62,14 +92,70 @@ public class GlobalSelectionListener implements Listener {
     }
 
     /**
+     * Processes the prepared action description.
+     * @param actionDesc the action description to process.
+     * Assumed not <code>null</code>.
+     * @param event the original event. Assumed not <code>null</code>.
+     */
+    private void processActionDesc(ActionDescBase actionDesc, Event event) {
+        // skips the configure action invocation action
+        if (CONFIGURE_ACTION_INVOCATION_DEF.equals(actionDesc.getId())) {
+            return;
+        }
+        giveActionFeedback(actionDesc, event);
+        logUserAction(actionDesc);
+    }
+
+    /**
+     * Generates {@link ActionDesc} for the provided command contribution item.
+     * @param commandContributionItem the contribution item to generate
+     * an action description for. Assumed not <code>null</code>.
+     * @return
+     */
+    private ActionDescBase generateActionDesc(
+            final CommandContributionItem commandContributionItem) {
+        final IBindingService bindingService =
+            (IBindingService) PlatformUI.getWorkbench().getAdapter(
+                    IBindingService.class);
+        final ActionDesc actionDesc = new ActionDesc();
+        final Command command = locator.get(commandContributionItem);
+        if (command == null) {
+            return null;
+        }
+        try {
+            actionDesc.setLabel(command.getName());
+        } catch (NotDefinedException e) {
+            // should never happen
+            throw new RuntimeException(e);
+        }
+        final String commandId = command.getId();
+        actionDesc.setDef(commandId);
+        final TriggerSequence binding =
+                bindingService.getBestActiveBindingFor(commandId);
+        if (binding != null) {
+            actionDesc.setAccelerator(binding.format());
+        }
+        return actionDesc;
+    }
+
+    /**
+     * Sends action information to {@link #collector}.
+     * @param actionDesc the action data to send.
+     * Assumed not <code>null</code>.
+     */
+    private void logUserAction(ActionDescBase actionDesc) {
+        collector.onAction(actionDesc);
+    }
+
+    /**
      * Generates action description from the action.
      * @param action
      * @return
      */
-    private ActionDesc generateActionDesc(IAction action) {
+    private ActionDescBase generateActionDesc(IAction action) {
         notNull(action);
 
-        final ActionDesc actionDesc = new ActionDesc();
+        final ActionDescBase actionDesc = new ActionDesc();
         actionDesc.setLabel(action.getText());
         actionDesc.setAccelerator(acceleratorFinder.find(action));
         return actionDesc;
@@ -82,7 +168,7 @@ public class GlobalSelectionListener implements Listener {
      * @param actionDesc the populated action description.
      * Must have a keyboard shortcut defined. Not <code>null</code>.
      */
-    private void giveActionFeedback(ActionDesc actionDesc, Event event) {
+    private void giveActionFeedback(ActionDescBase actionDesc, Event event) {
         notNull(actionDesc);
         isTrue(StringUtils.isNotBlank(actionDesc.getLabel()));
 

@@ -11,6 +11,7 @@ package com.mousefeed.eclipse;
 
 import static org.apache.commons.lang.Validate.isTrue;
 
+import com.mousefeed.client.collector.Collector;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -29,6 +30,11 @@ public class Activator extends AbstractUIPlugin {
      * The shared instance.
      */
     private static Activator plugin;
+    
+    /**
+     * @see #getCollector()
+     */
+    private final Collector collector = new Collector();
     
     /**
      * The constructor.
@@ -57,5 +63,13 @@ public class Activator extends AbstractUIPlugin {
      */
     public static ImageDescriptor getImageDescriptor(String path) {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
+    }
+
+    /**
+     * Gathers user activity data.
+     * @return the data collector. Not <code>null</code>.
+     */
+    public Collector getCollector() {
+        return collector;
     }
 }

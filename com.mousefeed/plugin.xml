@@ -26,12 +26,12 @@
       <page
             name="MouseFeed"
             class="com.mousefeed.eclipse.preferences.PreferencePage"
-            id="com.mousefeed.eclipse.preferences.PreferencePage">
+            id="com.mousefeed.preferences.PreferencePage">
       </page>
       <page
-            category="com.mousefeed.eclipse.preferences.PreferencePage"
+            category="com.mousefeed.preferences.PreferencePage"
             class="com.mousefeed.eclipse.preferences.ActionInvocationPreferencePage"
-            id="com.mousefeed.eclipse.preferences.ActionInvocationPreferencePage"
+            id="com.mousefeed.preferences.ActionInvocationPreferencePage"
             name="%actionInvocation">
       </page>
    </extension>
@@ -46,6 +46,54 @@
       <startup
             class="com.mousefeed.eclipse.Startup">
       </startup>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            description="The MouseFeed plugin commands"
+            id="com.mousefeed.commands.category"
+            name="%mouseFeedCommandCategory">
+      </category>
+      <command
+            categoryId="com.mousefeed.commands.category"
+            description="%configureActionInvocationDesc"
+            id="com.mousefeed.commands.configureActionInvocation"
+            name="%configureActionInvocation">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="com.mousefeed.eclipse.ConfigureActionInvocationHandler"
+            commandId="com.mousefeed.commands.configureActionInvocation">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.mousefeed.commands.configureActionInvocation"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="Shift+Ctrl+1">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="com.mousefeed.menus.menu"
+               label="%mouseFeedMenu"
+               mnemonic="M"
+               tooltip="%mouseFeedMenuTooltip">
+            <command
+                  commandId="com.mousefeed.commands.configureActionInvocation"
+                  id="com.mousefeed.menus.configureActionInvocation"
+                  label="%configureActionInvocation"
+                  mnemonic="A"
+                  tooltip="%configureActionInvocationDesc">
+            </command>
+         </menu>
+      </menuContribution>
    </extension>
 
 </plugin>
