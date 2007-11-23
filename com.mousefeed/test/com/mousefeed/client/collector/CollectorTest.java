@@ -31,12 +31,12 @@ public class CollectorTest {
         final Collector c = new Collector();
         assertNull(c.getLastAction());
 
-        final ActionDescBase action = new TestActionDesc();
+        final ActionDesc action = new TestActionDesc();
         action.setLabel(LABEL);
         action.setAccelerator(ACCELERATOR);
         c.onAction(action);
         assertEquals(action, c.getLastAction());
     }
 
-    private static class TestActionDesc extends ActionDescBase {}
+    private static class TestActionDesc extends ActionDesc {}
 }

@@ -18,7 +18,7 @@ import org.junit.Test;
 /**
  * @author Andriy Palamarchuk
  */
-public class ActionDescTest {
+public class ActionDescImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void setLabel_blank() {
@@ -26,7 +26,7 @@ public class ActionDescTest {
     }
 
     @Test public void setLabel() {
-        final ActionDescBase d = new TestActionDesc();
+        final ActionDesc d = new TestActionDesc();
         final String s1 = "abc";
         d.setLabel(s1);
         assertEquals(s1, d.getLabel());
@@ -37,7 +37,7 @@ public class ActionDescTest {
     }
 
     @Test public void setAccelerator() {
-        final ActionDescBase d = new TestActionDesc();
+        final ActionDesc d = new TestActionDesc();
         assertFalse(d.hasAccelerator());
         d.setAccelerator(null);
         assertFalse(d.hasAccelerator());
@@ -46,5 +46,5 @@ public class ActionDescTest {
         assertTrue(d.hasAccelerator());
     }
     
-    private static class TestActionDesc extends ActionDescBase {}
+    private static class TestActionDesc extends ActionDesc {}
 }

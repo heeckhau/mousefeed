@@ -11,6 +11,7 @@ package com.mousefeed.eclipse;
 
 import static org.apache.commons.lang.Validate.notNull;
 
+import com.mousefeed.client.collector.ActionDesc;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -32,14 +33,20 @@ import org.eclipse.ui.activities.IActivityManager;
 import org.eclipse.ui.keys.IBindingService;
 
 /**
- * Finds a keyboard shortcut for the provided action.
- * Pure strategy. Contains the actual magic of finding a shortcut.
- * The logic was developed by trying different actions, debugging them and
- * finding shortcuts for those.
+ * Generates {@link ActionDescImpl} from {@link IAction}.
+ * Pure strategy.
+ * The logic was developed by trying different actions, making sure all the
+ * ActionDesc components are correctly generated.
  *
  * @author Andriy Palamarchuk
  */
-public class ActionAcceleratorFinder {
+public class ActionActionDescGenerator {
+    
+    /**
+     * Stores the generated action description.
+     */
+    private ActionDescImpl actionDesc; 
+    
     /**
      * Searches for an action inside of
      * <code>org.eclipse.ui.actions.TextActionHandler</code> utility actions.
@@ -60,51 +67,80 @@ public class ActionAcceleratorFinder {
     /**
      * Creates new finder.
      */
-    public ActionAcceleratorFinder() {
+    public ActionActionDescGenerator() {
         bindingService =
             (IBindingService) getWorkbench().getAdapter(IBindingService.class);
         activityManager =
             getWorkbench().getActivitySupport().getActivityManager();
     }
+    
 
-    //RETURNCOUNT:OFF
-    //clear, simple structure, leave extra returns
     /**
-     * The main entry point of the class.
-     * Searches for the action keyboard accelerator.
-     * @param action the action to search accelerator for.
+     * Generates action description from the action.
+     * @param action the action to generate description for.
      * Not <code>null</code>.
-     * @return the human-readable representation of action accelerator.
+     * @return the action description for the provided action.
+     * Never <code>null</code>.
      */
-    public String find(IAction action) {
+    public ActionDesc generate(IAction action) {
         notNull(action);
 
-        // from the action
-        if (action.getAccelerator() != 0) {
-            return keyToStr(action.getAccelerator());
-        }
+        actionDesc = new ActionDescImpl();
+        actionDesc.setLabel(action.getText());
+        actionDesc.setClassName(action.getClass().getName());
+        extractActionData(action);
+        return actionDesc;
+    }
 
-        // from the action definition
-        {
-            final String s = findForActionDefinition(
-                    action.getActionDefinitionId());
-            if (s != null) {
-                return s;
-            }
-        }
+    //clear, simple structure, leave extra returns
+    /**
+     * Scans action for data to populate action description.
+     * @param action the action to search accelerator for.
+     * Not <code>null</code>.
+     */
+    public void extractActionData(IAction action) {
+        notNull(action);
+        fromActionAccelerator(action.getAccelerator());
+        fromActionDefinition(action.getActionDefinitionId());
 
         // retarget action?
         if (action instanceof RetargetAction) {
             final RetargetAction a = (RetargetAction) action;
             if (a.getActionHandler() != null) {
-                return find(a.getActionHandler());
+                extractActionData(a.getActionHandler());
             }
         }
 
         // from the keyboard binding
         return findActionBinding(action);
     }
-    //RETURNCOUNT:ON
+
+
+    /**
+     * Populates {@link #actionDesc} from the action definition id.
+     * @param actionDefinitionId. <code>null</code> if not defined.
+     */
+    private void fromActionDefinition(String definitionId) {
+        if (definitionId == null) {
+            return;
+        }
+        actionDesc.setDef(definitionId);
+        final String s = findAcceleratorForActionDefinition(definitionId);
+        if (s != null) {
+            actionDesc.setAccelerator(s);
+        }
+    }
+
+
+    /**
+     * Populates {@link #actionDesc} from the action accelerator.
+     * @param accelerator. 0 if not defined.
+     */
+    private void fromActionAccelerator(int accelerator) {
+        if (accelerator != 0) {
+            actionDesc.setAccelerator(keyToStr(accelerator));
+        }
+    }
 
     /**
      * Finds keyboard shortcut for the action definition id.
@@ -113,7 +149,7 @@ public class ActionAcceleratorFinder {
      * @return A human-readable string representation of the accelerator.
      * Is <code>null</code> if can't be found.
      */
-    private String findForActionDefinition(String definitionId) {
+    private String findAcceleratorForActionDefinition(String definitionId) {
         if (StringUtils.isBlank(definitionId)) {
             return null;
         }
@@ -214,7 +250,7 @@ public class ActionAcceleratorFinder {
         if (actionSearcher.isSearchable(searchTarget)) {
             final String id =
                     actionSearcher.findActionDefinitionId(action, searchTarget);
-            return findForActionDefinition(id);
+            return findAcceleratorForActionDefinition(id);
         }
         return null;
     }

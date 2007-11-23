@@ -11,13 +11,16 @@ package com.mousefeed.eclipse;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang.Validate.isTrue;
+
+import com.mousefeed.client.collector.ActionDesc;
 
 /**
  * Eclipse-specific action description.
  *
  * @author Andriy Palamarchuk
  */
-public class ActionDesc extends com.mousefeed.client.collector.ActionDescBase {
+public class ActionDescImpl extends ActionDesc {
     /**
      * @see #getClassName()
      */
@@ -62,6 +65,8 @@ public class ActionDesc extends com.mousefeed.client.collector.ActionDescBase {
         if (isBlank(className)) {
             return;
         }
+        // TODO test, introduce as API convention or disable?
+        isTrue(this.className == null);
         this.className = className;
     }
 
@@ -83,6 +88,7 @@ public class ActionDesc extends com.mousefeed.client.collector.ActionDescBase {
         if (isBlank(def)) {
             return;
         }
+        isTrue(this.def == null);
         this.def = def;
     }
 }
