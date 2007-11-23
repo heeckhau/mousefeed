@@ -64,7 +64,7 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="com.mousefeed.eclipse.ConfigureActionInvocationHandler"
+            class="com.mousefeed.eclipse.commands.ConfigureActionInvocationHandler"
             commandId="com.mousefeed.commands.configureActionInvocation">
       </handler>
    </extension>
