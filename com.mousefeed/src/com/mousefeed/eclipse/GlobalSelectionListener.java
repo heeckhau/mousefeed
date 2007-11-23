@@ -19,7 +19,8 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.SubContributionItem;
 import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
@@ -73,21 +74,33 @@ public class GlobalSelectionListener implements Listener {
     public void handleEvent(Event event) {
         final Widget widget = event.widget;
         if (widget instanceof ToolItem || widget instanceof MenuItem) {
-            if (widget.getData() instanceof ActionContributionItem) {
-                final ActionContributionItem item =
-                        (ActionContributionItem) widget.getData();
-                final ActionDesc actionDesc =
-                        actionActionDescGenerator.generate(item.getAction());
-                processActionDesc(actionDesc, event);
-            } else if (widget.getData() instanceof CommandContributionItem) {
-                final ActionDesc actionDesc = generateActionDesc(
-                        (CommandContributionItem) widget.getData());
-                processActionDesc(actionDesc, event);
-            } else {
-                // no action contribution item on the widget data
+            final Object data = widget.getData();
+            if (data instanceof IContributionItem) {
+                processContributionItem((IContributionItem) data, event);
             }
         } else {
             // do not handle these types of actions
+        }
+    }
+
+    private void processContributionItem(IContributionItem contributionItem,
+            Event event) {
+        if (contributionItem instanceof SubContributionItem) {
+            final SubContributionItem subCI =
+                (SubContributionItem) contributionItem;
+            processContributionItem(subCI.getInnerItem(), event);
+        } else if (contributionItem instanceof ActionContributionItem) {
+            final ActionContributionItem item =
+                    (ActionContributionItem) contributionItem;
+            final ActionDesc actionDesc =
+                    actionActionDescGenerator.generate(item.getAction());
+            processActionDesc(actionDesc, event);
+        } else if (contributionItem instanceof CommandContributionItem) {
+            final ActionDesc actionDesc = generateActionDesc(
+                    (CommandContributionItem) contributionItem);
+            processActionDesc(actionDesc, event);
+        } else {
+            // no action contribution item on the widget data
         }
     }
 
@@ -107,7 +120,8 @@ public class GlobalSelectionListener implements Listener {
     }
 
     /**
-     * Generates {@link ActionDescImpl} for the provided command contribution item.
+     * Generates {@link ActionDescImpl} for the provided command contribution
+     * item.
      * @param commandContributionItem the contribution item to generate
      * an action description for. Assumed not <code>null</code>.
      * @return

@@ -11,6 +11,13 @@ Click on the "Search" ToolBar button.
 
     The reminder popup "Ctrl+H (Search...)" shows up near the cursor.
 
+Open a text file. Call the actions "Copy", "Paste", "Find/Replace", "Find Next"
+
+    The reminder popup should show up after the each action,
+    reminding their keyboard shortcuts.
+
+
+
 PREFERENCES
 
 - PROMOTE KEYS CHECKBOX

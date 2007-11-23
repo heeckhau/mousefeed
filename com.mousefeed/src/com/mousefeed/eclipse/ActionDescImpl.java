@@ -65,8 +65,8 @@ public class ActionDescImpl extends ActionDesc {
         if (isBlank(className)) {
             return;
         }
-        // TODO test, introduce as API convention or disable?
-        isTrue(this.className == null);
+        
+        isNullOrNotEqual(this.className, className);
         this.className = className;
     }
 
@@ -88,7 +88,19 @@ public class ActionDescImpl extends ActionDesc {
         if (isBlank(def)) {
             return;
         }
-        isTrue(this.def == null);
+        
+        isNullOrNotEqual(this.def, def);
         this.def = def;
+    }
+
+    /**
+     * Throws <code>IllegalArgumentException</code> if <code>val1</code> is not
+     * <code>null</code> and is equal <code>val2</code>. 
+     * @param val1 the main value to check. Can be <code>null</code>.
+     * @param val2 the value to check against. Assumed not <code>null</code>.
+     */
+    private void isNullOrNotEqual(final String val1, final String val2) {
+        isTrue(val1 == null || val2.equals(val1),
+                "Should be different: " + val2 + " and " + val1);
     }
 }

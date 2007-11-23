@@ -32,6 +32,7 @@ import org.eclipse.ui.actions.RetargetAction;
 import org.eclipse.ui.activities.IActivityManager;
 import org.eclipse.ui.keys.IBindingService;
 
+//COUPLING:OFF
 /**
  * Generates {@link ActionDescImpl} from {@link IAction}.
  * Pure strategy.
@@ -41,7 +42,7 @@ import org.eclipse.ui.keys.IBindingService;
  * @author Andriy Palamarchuk
  */
 public class ActionActionDescGenerator {
-    
+
     /**
      * Stores the generated action description.
      */
@@ -111,8 +112,7 @@ public class ActionActionDescGenerator {
             }
         }
 
-        // from the keyboard binding
-        return findActionBinding(action);
+        fromActionBinding(action);
     }
 
 
@@ -170,12 +170,12 @@ public class ActionActionDescGenerator {
      * @return the accelerator from the trigger sequence associated
      * with the action or <code>null</code> if such sequence was not found.
      */
-    private String findActionBinding(IAction action) {
+    private String fromActionBinding(IAction action) {
         if (action == null) {
             return null;
         }
         if (action instanceof RetargetAction) {
-            return findActionBinding(
+            return fromActionBinding(
                     ((RetargetAction) action).getActionHandler());
         }
 
@@ -310,3 +310,4 @@ public class ActionActionDescGenerator {
                 && activityManager.getIdentifier(command.getId()).isEnabled();
     }
 }
+//COUPLING:ON
