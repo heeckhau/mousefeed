@@ -10,18 +10,15 @@
 
 package com.mousefeed.eclipse.preferences;
 
-import static com.mousefeed.eclipse.Layout.WHOLE_SIZE;
-import static com.mousefeed.eclipse.Layout.STACKED_LABEL_V_OFFSET;
 import static com.mousefeed.eclipse.Layout.STACKED_V_OFFSET;
-import static com.mousefeed.eclipse.Layout.WINDOW_MARGIN;
 import static com.mousefeed.eclipse.Layout.placeUnder;
 import static com.mousefeed.eclipse.preferences.PreferenceConstants.INVOCATION_CONTROL_ENABLED_DEFAULT;
-import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 
 import com.mousefeed.client.Messages;
 import com.mousefeed.client.OnWrongInvocationMode;
 import com.mousefeed.eclipse.Activator;
+import com.mousefeed.eclipse.commands.OnWrongInvocationModeUI;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
@@ -34,7 +31,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -74,6 +70,13 @@ public class ActionInvocationPreferencePage extends PreferencePage
      */
     private Combo onWrongInvocationModeCombo;
 
+    
+    /**
+     * The UI factory class.
+     */
+    private final OnWrongInvocationModeUI onWrongInvocationModeUI =
+            new OnWrongInvocationModeUI();
+
     /**
      * Constructor.
      */
@@ -93,11 +96,14 @@ public class ActionInvocationPreferencePage extends PreferencePage
         Control c;
         invocationControlEnabledCheckbox =
                 createInvocationControlEnabledCheckbox(composite, null);
+        ((FormData) invocationControlEnabledCheckbox.getLayoutData()).top =
+                new FormAttachment(0);
         c = invocationControlEnabledCheckbox;
 
-        c = createOnWrongInvocationModeLabel(composite, c);
+        c = onWrongInvocationModeUI.createLabel(composite, c,
+                MESSAGES.get("field.defaultOnWrongInvocationMode.label"));
         onWrongInvocationModeCombo =
-                createOnWrongInvocationModeCombo(composite, c);
+                onWrongInvocationModeUI.createCombo(composite, c);
         updateOnWrongInvocationModeCombo(
                 preferences.getOnWrongInvocationMode());
         updateInvocationControlEnabled(
@@ -156,37 +162,6 @@ public class ActionInvocationPreferencePage extends PreferencePage
             }
         });
         return checkbox;
-    }
-
-    /**
-     * Creates a label for {@link #onWrongInvocationModeCombo}.
-     */
-    private Control createOnWrongInvocationModeLabel(
-            Composite container, Control above) {
-        notNull(container);
-        final Label label = new Label(container, SWT.NULL);
-        label.setText(MESSAGES.get("field.defaultOnWrongInvocationMode.label"));
-        placeUnder(label, above, STACKED_V_OFFSET);
-        return label;
-    }
-
-    /**
-     * Creates the combo {@link #onWrongInvocationModeCombo}.
-     */
-    private Combo createOnWrongInvocationModeCombo(
-            Composite container, Control aboveControl) {
-        notNull(container);
-        isTrue(aboveControl == null || aboveControl instanceof Label);
-
-        final Combo combo = new Combo(container, SWT.READ_ONLY);
-        for (OnWrongInvocationMode mode : OnWrongInvocationMode.values()) {
-            combo.add(mode.getLabel());
-        }
-        
-        placeUnder(combo, aboveControl, STACKED_LABEL_V_OFFSET);
-        final FormData formData = (FormData) combo.getLayoutData();
-        formData.right = new FormAttachment(WHOLE_SIZE, -WINDOW_MARGIN);
-        return combo;
     }
 
     /**

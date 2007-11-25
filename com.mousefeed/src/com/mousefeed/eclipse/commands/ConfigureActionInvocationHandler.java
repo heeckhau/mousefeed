@@ -9,10 +9,11 @@
  */
 package com.mousefeed.eclipse.commands;
 
+import com.mousefeed.client.collector.ActionDesc;
+import com.mousefeed.eclipse.Activator;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -24,12 +25,24 @@ public class ConfigureActionInvocationHandler extends AbstractHandler {
 
     // see base
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        IWorkbenchWindow window =
+        if (getLastAction() == null) {
+            return null;
+        }
+        final IWorkbenchWindow window =
                 HandlerUtil.getActiveWorkbenchWindowChecked(event);
-        MessageDialog.openInformation(
-                window.getShell(),
-                "TestPreferencesPlugin Plug-in",
-                "Hello, Eclipse world");
+        final ConfigureActionInvocationDialog dlg =
+                new ConfigureActionInvocationDialog(
+                        window.getShell(), getLastAction());
+        dlg.open();
         return null;
+    }
+
+    /**
+     * The last action called by the user.
+     * @return the last action. <code>null</code> if there was no action
+     * called before since Eclipse started.
+     */
+    private ActionDesc getLastAction() {
+        return Activator.getDefault().getCollector().getLastAction();
     }
 }

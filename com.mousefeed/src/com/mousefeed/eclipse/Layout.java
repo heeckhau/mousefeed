@@ -78,7 +78,7 @@ public final class Layout {
         formData.left = aboveControl == null
                 ? getLeftAttachment()
                 : new FormAttachment(aboveControl, 0, SWT.LEFT);
-        final int offset = aboveControl == null ? 0 : gap; 
+        final int offset = aboveControl == null ? WINDOW_MARGIN : gap; 
         formData.top = new FormAttachment(aboveControl, offset);
         control.setLayoutData(formData);
     }

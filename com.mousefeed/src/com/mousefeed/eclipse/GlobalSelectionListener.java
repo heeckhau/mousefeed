@@ -12,24 +12,20 @@ package com.mousefeed.eclipse;
 import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 
+import com.mousefeed.client.OnWrongInvocationMode;
 import com.mousefeed.client.collector.ActionDesc;
 import com.mousefeed.client.collector.Collector;
 import com.mousefeed.eclipse.preferences.PreferenceAccessor;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.commands.Command;
-import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.SubContributionItem;
-import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.menus.CommandContributionItem;
 
 /**
@@ -57,15 +53,15 @@ public class GlobalSelectionListener implements Listener {
             new ActionActionDescGenerator();
     
     /**
+     * Finds keyboard shortcut for a command.
+     */
+    private final CommandActionDescGenerator commandActionDescGenerator =
+            new CommandActionDescGenerator(); 
+    
+    /**
      * Collects user activity data.
      */
     private final Collector collector = Activator.getDefault().getCollector();
-    
-    /**
-     * Retrieves a command from a command contribution item. 
-     */
-    private final CommandContributionItemCommandLocator locator =
-            new CommandContributionItemCommandLocator();
 
     /**
      * Processes an event.  
@@ -96,8 +92,8 @@ public class GlobalSelectionListener implements Listener {
                     actionActionDescGenerator.generate(item.getAction());
             processActionDesc(actionDesc, event);
         } else if (contributionItem instanceof CommandContributionItem) {
-            final ActionDesc actionDesc = generateActionDesc(
-                    (CommandContributionItem) contributionItem);
+            final ActionDesc actionDesc = commandActionDescGenerator.generate(
+                    (CommandContributionItem) contributionItem); 
             processActionDesc(actionDesc, event);
         } else {
             // no action contribution item on the widget data
@@ -117,39 +113,6 @@ public class GlobalSelectionListener implements Listener {
         }
         giveActionFeedback(actionDesc, event);
         logUserAction(actionDesc);
-    }
-
-    /**
-     * Generates {@link ActionDescImpl} for the provided command contribution
-     * item.
-     * @param commandContributionItem the contribution item to generate
-     * an action description for. Assumed not <code>null</code>.
-     * @return
-     */
-    private ActionDesc generateActionDesc(
-            final CommandContributionItem commandContributionItem) {
-        final IBindingService bindingService =
-            (IBindingService) PlatformUI.getWorkbench().getAdapter(
-                    IBindingService.class);
-        final ActionDescImpl actionDesc = new ActionDescImpl();
-        final Command command = locator.get(commandContributionItem);
-        if (command == null) {
-            return null;
-        }
-        try {
-            actionDesc.setLabel(command.getName());
-        } catch (NotDefinedException e) {
-            // should never happen
-            throw new RuntimeException(e);
-        }
-        final String commandId = command.getId();
-        actionDesc.setDef(commandId);
-        final TriggerSequence binding =
-                bindingService.getBestActiveBindingFor(commandId);
-        if (binding != null) {
-            actionDesc.setAccelerator(binding.format());
-        }
-        return actionDesc;
     }
 
     /**
@@ -179,7 +142,7 @@ public class GlobalSelectionListener implements Listener {
             return;
         }
 
-        switch (preferences.getOnWrongInvocationMode()) {
+        switch (getOnWrongInvocationMode(actionDesc.getId())) {
         case DO_NOTHING:
             // go on
             break;
@@ -195,6 +158,18 @@ public class GlobalSelectionListener implements Listener {
         default:
             throw new AssertionError();
         }
+    }
+
+    /**
+     * Returns the wrong invocation mode handling for the action with the
+     * specified id.
+     * @param id the action id. Assumed not <code>null</code>.
+     * @return the mode. Not <code>null</code>.
+     */
+    private OnWrongInvocationMode getOnWrongInvocationMode(String id) {
+        final OnWrongInvocationMode mode =
+                preferences.getOnWrongInvocationMode(id);
+        return mode == null ? preferences.getOnWrongInvocationMode() : mode;
     }
 
     /**

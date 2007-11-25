@@ -18,7 +18,7 @@ import org.junit.Test;
 /**
  * @author Andriy Palamarchuk
  */
-public class ActionDescImplTest {
+public class ActionDescTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void setLabel_blank() {

@@ -41,7 +41,7 @@ import org.eclipse.ui.keys.IBindingService;
  *
  * @author Andriy Palamarchuk
  */
-public class ActionActionDescGenerator {
+class ActionActionDescGenerator {
 
     /**
      * Stores the generated action description.
