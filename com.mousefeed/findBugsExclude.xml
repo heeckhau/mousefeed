@@ -4,4 +4,5 @@
         <!-- UwF - not initialized in constructor -->
         <Bug code="UwF"/>
     </Match>
+    <Match classregex=".+Test"/>
 </FindBugsFilter>
