@@ -30,6 +30,9 @@
     <property name="onCommentFormat" value="COUPLING\:ON"/>
     <property name="checkFormat" value="ClassDataAbstractionCoupling|ClassFanOutComplexity"/>
   </module>
+  <module name="SuppressionFilter">
+    <property name="file" value="checkstyleSuppressions.xml"/>
+  </module>
 
   <module name="TreeWalker">
     <!-- needed for the checks suppression filter -->

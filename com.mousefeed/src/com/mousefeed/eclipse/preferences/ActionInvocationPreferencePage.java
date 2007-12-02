@@ -19,6 +19,8 @@
 package com.mousefeed.eclipse.preferences;
 
 import static com.mousefeed.eclipse.Layout.STACKED_V_OFFSET;
+import static com.mousefeed.eclipse.Layout.WHOLE_SIZE;
+import static com.mousefeed.eclipse.Layout.WINDOW_MARGIN;
 import static com.mousefeed.eclipse.Layout.placeUnder;
 import static com.mousefeed.eclipse.preferences.PreferenceConstants.INVOCATION_CONTROL_ENABLED_DEFAULT;
 import static org.apache.commons.lang.Validate.notNull;
@@ -39,6 +41,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -59,12 +62,13 @@ public class ActionInvocationPreferencePage extends PreferencePage
      * Provides messages text.
      */
     private static final Messages MESSAGES =
-        new Messages(ActionInvocationPreferencePage.class);
+            new Messages(ActionInvocationPreferencePage.class);
 
     /**
      * Provides access to the plugin preferences.
      */
-    private final PreferenceAccessor preferences = new PreferenceAccessor();
+    private final PreferenceAccessor preferences =
+            PreferenceAccessor.getInstance();
 
     /**
      * Setting whether to control action invocation at all.
@@ -80,10 +84,15 @@ public class ActionInvocationPreferencePage extends PreferencePage
 
     
     /**
-     * The UI factory class.
+     * The wrong invocation mode handling UI factory.
      */
     private final OnWrongInvocationModeUI onWrongInvocationModeUI =
             new OnWrongInvocationModeUI();
+
+    /**
+     * Creates UI for action-specific invocation settings. 
+     */
+    private ActionInvocationModeControl actionModeControl;
 
     /**
      * Constructor.
@@ -112,18 +121,20 @@ public class ActionInvocationPreferencePage extends PreferencePage
                 MESSAGES.get("field.defaultOnWrongInvocationMode.label"));
         onWrongInvocationModeCombo =
                 onWrongInvocationModeUI.createCombo(composite, c);
+        c = onWrongInvocationModeCombo;
         updateOnWrongInvocationModeCombo(
                 preferences.getOnWrongInvocationMode());
         updateInvocationControlEnabled(
                 preferences.isInvocationControlEnabled());
+        
+        actionModeControl = createActionModeControl(composite);
+        c = actionModeControl;
+        
+        final Control separator = createHorizontalSeparator(composite, c);
+        layoutActionModeControl(onWrongInvocationModeCombo, separator);
 
         onInvocationControlEnabledCheckboxSelected();
         Dialog.applyDialogFont(composite);
-
-        // set F1 help
-        // PlatformUI.getWorkbench().getHelpSystem().setHelp(
-        // getControl(), IHelpContextIds.FILE_TYPE_PREFERENCE_PAGE);
-
         return composite;
     }
 
@@ -133,6 +144,7 @@ public class ActionInvocationPreferencePage extends PreferencePage
         updateOnWrongInvocationModeCombo(OnWrongInvocationMode.DEFAULT);
         updateInvocationControlEnabled(
                 INVOCATION_CONTROL_ENABLED_DEFAULT);
+        actionModeControl.clearActionSettings();
     }
 
     @Override
@@ -140,6 +152,8 @@ public class ActionInvocationPreferencePage extends PreferencePage
         preferences.storeOnWrongInvocationMode(
                 getSelectedOnWrongInvocationMode());
         preferences.storeInvocationControlEnabled(isInvocationControlEnabled());
+        preferences.setActionsOnWrongInvocationMode(
+                actionModeControl.getActionModes());
         return super.performOk();
     }
 
@@ -183,6 +197,52 @@ public class ActionInvocationPreferencePage extends PreferencePage
                 c.setEnabled(isInvocationControlEnabled());
             }
         }
+    }
+
+    /**
+     * Creates the action-specific invocation settings UI control. 
+     * @param composite the container. Assumed not <code>null</code>.
+     * @return the action invocation control. Not <code>null</code>.
+     */
+    private ActionInvocationModeControl createActionModeControl(
+            Composite composite) {
+        return new ActionInvocationModeControl(composite);
+    }
+
+    /**
+     * Lays out the {@link #actionModeControl}.
+     * @param aboveControl the control above. Assumed not <code>null</code>.
+     * @param belowControl the control below. Assumed not <code>null</code>.
+     */
+    private void layoutActionModeControl(
+            Control aboveControl, Control belowControl) {
+        final FormData formData = placeUnder(
+                actionModeControl, aboveControl,
+                STACKED_V_OFFSET);
+        formData.right = new FormAttachment(WHOLE_SIZE, -WINDOW_MARGIN);
+        formData.bottom = new FormAttachment(
+                belowControl, -STACKED_V_OFFSET, SWT.TOP);
+    }
+    
+    /**
+     * Creates a horizontal separator to separate the action-specific settings
+     * from the buttons below.
+     * @param composite the parent control. Assumed not <code>null</code>.
+     * @param aboveControl the control above this one.
+     * Assumed not <code>null</code>.
+     * @return the control separator. 
+     */
+    private Control createHorizontalSeparator(Composite composite,
+            Control aboveControl) {
+        final Label separator = new Label(composite,
+                SWT.SEPARATOR | SWT.HORIZONTAL | SWT.LINE_SOLID
+                | SWT.SHADOW_OUT);
+        final FormData formData = new FormData();
+        formData.left = new FormAttachment(0, WINDOW_MARGIN);
+        formData.right = new FormAttachment(WHOLE_SIZE, -WINDOW_MARGIN);
+        formData.bottom = new FormAttachment(WHOLE_SIZE, 0);
+        separator.setLayoutData(formData);
+        return separator;
     }
 
     /**

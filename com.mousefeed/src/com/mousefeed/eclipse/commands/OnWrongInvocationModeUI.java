@@ -74,12 +74,9 @@ public class OnWrongInvocationModeUI {
         isTrue(aboveControl == null || aboveControl instanceof Label);
 
         final Combo combo = new Combo(container, SWT.READ_ONLY);
-        for (OnWrongInvocationMode mode : OnWrongInvocationMode.values()) {
-            combo.add(mode.getLabel());
-        }
-        
-        placeUnder(combo, aboveControl, STACKED_LABEL_V_OFFSET);
-        final FormData formData = (FormData) combo.getLayoutData();
+        combo.setItems(OnWrongInvocationMode.getLabels());
+        final FormData formData =
+                placeUnder(combo, aboveControl, STACKED_LABEL_V_OFFSET);
         formData.right = new FormAttachment(WHOLE_SIZE, -WINDOW_MARGIN);
         return combo;
     }

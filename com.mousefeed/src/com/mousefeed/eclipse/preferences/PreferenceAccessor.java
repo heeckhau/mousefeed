@@ -31,6 +31,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -40,6 +41,7 @@ import org.eclipse.ui.XMLMemento;
 
 /**
  * Provides access to the plugin preferences.
+ * Singleton.
  * 
  * @author Andriy Palamarchuk
  */
@@ -50,6 +52,11 @@ public class PreferenceAccessor {
      */
     static final String ACTIONS_WRONG_INVOCATION_MODE_FILE =
             "actionsWrongInvocationMode.xml";
+    
+    /**
+     * The singleton instance.
+     */
+    private static final PreferenceAccessor INSTANCE = new PreferenceAccessor();
     
     /**
      * The root document for the action-specific wrong invocation mode
@@ -88,9 +95,19 @@ public class PreferenceAccessor {
     
     /**
      * Creates new preference accessor.
+     * Because this class is a singleton, the constructor normally should not be
+     * used. It is exposed for testing purposes only.
      */
-    public PreferenceAccessor() {
+    PreferenceAccessor() {
         loadActionsOnWrongInvocationMode();
+    }
+    
+    /**
+     * The singleton instance.
+     * @return the singleton instance. Never <code>null</code>.
+     */
+    public static PreferenceAccessor getInstance() {
+        return INSTANCE;
     }
     
     /**
@@ -156,16 +173,42 @@ public class PreferenceAccessor {
     }
     
     /**
-     * Returns action-specific wrong invocation mode handling.
+     * Returns action-specific wrong invocation mode handling for all actions.
      * @return the action-specific settings. Read-only.
+     * The collection nor its elements should not be changed.
+     * Note, the collection and the objects in it should be cloned for using
+     * for any significant period of time. 
      * Never <code>null</code>, can be empty if no action-specific settings were
      * defined.
+     * All objects in the collection have unique ids.
      */
-    public Map<String, OnWrongInvocationMode>
+    public Collection<ActionOnWrongInvocationMode>
             getActionsOnWrongInvocationMode() {
-        return null;
+        return actionsOnWrongMode.values();
     }
-    
+
+    /**
+     * Replaces the action-specific settings.
+     * @param settings the new settings. Not <code>null</code>.
+     * Changes to the data passed to this method won't affect the values stored
+     * in this class.
+     * @see #getActionsOnWrongInvocationMode()
+     */
+    public void setActionsOnWrongInvocationMode(
+            Collection<ActionOnWrongInvocationMode> settings) {
+        this.actionsOnWrongMode.clear();
+        for (ActionOnWrongInvocationMode mode : settings) {
+            final ActionOnWrongInvocationMode clone;
+            try {
+                clone = (ActionOnWrongInvocationMode) mode.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException();
+            }
+            this.actionsOnWrongMode.put(clone.getId(), clone);
+        }
+        saveActionsOnWrongInvocationMode();
+    }
+
     /**
      * Removes action-specific on wrong invocation mode setting.
      * After calling this method when the action with the specified id is
@@ -291,6 +334,9 @@ public class PreferenceAccessor {
      * invoked with a wrong invocation mode.
      */
     File getActionsWrongInvocationModeFile() {
+        if (Activator.getDefault() == null) {
+            return new File("nonexisting");
+        }
         return Activator.getDefault()
                 .getStateLocation()
                 .append(ACTIONS_WRONG_INVOCATION_MODE_FILE)

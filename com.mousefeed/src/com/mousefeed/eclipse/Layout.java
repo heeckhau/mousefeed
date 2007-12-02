@@ -41,6 +41,11 @@ public final class Layout {
     public static final int STACKED_V_OFFSET = 10;
     
     /**
+     * Horizontal distance between two different consecutive controls.
+     */
+    public static final int H_OFFSET = 10;
+    
+    /**
      * Distance between a label and its control below.
      */
     public static final int STACKED_LABEL_V_OFFSET = 0;
@@ -74,8 +79,9 @@ public final class Layout {
      * @param gap distance in pixels between the bottom of
      * <code>aboveControl</code> and top of <code>control</code>.
      * Greater than 0.
+     * @return the layout data of the control.
      */
-    public static void placeUnder(Control control, Control aboveControl,
+    public static FormData placeUnder(Control control, Control aboveControl,
             int gap) {
         notNull(control);
         isTrue(aboveControl == null
@@ -90,6 +96,7 @@ public final class Layout {
         final int offset = aboveControl == null ? WINDOW_MARGIN : gap; 
         formData.top = new FormAttachment(aboveControl, offset);
         control.setLayoutData(formData);
+        return formData;
     }
 
     /**

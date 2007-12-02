@@ -26,7 +26,6 @@ import static org.apache.commons.lang.time.DateUtils.MILLIS_PER_SECOND;
 
 import com.mousefeed.client.Messages;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
@@ -45,9 +44,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.keys.IBindingService;
 
 //COUPLING:OFF - just uses a lot of other classes. It's Ok.
 /**
@@ -81,6 +78,12 @@ public class NagPopUp extends PopupDialog {
      * Provides messages text.
      */
     private static final Messages MESSAGES = new Messages(NagPopUp.class);
+    
+    /**
+     * The last action invocation reminder text factory.
+     */
+    private static final LastActionInvocationRemiderFactory REMINDER_FACTORY =
+            new LastActionInvocationRemiderFactory();
 
     /**
      * @see NagPopUp#NagPopUp(String, String)
@@ -130,7 +133,7 @@ public class NagPopUp extends PopupDialog {
         super((Shell) null, PopupDialog.HOVER_SHELLSTYLE,
                 false, false, false, false,
                 getTitleText(actionCancelled),
-                getActionCongigurationReminder());
+                getActionConfigurationReminder());
         isTrue(StringUtils.isNotBlank(actionName));
         isTrue(StringUtils.isNotBlank(accelerator));
 
@@ -315,23 +318,8 @@ public class NagPopUp extends PopupDialog {
      * is called before calling "super" constructor.
      * @return the text. Never <code>null</code>.
      */
-    private static String getActionCongigurationReminder() {
-        final IBindingService bindingService =
-            (IBindingService) getWorkbench().getAdapter(IBindingService.class);
-        final TriggerSequence[] bindings =
-            bindingService.getActiveBindingsFor(
-                    "com.mousefeed.commands.configureActionInvocation");
-        final String binding = bindings.length == 0
-                ? MESSAGES.get("configureActionInvocation-noBinding")
-                : bindings[0].format();
-        return MESSAGES.get("info", binding);
-    }
-
-    /**
-     * Current workbench. Not <code>null</code>.
-     */
-    private static IWorkbench getWorkbench() {
-        return PlatformUI.getWorkbench();
+    private static String getActionConfigurationReminder() {
+        return REMINDER_FACTORY.getText();
     }
 }
 //COUPLING:ON

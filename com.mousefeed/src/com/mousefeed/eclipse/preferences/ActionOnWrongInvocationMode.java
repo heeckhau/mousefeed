@@ -24,6 +24,8 @@ import static org.apache.commons.lang.Validate.notNull;
 
 import com.mousefeed.client.OnWrongInvocationMode;
 import com.mousefeed.client.collector.ActionDesc;
+import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * Stores action-specific preferences for handling action invocation using
@@ -32,7 +34,7 @@ import com.mousefeed.client.collector.ActionDesc;
  *
  * @author Andriy Palamarchuk
  */
-public class ActionOnWrongInvocationMode {
+public class ActionOnWrongInvocationMode implements Cloneable {
     /**
      * @see #getId() 
      */
@@ -64,6 +66,12 @@ public class ActionOnWrongInvocationMode {
         notNull(actionDesc);
         setId(actionDesc.getId());
         setLabel(actionDesc.getLabel());
+    }
+    
+    // see base
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     /**
@@ -116,5 +124,22 @@ public class ActionOnWrongInvocationMode {
             OnWrongInvocationMode onWrongInvocationMode) {
         notNull(onWrongInvocationMode);
         this.onWrongInvocationMode = onWrongInvocationMode;
+    }
+
+    /**
+     * Compares these objects by label.
+     */
+    public static class LabelComparator implements
+            Comparator<ActionOnWrongInvocationMode>, Serializable {
+        /**
+         * Serialization version id.
+         */
+        static final long serialVersionUID = 1;
+
+        public int compare(ActionOnWrongInvocationMode mode1,
+                ActionOnWrongInvocationMode mode2) {
+            return mode1.getLabel().compareTo(mode2.getLabel());
+        }
+
     }
 }

@@ -68,7 +68,8 @@ public class ConfigureActionInvocationDialog extends Dialog {
     /**
      * Provides access to the plugin preferences.
      */
-    private final PreferenceAccessor preferences = new PreferenceAccessor();
+    private final PreferenceAccessor preferences =
+            PreferenceAccessor.getInstance();
     
     /**
      * The UI factory class.

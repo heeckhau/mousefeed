@@ -59,4 +59,17 @@ public enum OnWrongInvocationMode {
     public String getLabel() {
         return MESSAGES.get(name());
     }
+
+    /**
+     * Labels of the enumeration values.
+     * @return the labels of the enumeration values.
+     * Array of the same size as {@link #values()}. 
+     */
+    public static String[] getLabels() {
+        final String[] labels = new String[values().length];
+        for (int i = 0; i < values().length; i++) {
+            labels[i] = values()[i].getLabel();
+        }
+        return labels;
+    }
 }

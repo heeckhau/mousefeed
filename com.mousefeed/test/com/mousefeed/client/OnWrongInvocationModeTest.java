@@ -18,8 +18,12 @@
  */
 package com.mousefeed.client;
 
+import static com.mousefeed.client.OnWrongInvocationMode.getLabels;
+import static com.mousefeed.client.OnWrongInvocationMode.values;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.junit.Assert.assertEquals;
 
+import org.apache.commons.lang.Validate;
 import org.junit.Test;
 
 /**
@@ -36,11 +40,10 @@ public class OnWrongInvocationModeTest {
             assert !e.name().equals(e.getLabel());
         }
     }
-    
-    /**
-     * Same as call to {@link OnWrongInvocationMode#values()}.
-     */
-    private OnWrongInvocationMode[] values() {
-        return OnWrongInvocationMode.values();
+
+    @Test public void getLabelsTest() {
+        assertEquals(getLabels().length, values().length);
+        assertEquals(getLabels()[0], values()[0].getLabel());
+        Validate.noNullElements(getLabels());
     }
 }
