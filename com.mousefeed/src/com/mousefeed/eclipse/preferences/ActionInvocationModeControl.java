@@ -29,7 +29,9 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
@@ -99,7 +101,12 @@ class ActionInvocationModeControl extends Composite {
     /**
      * The viewer for {@link #table}.
      */
-    private final TableViewer tableViewer; 
+    private final TableViewer tableViewer;
+    
+    /**
+     * The button to remove action-specific settings.
+     */
+    private final Button removeButton;
 
     /**
      * Constructor.
@@ -123,10 +130,25 @@ class ActionInvocationModeControl extends Composite {
                 }            
             }
         });
+        tableViewer.addSelectionChangedListener(
+                new ISelectionChangedListener() {
+                    public void selectionChanged(SelectionChangedEvent event) {
+                        onTableSelectionChanged();
+                    }
+                });
         
-        final Control c = createRemoveButton();
-        layoutTable(c);
-        createAddReminder(c);
+        removeButton = createRemoveButton();
+        layoutTable(removeButton);
+        createAddReminder(removeButton);
+        
+        onTableSelectionChanged();
+    }
+
+    /**
+     * Is called when the table selection is changed.
+     */
+    private void onTableSelectionChanged() {
+        removeButton.setEnabled(!tableViewer.getSelection().isEmpty());
     }
 
     /**
@@ -226,7 +248,7 @@ class ActionInvocationModeControl extends Composite {
      * Creates the button to allow user to remove the table entries.
      * @return a new remove button. Not <code>null</code>. 
      */
-    private Control createRemoveButton() {
+    private Button createRemoveButton() {
         final Button b = new Button(this, SWT.PUSH);
         final FormData formData = new FormData();
         formData.right = new FormAttachment(WHOLE_SIZE);
