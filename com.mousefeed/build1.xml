@@ -130,6 +130,15 @@
   <target name="dist" depends="compile, validateCodeFormatting, javadoc, test"
       description="Generates the distribution.">
     <mkdir dir="${dist}"/>
+    <tar destfile="${dist}/com.mousefeed_src_${version}.tar.gz" compression="gzip">
+      <fileset dir="src"/>
+      <fileset dir="test"/>
+      <fileset dir=".">
+        <include name="COPYING"/>
+        <include name="src/**"/>
+        <include name="test/**"/>
+      </fileset>
+    </tar>
   </target>
 
   <target name="clean" description="Clean up.">
