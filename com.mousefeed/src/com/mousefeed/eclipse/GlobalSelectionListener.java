@@ -35,6 +35,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.menus.CommandContributionItem;
 
 /**
@@ -72,6 +75,12 @@ public class GlobalSelectionListener implements Listener {
      * Collects user activity data.
      */
     private final Collector collector = Activator.getDefault().getCollector();
+
+    /**
+     * The workbench command service.
+     */
+    private final ICommandService commandService =
+        (ICommandService) getWorkbench().getService(ICommandService.class);
 
     /**
      * Processes an event.  
@@ -123,6 +132,14 @@ public class GlobalSelectionListener implements Listener {
         }
         giveActionFeedback(actionDesc, event);
         logUserAction(actionDesc);
+        commandService.refreshElements(CONFIGURE_ACTION_INVOCATION_DEF, null);
+    }
+
+    /**
+     * Current workbench. Not <code>null</code>.
+     */
+    private IWorkbench getWorkbench() {
+        return PlatformUI.getWorkbench();
     }
 
     /**

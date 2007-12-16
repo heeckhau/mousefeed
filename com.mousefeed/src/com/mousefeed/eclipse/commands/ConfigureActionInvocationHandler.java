@@ -18,19 +18,38 @@
  */
 package com.mousefeed.eclipse.commands;
 
+import static org.apache.commons.lang.Validate.notNull;
+
+import com.mousefeed.client.Messages;
 import com.mousefeed.client.collector.ActionDesc;
+import com.mousefeed.client.collector.Collector;
 import com.mousefeed.eclipse.Activator;
+import java.util.Map;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.commands.IElementUpdater;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.menus.UIElement;
 
 /**
  * Configures invocation mode for the last called action.
  * @author Andriy Palamarchuk
  */
-public class ConfigureActionInvocationHandler extends AbstractHandler {
+public class ConfigureActionInvocationHandler extends AbstractHandler
+        implements IElementUpdater {
+    /**
+     * Provides messages text.
+     */
+    private static final Messages MESSAGES =
+            new Messages(ConfigureActionInvocationHandler.class);
+
+    /**
+     * The user activity data collector.
+     */
+    private final Collector collector =
+        Activator.getDefault().getCollector();
 
     // see base
     public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -46,12 +65,26 @@ public class ConfigureActionInvocationHandler extends AbstractHandler {
         return null;
     }
 
+
+    /**
+     * Expected to be called after each detected user action.
+     * @param element presents the Last Action Invocation menu item.
+     * Not <code>null</code>.
+     * @param parameters not used.
+     */
+    @SuppressWarnings("unchecked")
+    public void updateElement(UIElement element, Map parameters) {
+        notNull(element);
+        element.setText(MESSAGES.get("menuItem.lastActionInvocation.label",
+                getLastAction().getLabel()));
+    }
+
     /**
      * The last action called by the user.
      * @return the last action. <code>null</code> if there was no action
      * called before since Eclipse started.
      */
     private ActionDesc getLastAction() {
-        return Activator.getDefault().getCollector().getLastAction();
+        return collector.getLastAction();
     }
 }
