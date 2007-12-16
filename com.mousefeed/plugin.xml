@@ -79,20 +79,14 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-         <menu
-               id="com.mousefeed.menus.menu"
-               label="%mouseFeedMenu"
-               mnemonic="M"
-               tooltip="%mouseFeedMenuTooltip">
-            <command
-                  commandId="com.mousefeed.commands.configureActionInvocation"
-                  id="com.mousefeed.menus.configureActionInvocation"
-                  label="%configureActionInvocation"
-                  mnemonic="A"
-                  tooltip="%configureActionInvocationDesc">
-            </command>
-         </menu>
+            locationURI="menu:edit?after=redo">
+         <command
+               commandId="com.mousefeed.commands.configureActionInvocation"
+               id="com.mousefeed.menus.configureActionInvocation"
+               label="%configureActionInvocation"
+               mnemonic="A"
+               tooltip="%configureActionInvocationDesc">
+         </command>
       </menuContribution>
    </extension>
 
