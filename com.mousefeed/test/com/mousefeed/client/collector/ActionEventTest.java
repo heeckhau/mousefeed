@@ -29,14 +29,17 @@ import org.junit.Test;
  * @author Andriy Palamarchuk
  */
 public class ActionEventTest {
+    @Test public void getType() {
+        assertEquals(EventType.ACTION, new TestActionEvent().getType());
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void setLabel_blank() {
-        new TestActionDesc().setLabel(" \n\t");
+        new TestActionEvent().setLabel(" \n\t");
     }
 
     @Test public void setLabel() {
-        final ActionEvent d = new TestActionDesc();
+        final ActionEvent d = new TestActionEvent();
         final String s1 = "abc";
         d.setLabel(s1);
         assertEquals(s1, d.getLabel());
@@ -47,7 +50,7 @@ public class ActionEventTest {
     }
 
     @Test public void setAccelerator() {
-        final ActionEvent d = new TestActionDesc();
+        final ActionEvent d = new TestActionEvent();
         assertFalse(d.hasAccelerator());
         d.setAccelerator(null);
         assertFalse(d.hasAccelerator());
@@ -56,5 +59,5 @@ public class ActionEventTest {
         assertTrue(d.hasAccelerator());
     }
     
-    private static class TestActionDesc extends ActionEvent {}
+    private static class TestActionEvent extends ActionEvent {}
 }

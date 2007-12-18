@@ -144,11 +144,11 @@ public class GlobalSelectionListener implements Listener {
 
     /**
      * Sends action information to {@link #collector}.
-     * @param actionDesc the action data to send.
+     * @param actionEvent the action data to send.
      * Assumed not <code>null</code>.
      */
-    private void logUserAction(ActionEvent actionDesc) {
-        collector.onAction(actionDesc);
+    private void logUserAction(ActionEvent actionEvent) {
+        collector.onEvent(actionEvent);
     }
 
     /**

@@ -57,6 +57,7 @@
         <include name="org.eclipse.core.runtime_*.jar"/>
         <include name="org.eclipse.equinox.common_*.jar"/>
         <include name="org.eclipse.equinox.preferences_*.jar"/>
+        <include name="org.eclipse.equinox.registry_*.jar"/>
         <include name="org.eclipse.jface_*.jar"/>
         <include name="org.eclipse.osgi_*.jar"/>
         <include name="org.eclipse.swt.*x86_*.jar"/>

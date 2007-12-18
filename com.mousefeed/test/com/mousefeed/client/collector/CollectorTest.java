@@ -19,7 +19,9 @@
 package com.mousefeed.client.collector;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -33,19 +35,99 @@ public class CollectorTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void onAction_null() {
-        new Collector().onAction(null);
+        new Collector().onEvent(null);
     }
 
     @Test public void getLastAction() {
         final Collector c = new Collector();
         assertNull(c.getLastAction());
 
-        final ActionEvent action = new TestActionDesc();
-        action.setLabel(LABEL);
-        action.setAccelerator(ACCELERATOR);
-        c.onAction(action);
-        assertEquals(action, c.getLastAction());
+        final ActionEvent actionEvent = new TestActionEvent();
+        actionEvent.setLabel(LABEL);
+        actionEvent.setAccelerator(ACCELERATOR);
+        c.onEvent(actionEvent);
+        assertEquals(actionEvent, c.getLastAction());
+    }
+    
+    @Test public void addEventListener_EventSpecific() {
+        final Collector c = new Collector();
+        final TestListener l = new TestListener();
+        
+        c.addEventListener(l, EventType.ACTION);
+
+        assertFalse(l.wasCalled());
+        c.onEvent(new TestActionEvent());
+        assertTrue(l.wasCalled());
+        
+        l.reset();
+        assertFalse(l.wasCalled());
+        // TODO implement when other event type is implemented
+//        c.onAction(new MouseEvent());
+//        assertFalse(l.wasCalled());
+
+        c.removeEventListener(l);
+        assertFalse(l.wasCalled());
+        c.onEvent(new TestActionEvent());
+        assertFalse(l.wasCalled());
     }
 
-    private static class TestActionDesc extends ActionEvent {}
+    @Test public void addEventListener_General() {
+        final Collector c = new Collector();
+        final TestListener l = new TestListener();
+        
+        c.addEventListener(l, null);
+
+        assertFalse(l.wasCalled());
+        c.onEvent(new TestActionEvent());
+        assertTrue(l.wasCalled());
+        
+        l.reset();
+        assertFalse(l.wasCalled());
+        // TODO implement when other event type is implemented
+//        c.onAction(new MouseEvent());
+//        assertTrue(l.wasCalled());
+        
+        c.removeEventListener(l);
+        assertFalse(l.wasCalled());
+        c.onEvent(new TestActionEvent());
+        assertFalse(l.wasCalled());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void addEventListener_null() {
+        new Collector().addEventListener(null, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void removeEventListener_null() {
+        new Collector().removeEventListener(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void removeEventListener_nonExisting() {
+        new Collector().removeEventListener(new TestListener());
+    }
+
+    private static class TestActionEvent extends ActionEvent {}
+    
+    private static class TestListener implements IEventListener {
+
+        /**
+         * Used to access the test listener events.
+         */
+        private Event event;
+
+        public void event(Event event) {
+            this.event = event;
+        }
+        
+        public boolean wasCalled() {
+            return event != null;
+        }
+        
+        public void reset() {
+            event = null;
+            assertFalse(wasCalled());
+        }
+    }
 }

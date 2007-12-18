@@ -26,7 +26,7 @@ import static org.apache.commons.lang.Validate.isTrue;
  * 
  * @author Andriy Palamarchuk
  */
-public abstract class ActionEvent {
+public abstract class ActionEvent extends Event {
     /**
      * @see #getLabel()
      */
@@ -91,5 +91,11 @@ public abstract class ActionEvent {
      */
     public void setAccelerator(String accelerator) {
         this.accelerator = accelerator;
+    }
+
+    // see base
+    @Override
+    public EventType getType() {
+        return EventType.ACTION;
     }
 }
