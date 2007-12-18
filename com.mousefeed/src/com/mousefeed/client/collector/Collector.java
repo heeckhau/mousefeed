@@ -29,16 +29,16 @@ public class Collector {
     /**
      * @see #getLastAction()
      */
-    private ActionDesc lastAction;
+    private ActionEvent lastAction;
 
     /**
      * The last non-internal action provided to the collector.
      * @return the last action provided to the method
-     * {@link #onAction(ActionDesc)},
+     * {@link #onAction(ActionEvent)},
      * <code>null</code> if there were no calls to that method yet.
-     * @see #onAction(ActionDesc)
+     * @see #onAction(ActionEvent)
      */
-    public ActionDesc getLastAction() {
+    public ActionEvent getLastAction() {
         return lastAction;
     }
 
@@ -46,7 +46,7 @@ public class Collector {
      * Must be called on user action. 
      * @param action the action. Not be <code>null</code>.
      */
-    public void onAction(ActionDesc action) {
+    public void onAction(ActionEvent action) {
         notNull(action);
         lastAction = action;
     }

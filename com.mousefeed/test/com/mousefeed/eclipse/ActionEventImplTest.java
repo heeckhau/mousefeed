@@ -26,13 +26,13 @@ import org.junit.Test;
 /**
  * @author Andriy Palamarchuk
  */
-public class ActionDescImplTest {
+public class ActionEventImplTest {
     final static String label = "label 1";
     final static String className = "class 1";
     final static String def = "def 1";
     
     @Test public void setClassName() {
-        final ActionDescImpl desc = new ActionDescImpl();
+        final ActionEventImpl desc = new ActionEventImpl();
         assertNull(desc.getClassName());
         desc.setClassName(className);
         assertEquals(className, desc.getClassName());
@@ -41,7 +41,7 @@ public class ActionDescImplTest {
     }
     
     @Test public void setDef() {
-        final ActionDescImpl desc = new ActionDescImpl();
+        final ActionEventImpl desc = new ActionEventImpl();
         assertNull(desc.getDef());
         desc.setDef(def);
         assertEquals(def, desc.getDef());
@@ -50,7 +50,7 @@ public class ActionDescImplTest {
     }
 
     @Test public void  getId() {
-        final ActionDescImpl desc = new ActionDescImpl();
+        final ActionEventImpl desc = new ActionEventImpl();
         assertNull(desc.getId());
         desc.setLabel(label);
         assertEquals(label, desc.getId());

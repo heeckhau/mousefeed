@@ -21,7 +21,7 @@ package com.mousefeed.eclipse.commands;
 import static org.apache.commons.lang.Validate.notNull;
 
 import com.mousefeed.client.Messages;
-import com.mousefeed.client.collector.ActionDesc;
+import com.mousefeed.client.collector.ActionEvent;
 import com.mousefeed.client.collector.Collector;
 import com.mousefeed.eclipse.Activator;
 import java.util.Map;
@@ -84,7 +84,7 @@ public class ConfigureActionInvocationHandler extends AbstractHandler
      * @return the last action. <code>null</code> if there was no action
      * called before since Eclipse started.
      */
-    private ActionDesc getLastAction() {
+    private ActionEvent getLastAction() {
         return collector.getLastAction();
     }
 }

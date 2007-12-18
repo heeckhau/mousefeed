@@ -20,7 +20,7 @@ package com.mousefeed.eclipse;
 
 import static org.apache.commons.lang.Validate.notNull;
 
-import com.mousefeed.client.collector.ActionDesc;
+import com.mousefeed.client.collector.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -43,7 +43,7 @@ import org.eclipse.ui.keys.IBindingService;
 
 //COUPLING:OFF
 /**
- * Generates {@link ActionDescImpl} from {@link IAction}.
+ * Generates {@link ActionEventImpl} from {@link IAction}.
  * Pure strategy.
  * The logic was developed by trying different actions, making sure all the
  * ActionDesc components are correctly generated.
@@ -55,7 +55,7 @@ class ActionActionDescGenerator {
     /**
      * Stores the generated action description.
      */
-    private ActionDescImpl actionDesc; 
+    private ActionEventImpl actionDesc; 
     
     /**
      * Searches for an action inside of
@@ -92,10 +92,10 @@ class ActionActionDescGenerator {
      * @return the action description for the provided action.
      * Never <code>null</code>.
      */
-    public ActionDesc generate(IAction action) {
+    public ActionEvent generate(IAction action) {
         notNull(action);
 
-        actionDesc = new ActionDescImpl();
+        actionDesc = new ActionEventImpl();
         actionDesc.setLabel(action.getText());
         actionDesc.setClassName(action.getClass().getName());
         extractActionData(action);

@@ -22,14 +22,14 @@ import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.commons.lang.Validate.isTrue;
 
-import com.mousefeed.client.collector.ActionDesc;
+import com.mousefeed.client.collector.ActionEvent;
 
 /**
  * Eclipse-specific action description.
  *
  * @author Andriy Palamarchuk
  */
-public class ActionDescImpl extends ActionDesc {
+public class ActionEventImpl extends ActionEvent {
     /**
      * @see #getClassName()
      */

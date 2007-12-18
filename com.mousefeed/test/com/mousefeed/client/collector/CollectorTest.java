@@ -40,12 +40,12 @@ public class CollectorTest {
         final Collector c = new Collector();
         assertNull(c.getLastAction());
 
-        final ActionDesc action = new TestActionDesc();
+        final ActionEvent action = new TestActionDesc();
         action.setLabel(LABEL);
         action.setAccelerator(ACCELERATOR);
         c.onAction(action);
         assertEquals(action, c.getLastAction());
     }
 
-    private static class TestActionDesc extends ActionDesc {}
+    private static class TestActionDesc extends ActionEvent {}
 }

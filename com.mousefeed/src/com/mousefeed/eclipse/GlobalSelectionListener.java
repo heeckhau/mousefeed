@@ -22,7 +22,7 @@ import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 
 import com.mousefeed.client.OnWrongInvocationMode;
-import com.mousefeed.client.collector.ActionDesc;
+import com.mousefeed.client.collector.ActionEvent;
 import com.mousefeed.client.collector.Collector;
 import com.mousefeed.eclipse.preferences.PreferenceAccessor;
 import org.apache.commons.lang.StringUtils;
@@ -107,11 +107,11 @@ public class GlobalSelectionListener implements Listener {
         } else if (contributionItem instanceof ActionContributionItem) {
             final ActionContributionItem item =
                     (ActionContributionItem) contributionItem;
-            final ActionDesc actionDesc =
+            final ActionEvent actionDesc =
                     actionActionDescGenerator.generate(item.getAction());
             processActionDesc(actionDesc, event);
         } else if (contributionItem instanceof CommandContributionItem) {
-            final ActionDesc actionDesc = commandActionDescGenerator.generate(
+            final ActionEvent actionDesc = commandActionDescGenerator.generate(
                     (CommandContributionItem) contributionItem); 
             processActionDesc(actionDesc, event);
         } else {
@@ -125,7 +125,7 @@ public class GlobalSelectionListener implements Listener {
      * Assumed not <code>null</code>.
      * @param event the original event. Assumed not <code>null</code>.
      */
-    private void processActionDesc(ActionDesc actionDesc, Event event) {
+    private void processActionDesc(ActionEvent actionDesc, Event event) {
         // skips the configure action invocation action
         if (CONFIGURE_ACTION_INVOCATION_DEF.equals(actionDesc.getId())) {
             return;
@@ -147,7 +147,7 @@ public class GlobalSelectionListener implements Listener {
      * @param actionDesc the action data to send.
      * Assumed not <code>null</code>.
      */
-    private void logUserAction(ActionDesc actionDesc) {
+    private void logUserAction(ActionEvent actionDesc) {
         collector.onAction(actionDesc);
     }
 
@@ -158,7 +158,7 @@ public class GlobalSelectionListener implements Listener {
      * @param actionDesc the populated action description.
      * Must have a keyboard shortcut defined. Not <code>null</code>.
      */
-    private void giveActionFeedback(ActionDesc actionDesc, Event event) {
+    private void giveActionFeedback(ActionEvent actionDesc, Event event) {
         notNull(actionDesc);
         isTrue(StringUtils.isNotBlank(actionDesc.getLabel()));
 

@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.mousefeed.client.OnWrongInvocationMode;
-import com.mousefeed.eclipse.ActionDescImpl;
+import com.mousefeed.eclipse.ActionEventImpl;
 import java.io.File;
 import java.io.IOException;
 import org.junit.After;
@@ -69,7 +69,7 @@ public class PreferenceAccessorTest {
                 preferences.getOnWrongInvocationMode(ID1));
         
         {
-            final ActionDescImpl actionDesc = new ActionDescImpl();
+            final ActionEventImpl actionDesc = new ActionEventImpl();
             actionDesc.setDef(ID2);
             actionDesc.setLabel("Label");
             

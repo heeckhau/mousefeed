@@ -20,12 +20,13 @@ package com.mousefeed.client.collector;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.commons.lang.Validate.isTrue;
+
 /**
  * Information about an action invoked by the user.
  * 
  * @author Andriy Palamarchuk
  */
-public abstract class ActionDesc {
+public abstract class ActionEvent {
     /**
      * @see #getLabel()
      */

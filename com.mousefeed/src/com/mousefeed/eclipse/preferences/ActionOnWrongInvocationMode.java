@@ -23,14 +23,14 @@ import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 
 import com.mousefeed.client.OnWrongInvocationMode;
-import com.mousefeed.client.collector.ActionDesc;
+import com.mousefeed.client.collector.ActionEvent;
 import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Stores action-specific preferences for handling action invocation using
  * wrong mode.
- * Data stored in this class somewhat overlaps with {@link ActionDesc}.
+ * Data stored in this class somewhat overlaps with {@link ActionEvent}.
  *
  * @author Andriy Palamarchuk
  */
@@ -57,12 +57,12 @@ public class ActionOnWrongInvocationMode implements Cloneable {
     }
 
     /**
-     * Creates a new instance from the {@link ActionDesc} instance. Copies all
+     * Creates a new instance from the {@link ActionEvent} instance. Copies all
      * the data.
      * @param actionDesc the instance to create this instance from.
      * Not <code>null</code>
      */
-    public ActionOnWrongInvocationMode(ActionDesc actionDesc) {
+    public ActionOnWrongInvocationMode(ActionEvent actionDesc) {
         notNull(actionDesc);
         setId(actionDesc.getId());
         setLabel(actionDesc.getLabel());

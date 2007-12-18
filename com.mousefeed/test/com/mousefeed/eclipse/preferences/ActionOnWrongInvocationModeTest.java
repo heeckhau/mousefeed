@@ -22,8 +22,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import com.mousefeed.client.OnWrongInvocationMode;
-import com.mousefeed.client.collector.ActionDesc;
-import com.mousefeed.eclipse.ActionDescImpl;
+import com.mousefeed.client.collector.ActionEvent;
+import com.mousefeed.eclipse.ActionEventImpl;
 import com.mousefeed.eclipse.preferences.ActionOnWrongInvocationMode.LabelComparator;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class ActionOnWrongInvocationModeTest {
     }
 
     @Test public void constructor() {
-        final ActionDescImpl actionDesc = new ActionDescImpl();
+        final ActionEventImpl actionDesc = new ActionEventImpl();
         actionDesc.setLabel(LABEL);
         actionDesc.setDef(ID);
         final ActionOnWrongInvocationMode mode = create(actionDesc);
@@ -91,7 +91,7 @@ public class ActionOnWrongInvocationModeTest {
      * Can be <code>null</code>.
      * @return the new object.
      */
-    private ActionOnWrongInvocationMode create(ActionDesc actionDesc) {
+    private ActionOnWrongInvocationMode create(ActionEvent actionDesc) {
         return new ActionOnWrongInvocationMode(actionDesc);
     }
 }

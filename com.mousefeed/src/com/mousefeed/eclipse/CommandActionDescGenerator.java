@@ -20,7 +20,7 @@ package com.mousefeed.eclipse;
 
 import static org.apache.commons.lang.Validate.notNull;
 
-import com.mousefeed.client.collector.ActionDesc;
+import com.mousefeed.client.collector.ActionEvent;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.bindings.TriggerSequence;
@@ -30,7 +30,7 @@ import org.eclipse.ui.menus.CommandContributionItem;
 
 /**
 /**
- * Generates {@link ActionDescImpl} from {@link CommandContributionItem}.
+ * Generates {@link ActionEventImpl} from {@link CommandContributionItem}.
  * Pure strategy.
  *
  * @author Andriy Palamarchuk
@@ -64,11 +64,11 @@ class CommandActionDescGenerator {
      * @return the action description for the provided action.
      * Never <code>null</code>.
      */
-    public ActionDesc generate(
+    public ActionEvent generate(
             CommandContributionItem commandContributionItem) {
         notNull(commandContributionItem);
 
-        final ActionDescImpl actionDesc = new ActionDescImpl();
+        final ActionEventImpl actionDesc = new ActionEventImpl();
         final Command command = locator.get(commandContributionItem);
         if (command == null) {
             return null;

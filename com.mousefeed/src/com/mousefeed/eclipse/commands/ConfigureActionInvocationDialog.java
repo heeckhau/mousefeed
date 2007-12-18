@@ -24,7 +24,7 @@ import static org.apache.commons.lang.Validate.notNull;
 
 import com.mousefeed.client.Messages;
 import com.mousefeed.client.OnWrongInvocationMode;
-import com.mousefeed.client.collector.ActionDesc;
+import com.mousefeed.client.collector.ActionEvent;
 import com.mousefeed.eclipse.preferences.ActionOnWrongInvocationMode;
 import com.mousefeed.eclipse.preferences.PreferenceAccessor;
 import org.eclipse.jface.dialogs.Dialog;
@@ -57,7 +57,7 @@ public class ConfigureActionInvocationDialog extends Dialog {
     /**
      * The action description of the action to configure invocation mode for.
      */
-    private final ActionDesc actionDesc;
+    private final ActionEvent actionDesc;
 
     /**
      * Setting what to do when user invokes an action using wrong invocation
@@ -84,7 +84,7 @@ public class ConfigureActionInvocationDialog extends Dialog {
      * Not <code>null</code>. 
      */
     public ConfigureActionInvocationDialog(Shell parentShell,
-            ActionDesc actionDesc) {
+            ActionEvent actionDesc) {
         super(parentShell);
         notNull(parentShell);
         notNull(actionDesc);
