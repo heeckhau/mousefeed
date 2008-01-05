@@ -24,6 +24,7 @@ import static org.apache.commons.lang.Validate.notNull;
 
 import com.mousefeed.client.OnWrongInvocationMode;
 import com.mousefeed.eclipse.Activator;
+import com.mousefeed.eclipse.PreferenceStoreProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -325,7 +326,7 @@ public class PreferenceAccessor {
      * @return never <code>null</code>.
      */
     private IPreferenceStore getPreferenceStore() {
-        return Activator.getDefault().getPreferenceStore();
+        return PreferenceStoreProvider.getInstance().getPreferenceStore(); 
     }
     
     /**

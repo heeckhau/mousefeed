@@ -40,6 +40,13 @@ import org.eclipse.ui.menus.UIElement;
 public class ConfigureActionInvocationHandler extends AbstractHandler
         implements IElementUpdater {
     /**
+     * The id of the command/action to configure invocation mode for other
+     * actions.
+     */
+    public static final String CONFIGURE_ACTION_INVOCATION_DEF =
+            "com.mousefeed.commands.configureActionInvocation";
+
+    /**
      * Provides messages text.
      */
     private static final Messages MESSAGES =

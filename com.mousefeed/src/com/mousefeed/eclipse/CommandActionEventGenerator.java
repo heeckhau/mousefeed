@@ -35,7 +35,7 @@ import org.eclipse.ui.menus.CommandContributionItem;
  *
  * @author Andriy Palamarchuk
  */
-class CommandActionDescGenerator {
+class CommandActionEventGenerator {
     /**
      * Retrieves a command from a command contribution item. 
      */
@@ -50,7 +50,7 @@ class CommandActionDescGenerator {
     /**
      * Constructor.
      */
-    public CommandActionDescGenerator() {
+    public CommandActionEventGenerator() {
         bindingService =
             (IBindingService) PlatformUI.getWorkbench().getAdapter(
                     IBindingService.class); 

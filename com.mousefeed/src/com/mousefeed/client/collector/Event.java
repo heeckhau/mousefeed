@@ -18,6 +18,8 @@
  */
 package com.mousefeed.client.collector;
 
+import static org.apache.commons.lang.Validate.notNull;
+
 /**
  * The user activity event.
  *
@@ -26,8 +28,33 @@ package com.mousefeed.client.collector;
 public abstract class Event {
 
     /**
+     * @see #getClientEvent()
+     */
+    private Object clientEvent;
+
+    /**
      * The event type.
      * @return the event type. Never <code>null</code>.
      */
     public abstract EventType getType();
+
+    /**
+     * The underlying MouseFeed client event the user activity event
+     * was generated from.
+     * For example, in Eclipse MouseFeed client this will be the Eclipse event.
+     * @return the MouseFeed client event.
+     * Must be initialized before the event is sent to data collector.
+     * Never <code>null</code> after initialization.   
+     */
+    public Object getClientEvent() {
+        return clientEvent;
+    }
+
+    /**
+     * @param clientEvent the new client event value. Not <code>null</code>
+     */
+    public void setClientEvent(Object clientEvent) {
+        notNull(clientEvent);
+        this.clientEvent = clientEvent;
+    }
 }

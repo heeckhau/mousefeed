@@ -70,13 +70,13 @@ public class Collector {
     @SuppressWarnings("unchecked")
     public void onEvent(Event event) {
         notNull(event);
+        if (event.getType().equals(EventType.ACTION)) {
+            lastAction = (ActionEvent) event;
+        }
         final List eventTypeListeners =
             typedEventListeners[event.getType().ordinal()]; 
         notifyListeners(eventTypeListeners, event);
         notifyListeners(nontypedEventListeners, event);
-        if (event.getType().equals(EventType.ACTION)) {
-            lastAction = (ActionEvent) event;
-        }
     }
 
     /**

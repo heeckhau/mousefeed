@@ -19,10 +19,15 @@
 package com.mousefeed.eclipse;
 
 import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
 
+import com.mousefeed.client.Messages;
 import com.mousefeed.client.collector.Collector;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -36,6 +41,11 @@ public class Activator extends AbstractUIPlugin {
     public static final String PLUGIN_ID = "com.mousefeed";
 
     /**
+     * Provides messages text.
+     */
+    private static final Messages MESSAGES = new Messages(Activator.class);
+
+    /**
      * The shared instance.
      */
     private static Activator plugin;
@@ -43,7 +53,7 @@ public class Activator extends AbstractUIPlugin {
     /**
      * @see #getCollector()
      */
-    private final Collector collector = new Collector();
+    private final Collector collector = new CollectorFactory().create();
     
     /**
      * The constructor.
@@ -51,6 +61,14 @@ public class Activator extends AbstractUIPlugin {
     public Activator() {
         isTrue(plugin == null);
         plugin = this;
+    }
+    
+    // see base
+    @Override
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
+        PreferenceStoreProvider.getInstance().setPreferenceStore(
+                this.getPreferenceStore());
     }
 
     /**
@@ -64,14 +82,39 @@ public class Activator extends AbstractUIPlugin {
     }
 
     /**
-     * Returns an image descriptor for the image file at the given
-     * plug-in relative path.
-     *
-     * @param path the path
-     * @return the image descriptor
+     * Logs the specified status with this plug-in's log.
+     * 
+     * @param status status to log. Not <code>null</code>.
      */
-    public static ImageDescriptor getImageDescriptor(String path) {
-        return imageDescriptorFromPlugin(PLUGIN_ID, path);
+    public void log(IStatus status) {
+        notNull(status);
+        getDefault().getLog().log(status);
+    }
+
+    /**
+     * Logs an exception.
+     * @param t the exception to log. Not <code>null</code>.
+     */
+    public void log(Throwable t) {
+        notNull(t);
+        if (t instanceof CoreException) {
+            log(((CoreException) t).getStatus());
+        } else {
+            log(newErrorStatus(MESSAGES.get("error.generic"), t));
+        }
+    }
+
+    /**
+     * Returns a new error status for this plug-in with the given message.
+     * @param message the message to be included in the status.
+     * Not <code>null</code>.
+     * @param t the exception to be included in the status,
+     * or <code>null</code> if none.
+     * @return a new error status. Never <code>null</code>.
+     */
+    private IStatus newErrorStatus(String message, Throwable t) {
+        return new Status(IStatus.ERROR, PLUGIN_ID, IStatus.OK,
+                message + " ", t);
     }
 
     /**

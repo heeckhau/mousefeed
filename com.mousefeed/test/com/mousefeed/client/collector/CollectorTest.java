@@ -38,6 +38,12 @@ public class CollectorTest {
         new Collector().onEvent(null);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void onAction_nullEvent() {
+        final ActionEvent actionEvent = new TestActionEvent(null);
+        new Collector().onEvent(actionEvent);
+    }
+
     @Test public void getLastAction() {
         final Collector c = new Collector();
         assertNull(c.getLastAction());
@@ -45,6 +51,9 @@ public class CollectorTest {
         final ActionEvent actionEvent = new TestActionEvent();
         actionEvent.setLabel(LABEL);
         actionEvent.setAccelerator(ACCELERATOR);
+        
+        c.addEventListener(new CheckLastEventListener(c, actionEvent),
+                EventType.ACTION);
         c.onEvent(actionEvent);
         assertEquals(actionEvent, c.getLastAction());
     }
@@ -108,7 +117,48 @@ public class CollectorTest {
         new Collector().removeEventListener(new TestListener());
     }
 
-    private static class TestActionEvent extends ActionEvent {}
+    /**
+     * Makes sure that the last event is set to the provided value during the
+     * listener call. 
+     */
+    private static final class CheckLastEventListener implements IEventListener {
+        /**
+         * The collector. 
+         */
+        private final Collector collector;
+
+        /**
+         * The action event the last action event should be equal to.
+         */
+        private final ActionEvent actionEvent;
+
+        private CheckLastEventListener(Collector collector,
+                ActionEvent actionEvent) {
+            this.collector = collector;
+            this.actionEvent = actionEvent;
+        }
+
+        public void event(Event event) {
+            assertEquals(actionEvent, collector.getLastAction());
+        }
+    }
+
+    private static class TestActionEvent extends ActionEvent {
+        
+        /**
+         * Client event is initialized by default.
+         */
+        public TestActionEvent() {
+            this(new Object());
+        }
+        
+        /**
+         * Client event can be specified.
+         */
+        public TestActionEvent(Object clientEvent) {
+            setClientEvent(clientEvent);
+        }
+    }
     
     private static class TestListener implements IEventListener {
 

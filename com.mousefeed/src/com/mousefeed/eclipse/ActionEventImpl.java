@@ -39,7 +39,7 @@ public class ActionEventImpl extends ActionEvent {
      * @see #getDef()
      */
     private String def;
-    
+
     /**
      * @return the id. Returns the first non-blank value of the following:
      * {@link #getDef()}, {@link #getClassName()}. If all of these are blank,

@@ -18,26 +18,18 @@
  */
 package com.mousefeed.eclipse;
 
-import static org.apache.commons.lang.Validate.isTrue;
-import static org.apache.commons.lang.Validate.notNull;
+import static com.mousefeed.eclipse.commands.ConfigureActionInvocationHandler.CONFIGURE_ACTION_INVOCATION_DEF;
 
-import com.mousefeed.client.OnWrongInvocationMode;
 import com.mousefeed.client.collector.ActionEvent;
 import com.mousefeed.client.collector.Collector;
-import com.mousefeed.eclipse.preferences.PreferenceAccessor;
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.SubContributionItem;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.menus.CommandContributionItem;
 
 /**
@@ -47,19 +39,6 @@ import org.eclipse.ui.menus.CommandContributionItem;
  */
 public class GlobalSelectionListener implements Listener {
     /**
-     * The id of the command/action to configure invocation mode for other
-     * actions.
-     */
-    private static final String CONFIGURE_ACTION_INVOCATION_DEF =
-            "com.mousefeed.commands.configureActionInvocation";
-
-    /**
-     * Provides access to the plugin preferences.
-     */
-    private final PreferenceAccessor preferences =
-            PreferenceAccessor.getInstance();
-    
-    /**
      * Finds keyboard shortcut for an action.
      */
     private final ActionActionDescGenerator actionActionDescGenerator =
@@ -68,19 +47,13 @@ public class GlobalSelectionListener implements Listener {
     /**
      * Finds keyboard shortcut for a command.
      */
-    private final CommandActionDescGenerator commandActionDescGenerator =
-            new CommandActionDescGenerator(); 
+    private final CommandActionEventGenerator commandActionEventGenerator =
+            new CommandActionEventGenerator(); 
     
     /**
      * Collects user activity data.
      */
     private final Collector collector = Activator.getDefault().getCollector();
-
-    /**
-     * The workbench command service.
-     */
-    private final ICommandService commandService =
-        (ICommandService) getWorkbench().getService(ICommandService.class);
 
     /**
      * Processes an event.  
@@ -109,11 +82,13 @@ public class GlobalSelectionListener implements Listener {
                     (ActionContributionItem) contributionItem;
             final ActionEvent actionDesc =
                     actionActionDescGenerator.generate(item.getAction());
-            processActionDesc(actionDesc, event);
+            processActionEvent(actionDesc);
         } else if (contributionItem instanceof CommandContributionItem) {
-            final ActionEvent actionDesc = commandActionDescGenerator.generate(
-                    (CommandContributionItem) contributionItem); 
-            processActionDesc(actionDesc, event);
+            final ActionEvent actionEvent =
+                    commandActionEventGenerator.generate(
+                            (CommandContributionItem) contributionItem); 
+            actionEvent.setClientEvent(event);
+            processActionEvent(actionEvent);
         } else {
             // no action contribution item on the widget data
         }
@@ -123,88 +98,12 @@ public class GlobalSelectionListener implements Listener {
      * Processes the prepared action description.
      * @param actionDesc the action description to process.
      * Assumed not <code>null</code>.
-     * @param event the original event. Assumed not <code>null</code>.
      */
-    private void processActionDesc(ActionEvent actionDesc, Event event) {
+    private void processActionEvent(ActionEvent actionDesc) {
         // skips the configure action invocation action
         if (CONFIGURE_ACTION_INVOCATION_DEF.equals(actionDesc.getId())) {
             return;
         }
-        giveActionFeedback(actionDesc, event);
-        logUserAction(actionDesc);
-        commandService.refreshElements(CONFIGURE_ACTION_INVOCATION_DEF, null);
-    }
-
-    /**
-     * Current workbench. Not <code>null</code>.
-     */
-    private IWorkbench getWorkbench() {
-        return PlatformUI.getWorkbench();
-    }
-
-    /**
-     * Sends action information to {@link #collector}.
-     * @param actionEvent the action data to send.
-     * Assumed not <code>null</code>.
-     */
-    private void logUserAction(ActionEvent actionEvent) {
-        collector.onEvent(actionEvent);
-    }
-
-    /**
-     * Depending on the settings reports to the user that action can be called
-     * by the action accelerator, cancels the action.
-     *
-     * @param actionDesc the populated action description.
-     * Must have a keyboard shortcut defined. Not <code>null</code>.
-     */
-    private void giveActionFeedback(ActionEvent actionDesc, Event event) {
-        notNull(actionDesc);
-        isTrue(StringUtils.isNotBlank(actionDesc.getLabel()));
-
-        if (!actionDesc.hasAccelerator()) {
-            return;
-        }
-        if (!preferences.isInvocationControlEnabled()) {
-            return;
-        }
-
-        switch (getOnWrongInvocationMode(actionDesc.getId())) {
-        case DO_NOTHING:
-            // go on
-            break;
-        case REMIND:
-            new NagPopUp(actionDesc.getLabel(),
-                    actionDesc.getAccelerator(), false).open();
-            break;
-        case ENFORCE:
-            cancelEvent(event);
-            new NagPopUp(actionDesc.getLabel(),
-                    actionDesc.getAccelerator() + "", true).open();
-            break;
-        default:
-            throw new AssertionError();
-        }
-    }
-
-    /**
-     * Returns the wrong invocation mode handling for the action with the
-     * specified id.
-     * @param id the action id. Assumed not <code>null</code>.
-     * @return the mode. Not <code>null</code>.
-     */
-    private OnWrongInvocationMode getOnWrongInvocationMode(String id) {
-        final OnWrongInvocationMode mode =
-                preferences.getOnWrongInvocationMode(id);
-        return mode == null ? preferences.getOnWrongInvocationMode() : mode;
-    }
-
-    /**
-     * Stops further processing of the specified event.
-     * @param event the event to disable. Assumed not <code>null</code>.
-     */
-    private void cancelEvent(Event event) {
-        event.type = SWT.None;
-        event.doit = false;
+        collector.onEvent(actionDesc);
     }
 }
