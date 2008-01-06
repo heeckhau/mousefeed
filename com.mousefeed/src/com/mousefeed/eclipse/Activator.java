@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -61,16 +60,9 @@ public class Activator extends AbstractUIPlugin {
     public Activator() {
         isTrue(plugin == null);
         plugin = this;
+        PluginProvider.getInstance().setPlugin(this);
     }
     
-    // see base
-    @Override
-    public void start(BundleContext context) throws Exception {
-        super.start(context);
-        PreferenceStoreProvider.getInstance().setPreferenceStore(
-                this.getPreferenceStore());
-    }
-
     /**
      * Returns the shared instance.
      *

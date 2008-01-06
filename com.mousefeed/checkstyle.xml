@@ -155,14 +155,14 @@
     <module name="ReturnCount">
        <property name="max" value="3"/>
     </module>
-    <module name="IllegalType"/>
+    <module name="IllegalType">
+       <property name="legalAbstractClassNames" value="AbstractUIPlugin"/>
+    </module>
     <module name="DeclarationOrder"/>
     <module name="ExplicitInitialization"/>
     <module name="DefaultComesLast"/>
     <module name="FallThrough"/>
-    <module name="MultipleStringLiterals">
-      <property name="ignoreStringsRegexp" value="unused"/>
-    </module>
+    <module name="MultipleStringLiterals"/>
     <module name="MultipleVariableDeclarations"/>
     <module name="UnnecessaryParentheses"/>
 

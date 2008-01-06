@@ -20,41 +20,44 @@ package com.mousefeed.eclipse;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.junit.Test;
 
 
 /**
  * @author Andriy Palamarchuk
  */
-public class PreferenceStoreProviderTest {
+public class PluginProviderTest {
     @Test
     public void getInstance() {
-        assertNotNull(PreferenceStoreProvider.getInstance());
+        assertNotNull(PluginProvider.getInstance());
     }
     
     @Test(expected = IllegalStateException.class)
-    public void getPreferenceStore_not_initialized() {
-        new PreferenceStoreProvider().getPreferenceStore();
+    public void getPlugin_not_initialized() {
+        new PluginProvider().getPlugin();
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void setPreferenceStore_null() {
-        new PreferenceStoreProvider().setPreferenceStore(null);
+    public void setPlugin_null() {
+        new PluginProvider().setPlugin(null);
     }
     
     @Test(expected = IllegalStateException.class)
-    public void setPreferenceStore_twice() {
-        final PreferenceStoreProvider p = new PreferenceStoreProvider();
-        p.setPreferenceStore(new PreferenceStore());
-        p.setPreferenceStore(new PreferenceStore());
+    public void setPlugin_twice() {
+        final PluginProvider p = new PluginProvider();
+        p.setPlugin(new TestPlugin());
+        p.setPlugin(new TestPlugin());
     }
 
     @Test
-    public void getPreferenceStore() {
-        final PreferenceStoreProvider p = new PreferenceStoreProvider();
-        final PreferenceStore preferenceStore = new PreferenceStore();
-        p.setPreferenceStore(preferenceStore);
-        assertEquals(preferenceStore, p.getPreferenceStore());
+    public void getPlugin() {
+        final PluginProvider p = new PluginProvider();
+        final TestPlugin plugin = new TestPlugin();
+        p.setPlugin(plugin);
+        assertEquals(plugin, p.getPlugin());
+    }
+
+    private final static class TestPlugin extends AbstractUIPlugin {
     }
 }

@@ -23,8 +23,7 @@ import static com.mousefeed.eclipse.preferences.PreferenceConstants.P_INVOCATION
 import static org.apache.commons.lang.Validate.notNull;
 
 import com.mousefeed.client.OnWrongInvocationMode;
-import com.mousefeed.eclipse.Activator;
-import com.mousefeed.eclipse.PreferenceStoreProvider;
+import com.mousefeed.eclipse.PluginProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -39,6 +38,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * Provides access to the plugin preferences.
@@ -326,7 +326,7 @@ public class PreferenceAccessor {
      * @return never <code>null</code>.
      */
     private IPreferenceStore getPreferenceStore() {
-        return PreferenceStoreProvider.getInstance().getPreferenceStore(); 
+        return PluginProvider.getInstance().getPlugin().getPreferenceStore(); 
     }
     
     /**
@@ -335,11 +335,14 @@ public class PreferenceAccessor {
      * invoked with a wrong invocation mode.
      */
     File getActionsWrongInvocationModeFile() {
-        if (Activator.getDefault() == null) {
+        final AbstractUIPlugin plugin;
+        try {
+            plugin = PluginProvider.getInstance().getPlugin();
+        } catch (IllegalStateException e) {
+            // this is a workaround to allow unit test the class;
             return new File("nonexisting");
         }
-        return Activator.getDefault()
-                .getStateLocation()
+        return plugin.getStateLocation()
                 .append(ACTIONS_WRONG_INVOCATION_MODE_FILE)
                 .toFile();
     }

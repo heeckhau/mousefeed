@@ -17,7 +17,7 @@
   <taskdef resource="checkstyletask.properties">
     <classpath>
       <pathelement location="lib/antlr-2.7.7.jar"/>
-      <pathelement location="lib/checkstyle-4.3.jar"/>
+      <pathelement location="lib/checkstyle-4.4.jar"/>
       <pathelement location="lib/commons-beanutils-1.7.0.jar"/>
       <pathelement location="lib/commons-collections-3.2.jar"/>
       <pathelement location="lib/commons-logging-1.1.jar"/>

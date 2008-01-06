@@ -21,69 +21,68 @@ package com.mousefeed.eclipse;
 import static org.apache.commons.lang.Validate.notNull;
 
 import com.mousefeed.eclipse.preferences.PreferenceAccessor;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
- * Provides {@link IPreferenceStore} of the MouseFeed plugin.
+ * Provides access to the MouseFeed plugin.
  * Is used to break dependency of {@link PreferenceAccessor} on
  * the plugin class.
  * Singleton.
  * 
  * @author Andriy Palamarchuk
  */
-public class PreferenceStoreProvider {
+public class PluginProvider {
     /**
      * @see #getInstance()
      */
-    private static final PreferenceStoreProvider INSTANCE =
-            new PreferenceStoreProvider();
+    private static final PluginProvider INSTANCE =
+            new PluginProvider();
     
     /**
-     * @see #getPreferenceStore()
+     * @see #getPlugin()
      */
-    private IPreferenceStore preferenceStore;
+    private AbstractUIPlugin plugin;
 
     /**
      * Constructor. Should not be used from outside of the class except
      * for unit testing.
      */
-    PreferenceStoreProvider() {
+    PluginProvider() {
     }
 
     /**
      * The singleton instance.
      * @return the singleton instance. Never <code>null</code>.
      */
-    public static PreferenceStoreProvider getInstance() {
+    public static PluginProvider getInstance() {
         return INSTANCE;
     }
 
     /**
-     * The preference store of the MouseFeed plugin.
+     * The MouseFeed plugin.
      * Throws <code>IllegalStateException</code> if not initialized with
-     * {@link #setPreferenceStore(IPreferenceStore)}.
-     * @return the preference store. Never <code>null</code>
+     * {@link #setPlugin(AbstractUIPlugin)}.
+     * @return the plugin. Never <code>null</code>
      */
-    public IPreferenceStore getPreferenceStore() {
-        if (preferenceStore == null) {
+    public AbstractUIPlugin getPlugin() {
+        if (plugin == null) {
             throw new IllegalStateException(
-                    "The preference store has not been initialized yet.");
+                    "The plugin has not been initialized yet.");
         }
-        return preferenceStore;
+        return plugin;
     }
 
     /**
      * The method should be called only once.
-     * @param preferenceStore the preference store to set.
-     * Not <code>null</code>.
-     * @see #getPreferenceStore()
+     * @param plugin the plugin to set. Not <code>null</code>.
+     * @see #getPlugin()
      */
-    public void setPreferenceStore(IPreferenceStore preferenceStore) {
-        notNull(preferenceStore);
-        if (this.preferenceStore != null) {
+    public void setPlugin(AbstractUIPlugin plugin) {
+        notNull(plugin);
+        if (this.plugin != null) {
             throw new IllegalStateException(
-                    "Preference store is already initialized");
+                    "The plugin is already initialized");
         }
-        this.preferenceStore = preferenceStore;
+        this.plugin = plugin;
     }
 }

@@ -132,9 +132,9 @@ public class Collector {
     /**
      * The last non-internal action provided to the collector.
      * @return the last action provided to the method
-     * {@link #onEvent(ActionEvent)},
+     * {@link #onEvent(Event)},
      * <code>null</code> if there were no calls to that method yet.
-     * @see #onEvent(ActionEvent)
+     * @see #onEvent(Event)
      */
     public ActionEvent getLastAction() {
         return lastAction;

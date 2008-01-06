@@ -23,7 +23,7 @@ package com.mousefeed.eclipse.preferences;
  *
  * @author Andriy Palamarchuk
  */
-public class PreferenceConstants {
+public final class PreferenceConstants {
 
     /**
      * Whether invocation control is enabled preference.
@@ -45,4 +45,10 @@ public class PreferenceConstants {
      */
     public static final String P_DEFAULT_ON_WRONG_INVOCATION_MODE =
             "DefaultOnWrongInvocationMode";
+
+    /**
+     * Invisible constructor.
+     */
+    private PreferenceConstants() {
+    }
 }
