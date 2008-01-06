@@ -37,6 +37,12 @@ public abstract class Event {
      * @return the event type. Never <code>null</code>.
      */
     public abstract EventType getType();
+    
+    // see base
+    @Override
+    public String toString() {
+        return getType().name();
+    }
 
     /**
      * The underlying MouseFeed client event the user activity event

@@ -59,5 +59,45 @@ public class ActionEventTest {
         assertTrue(d.hasAccelerator());
     }
     
+    @Test public void testToString() {
+        final String accelerator = "Accelerator 1";
+        final String clientEvent = "Client Event 1";
+        final String label = "Label 1";
+        final String id = "Id 1";
+        
+        final ActionEvent d = new TestActionEvent() {
+            @Override
+            public String getId() {
+                return id;
+            }
+        };
+        d.setAccelerator(accelerator);
+        d.setClientEvent(clientEvent);
+        d.setLabel(label);
+        
+        final String s = d.toString();
+        assertContains(s, EventType.ACTION.name());
+        assertContains(s, id);
+        assertNotContains(s, accelerator);
+        assertNotContains(s, clientEvent);
+        assertContains(s, label);
+    }
+
+    /**
+     * Asserts that the string <code>substring</code> is contained inside of
+     * <code>s</code>.
+     */
+    private void assertContains(String s, String substring) {
+        assertTrue(s.contains(substring));
+    }
+    
+    /**
+     * Asserts that the string <code>substring</code> is not contained inside of
+     * <code>s</code>.
+     */
+    private void assertNotContains(String s, String substring) {
+        assertFalse(s.contains(substring));
+    }
+
     private static class TestActionEvent extends ActionEvent {}
 }

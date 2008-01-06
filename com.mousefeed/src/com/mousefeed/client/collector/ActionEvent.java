@@ -37,6 +37,13 @@ public abstract class ActionEvent extends Event {
      */
     private String accelerator;
 
+    // see base
+    @Override
+    public String toString() {
+        return super.toString() + '\t' + getId() + '\t'
+                + "(" + getLabel() + ")";
+    }
+
     /**
      * The id of the user action.
      * @return the string identifying the action invoked by the user.
