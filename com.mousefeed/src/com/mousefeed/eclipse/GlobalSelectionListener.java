@@ -41,8 +41,8 @@ public class GlobalSelectionListener implements Listener {
     /**
      * Finds keyboard shortcut for an action.
      */
-    private final ActionActionDescGenerator actionActionDescGenerator =
-            new ActionActionDescGenerator();
+    private final ActionActionEventGenerator actionActionDescGenerator =
+            new ActionActionEventGenerator();
     
     /**
      * Finds keyboard shortcut for a command.

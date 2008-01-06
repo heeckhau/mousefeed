@@ -50,12 +50,12 @@ import org.eclipse.ui.keys.IBindingService;
  *
  * @author Andriy Palamarchuk
  */
-class ActionActionDescGenerator {
+class ActionActionEventGenerator {
 
     /**
-     * Stores the generated action description.
+     * Stores the generated action event.
      */
-    private ActionEventImpl actionDesc; 
+    private ActionEventImpl actionEvent; 
     
     /**
      * Searches for an action inside of
@@ -77,7 +77,7 @@ class ActionActionDescGenerator {
     /**
      * Creates new finder.
      */
-    public ActionActionDescGenerator() {
+    public ActionActionEventGenerator() {
         bindingService =
             (IBindingService) getWorkbench().getAdapter(IBindingService.class);
         activityManager =
@@ -86,25 +86,25 @@ class ActionActionDescGenerator {
     
 
     /**
-     * Generates action description from the action.
-     * @param action the action to generate description for.
+     * Generates action event from the Eclipse action.
+     * @param action the action to generate the event for.
      * Not <code>null</code>.
-     * @return the action description for the provided action.
+     * @return the collector action event for the provided action.
      * Never <code>null</code>.
      */
     public ActionEvent generate(IAction action) {
         notNull(action);
 
-        actionDesc = new ActionEventImpl();
-        actionDesc.setLabel(action.getText());
-        actionDesc.setClassName(action.getClass().getName());
+        actionEvent = new ActionEventImpl();
+        actionEvent.setLabel(action.getText());
+        actionEvent.setClassName(action.getClass().getName());
         extractActionData(action);
-        return actionDesc;
+        return actionEvent;
     }
 
     //clear, simple structure, leave extra returns
     /**
-     * Scans action for data to populate action description.
+     * Scans action for data to populate action event.
      * @param action the action to search accelerator for.
      * Not <code>null</code>.
      */
@@ -126,28 +126,28 @@ class ActionActionDescGenerator {
 
 
     /**
-     * Populates {@link #actionDesc} from the action definition id.
+     * Populates {@link #actionEvent} from the action definition id.
      * @param actionDefinitionId. <code>null</code> if not defined.
      */
     private void fromActionDefinition(String definitionId) {
         if (definitionId == null) {
             return;
         }
-        actionDesc.setDef(definitionId);
+        actionEvent.setDef(definitionId);
         final String s = findAcceleratorForActionDefinition(definitionId);
         if (s != null) {
-            actionDesc.setAccelerator(s);
+            actionEvent.setAccelerator(s);
         }
     }
 
 
     /**
-     * Populates {@link #actionDesc} from the action accelerator.
+     * Populates {@link #actionEvent} from the action accelerator.
      * @param accelerator. 0 if not defined.
      */
     private void fromActionAccelerator(int accelerator) {
         if (accelerator != 0) {
-            actionDesc.setAccelerator(keyToStr(accelerator));
+            actionEvent.setAccelerator(keyToStr(accelerator));
         }
     }
 
