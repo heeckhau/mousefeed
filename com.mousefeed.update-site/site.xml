@@ -9,6 +9,9 @@
    <feature url="features/com.mousefeed.feature_0.9.0.jar" id="com.mousefeed.feature" version="0.9.0">
       <category name="MouseFeed"/>
    </feature>
+   <feature url="features/com.mousefeed.feature_1.0.0.jar" id="com.mousefeed.feature" version="1.0.0">
+      <category name="MouseFeed"/>
+   </feature>
    <category-def name="MouseFeed" label="MouseFeed Plugin">
       <description>
          MouseFeed Eclipse plugin. Helps to remember keyboard shortcuts. Shows a popup with the keyboard shortcut for the actions called with a menu or a toolbar button.
