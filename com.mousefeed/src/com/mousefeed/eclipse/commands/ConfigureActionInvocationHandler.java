@@ -82,8 +82,11 @@ public class ConfigureActionInvocationHandler extends AbstractHandler
     @SuppressWarnings("unchecked")
     public void updateElement(UIElement element, Map parameters) {
         notNull(element);
+        String label = "";
+        if (getLastAction() != null)
+            label = getLastAction().getLabel();
         element.setText(MESSAGES.get("menuItem.lastActionInvocation.label",
-                getLastAction().getLabel()));
+                label));
     }
 
     /**
