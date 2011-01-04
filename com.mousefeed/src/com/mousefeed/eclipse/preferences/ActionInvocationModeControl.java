@@ -55,7 +55,7 @@ import org.eclipse.swt.widgets.TableColumn;
  * @author Andriy Palamarchuk
  */
 //COUPLING:OFF
-class ActionInvocationModeControl extends Composite {
+public class ActionInvocationModeControl extends Composite {
     /**
      * The columns enumeration. Each member of this enumeration provides
      * property name as name and column order as order of members in the
@@ -63,7 +63,7 @@ class ActionInvocationModeControl extends Composite {
      * 
      * @author Andriy Palamarchuk
      */
-    static enum Column {
+    protected static enum Column {
         /**
          * The label column.
          */

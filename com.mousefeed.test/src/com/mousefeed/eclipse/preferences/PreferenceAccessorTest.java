@@ -109,7 +109,7 @@ public class PreferenceAccessorTest {
     private class TestPreferenceAccessor extends PreferenceAccessor {
         // see base
         @Override
-        File getActionsWrongInvocationModeFile() {
+        protected File getActionsWrongInvocationModeFile() {
             return FILE;
         }
     }

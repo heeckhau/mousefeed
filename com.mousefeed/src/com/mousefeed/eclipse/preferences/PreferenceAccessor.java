@@ -99,7 +99,7 @@ public class PreferenceAccessor {
      * Because this class is a singleton, the constructor normally should not be
      * used. It is exposed for testing purposes only.
      */
-    PreferenceAccessor() {
+    protected PreferenceAccessor() {
         loadActionsOnWrongInvocationMode();
     }
     
@@ -334,7 +334,7 @@ public class PreferenceAccessor {
      * @return the file for action-specific preferences when the actions are
      * invoked with a wrong invocation mode.
      */
-    File getActionsWrongInvocationModeFile() {
+    protected File getActionsWrongInvocationModeFile() {
         final AbstractUIPlugin plugin;
         try {
             plugin = PluginProvider.getInstance().getPlugin();

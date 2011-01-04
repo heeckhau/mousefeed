@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: com.mousefeed.test
+Bundle-Version: 1.0.1.qualifier
+Bundle-Vendor: Mousefeed
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: com.mousefeed;bundle-version="1.0.1",
+ org.junit;bundle-version="4.8.1",
+ org.eclipse.ui;bundle-version="3.6.1",
+ org.eclipse.core.runtime;bundle-version="3.6.0"

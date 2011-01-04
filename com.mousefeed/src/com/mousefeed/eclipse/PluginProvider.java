@@ -44,10 +44,9 @@ public class PluginProvider {
     private AbstractUIPlugin plugin;
 
     /**
-     * Constructor. Should not be used from outside of the class except
-     * for unit testing.
+     * Constructor. Should not be used from outside of the class.
      */
-    PluginProvider() {
+    private PluginProvider() {
     }
 
     /**

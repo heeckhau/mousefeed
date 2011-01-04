@@ -23,10 +23,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.ui.PlatformUI;
+import org.junit.Test;
+
 import com.mousefeed.client.OnWrongInvocationMode;
 import com.mousefeed.eclipse.preferences.ActionInvocationModeControl.Column;
-import org.eclipse.jface.viewers.TableViewer;
-import org.junit.Test;
 
 /**
  * @author Andriy Palamarchuk
@@ -39,6 +41,8 @@ public class ActionInvocationModeTableCellModifierTest {
             OnWrongInvocationMode.DO_NOTHING;
     private static final OnWrongInvocationMode MODE2 =
             OnWrongInvocationMode.ENFORCE;
+    
+    private static final TableViewer dummyTableViewer = new TableViewer(PlatformUI.getWorkbench().getDisplay().getActiveShell());
 
     @Test (expected = IllegalArgumentException.class)
     public void constructor() {
@@ -47,29 +51,29 @@ public class ActionInvocationModeTableCellModifierTest {
 
     @Test public void canModify() {
         final ActionInvocationModeTableCellModifier m =
-                new TestModifier(null);
+                new TestModifier(dummyTableViewer);
         assertFalse(m.canModify(null, Column.LABEL.name()));
         assertTrue(m.canModify(new Object(), Column.MODE.name()));
     }
 
     @Test public void canModify_unknownProperty() {
-        final ActionInvocationModeTableCellModifier m =  new TestModifier(null);
+        final ActionInvocationModeTableCellModifier m =  new TestModifier(dummyTableViewer);
         assertFalse(m.canModify(null, "unknown property"));
     }
 
     @Test public void getValue() {
-        final ActionInvocationModeTableCellModifier m = new TestModifier(null);
+        final ActionInvocationModeTableCellModifier m = new TestModifier(dummyTableViewer);
         assertEquals(LABEL, m.getValue(getMode(), Column.LABEL.name()));
         assertEquals(MODE.ordinal(), m.getValue(getMode(), Column.MODE.name()));
     }
 
     @Test public void getValue_unknownProperty() {
-        final ActionInvocationModeTableCellModifier m = new TestModifier(null);
+        final ActionInvocationModeTableCellModifier m = new TestModifier(dummyTableViewer);
         assertNull(m.getValue(getMode(), "unknown property"));
     }
 
     @Test public void modify_mode() {
-        final ActionInvocationModeTableCellModifier m = new TestModifier(null);
+        final ActionInvocationModeTableCellModifier m = new TestModifier(dummyTableViewer);
         final ActionOnWrongInvocationMode mode = getMode();
         
         assertFalse(mode.getOnWrongInvocationMode().equals(MODE2));
@@ -78,12 +82,12 @@ public class ActionInvocationModeTableCellModifierTest {
     }
 
     @Test public void modify_label() {
-        final ActionInvocationModeTableCellModifier m = new TestModifier(null);
+        final ActionInvocationModeTableCellModifier m = new TestModifier(dummyTableViewer);
         m.modify(getMode(), Column.LABEL.name(), "some value");
     }
 
     @Test public void modify_unknownProperty() {
-        final ActionInvocationModeTableCellModifier m = new TestModifier(null);
+        final ActionInvocationModeTableCellModifier m = new TestModifier(dummyTableViewer);
         m.modify(getMode(), "unknown property", "some value");
     }
 

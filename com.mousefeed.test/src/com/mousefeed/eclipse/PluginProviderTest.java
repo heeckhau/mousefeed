@@ -18,8 +18,8 @@
  */
 package com.mousefeed.eclipse;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.junit.Test;
 
@@ -33,31 +33,11 @@ public class PluginProviderTest {
         assertNotNull(PluginProvider.getInstance());
     }
     
-    @Test(expected = IllegalStateException.class)
-    public void getPlugin_not_initialized() {
-        new PluginProvider().getPlugin();
-    }
-    
-    @Test(expected = IllegalArgumentException.class)
-    public void setPlugin_null() {
-        new PluginProvider().setPlugin(null);
-    }
-    
-    @Test(expected = IllegalStateException.class)
-    public void setPlugin_twice() {
-        final PluginProvider p = new PluginProvider();
-        p.setPlugin(new TestPlugin());
-        p.setPlugin(new TestPlugin());
-    }
-
     @Test
-    public void getPlugin() {
-        final PluginProvider p = new PluginProvider();
-        final TestPlugin plugin = new TestPlugin();
-        p.setPlugin(plugin);
-        assertEquals(plugin, p.getPlugin());
+    public void getPlugin_is_initialized_byActivator() {
+    	assertNotNull(PluginProvider.getInstance().getPlugin());
     }
-
+    
     private final static class TestPlugin extends AbstractUIPlugin {
     }
 }

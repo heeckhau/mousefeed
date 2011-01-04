@@ -26,7 +26,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Andriy Palamarchuk
  */
-class ActionInvocationModeTableLabelProvider extends BaseLabelProvider 
+public class ActionInvocationModeTableLabelProvider extends BaseLabelProvider 
         implements ITableLabelProvider {
 
     // see base
