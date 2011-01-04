@@ -9,6 +9,7 @@
 
   <modules>
         <module>com.mousefeed</module>
+        <module>com.mousefeed.test</module>
         <module>com.mousefeed.feature</module>
   </modules>
 
