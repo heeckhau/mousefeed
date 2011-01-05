@@ -23,8 +23,8 @@
 				<artifactId>maven-osgi-test-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<useUIHarness>false</useUIHarness>
-					<useUIThread>false</useUIThread>
+					<useUIHarness>true</useUIHarness>
+					<useUIThread>true</useUIThread>
 					<fork>once</fork>
 					<argLine>-enableassertions</argLine>
 				</configuration>
