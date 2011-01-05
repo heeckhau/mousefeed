@@ -24,9 +24,12 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<useUIHarness>true</useUIHarness>
-					<useUIThread>true</useUIThread>
+					<useUIThread>false</useUIThread>
 					<fork>once</fork>
 					<argLine>-enableassertions</argLine>
+					<excludes>
+						<exclude>**/ActionInvocationModeTableCellModifierTest.java</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>
