@@ -95,8 +95,12 @@ class ActionActionEventGenerator {
     public ActionEvent generate(IAction action) {
         notNull(action);
 
+        String label = action.getText();
+        if (label==null || label.length() == 0) //ticket #1
+            label = action.getClass().getSimpleName();
+        
         actionEvent = new ActionEventImpl();
-        actionEvent.setLabel(action.getText());
+        actionEvent.setLabel(label);
         actionEvent.setClassName(action.getClass().getName());
         extractActionData(action);
         return actionEvent;
