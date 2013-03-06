@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -42,6 +42,13 @@ import org.eclipse.swt.widgets.Label;
  * @author Andriy Palamarchuk
  */
 public class OnWrongInvocationModeUI {
+    
+    /**
+     * Default constructor does nothing.
+     */
+    public OnWrongInvocationModeUI() {
+    }
+    
     /**
      * Creates the label.
      * @param container the container to create this control in.
@@ -51,8 +58,8 @@ public class OnWrongInvocationModeUI {
      * @param labelText the label text. Not <code>null</code>.
      * @return the label control. Never <code>null</code>.
      */
-    public Label createLabel(Composite container, Control aboveControl,
-            String labelText) {
+    public Label createLabel(final Composite container, final Control aboveControl,
+            final String labelText) {
         notNull(container);
         notNull(labelText);
         final Label label = new Label(container, SWT.NULL);
@@ -69,7 +76,7 @@ public class OnWrongInvocationModeUI {
      * is the topmost control in the container.
      * @return the combo control. Never <code>null</code>.
      */
-    public Combo createCombo(Composite container, Control aboveControl) {
+    public Combo createCombo(final Composite container, final Control aboveControl) {
         notNull(container);
         isTrue(aboveControl == null || aboveControl instanceof Label);
 

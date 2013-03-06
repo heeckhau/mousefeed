@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description url="http://update.mousefeed.com">
-      The main MouseFeed Eclipse Update server.
+   <description name="MouseFeed Fork" url="http://www.rowlo.de/mousefeedfork/updatesite">
+      The main MouseFeed Fork Eclipse Update server. Fork was started on branch 1.0.
+
+Versions 2.x.x are for Eclipse 4, versions 1.x.x work up to Eclipse 3.7.
    </description>
-   <feature url="features/com.hlsoft.clickclose.feature_2.0.0.jar" id="com.hlsoft.clickclose.feature" version="2.0.0">
-      <category name="Click Close"/>
+   <feature url="features/com.mousefeed.feature_1.1.0.jar" id="com.mousefeed.feature" version="1.1.0">
+      <category name="MouseFeed 1.x.x"/>
    </feature>
-   <feature url="features/com.mousefeed.feature_0.9.0.jar" id="com.mousefeed.feature" version="0.9.0">
-      <category name="MouseFeed"/>
+   <feature url="features/com.mousefeed.feature_1.1.1.jar" id="com.mousefeed.feature" version="1.1.1">
+      <category name="MouseFeed 1.x.x"/>
    </feature>
-   <feature url="features/com.mousefeed.feature_1.0.0.jar" id="com.mousefeed.feature" version="1.0.0">
-      <category name="MouseFeed"/>
+   <feature url="features/com.mousefeed.feature_2.0.0.jar" id="com.mousefeed.feature" version="2.0.0">
+      <category name="MouseFeed 2.x.x"/>
    </feature>
-   <category-def name="MouseFeed" label="MouseFeed Plugin">
+   <category-def name="MouseFeed 1.x.x" label="MouseFeed Plugin (up to Eclipse 3.7)">
       <description>
          MouseFeed Eclipse plugin. Helps to remember keyboard shortcuts. Shows a popup with the keyboard shortcut for the actions called with a menu or a toolbar button.
+
+Versions 2.x.x are for Eclipse 4, versions 1.x.x work up to Eclipse 3.7.
       </description>
    </category-def>
-   <category-def name="Click Close" label="Click Close Plugin">
+   <category-def name="MouseFeed 2.x.x" label="MouseFeed Plugin (e4 or newer)">
       <description>
-         Speeds up tabs closing, allowing to close them with a middle click. Closing tabs this way is much faster than using the tab close button, because of the much bigger target area.
+         MouseFeed Eclipse plugin. Helps to remember keyboard shortcuts. Shows a popup with the keyboard shortcut for the actions called with a menu or a toolbar button.
+
+Versions 2.x.x DO NOT WORK with Eclipse 3.7 or below. These versions contain support for e4 workbench model and cannot be used with earlier versions of Eclipse.  Versions 1.x.x work up to Eclipse 3.7.
       </description>
    </category-def>
 </site>

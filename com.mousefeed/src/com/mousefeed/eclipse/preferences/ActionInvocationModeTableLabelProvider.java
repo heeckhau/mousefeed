@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -29,8 +29,14 @@ import org.eclipse.swt.graphics.Image;
 class ActionInvocationModeTableLabelProvider extends BaseLabelProvider 
         implements ITableLabelProvider {
 
+    /**
+     * Default constructor does nothing.
+     */
+    public ActionInvocationModeTableLabelProvider() {
+    }
+    
     // see base
-    public boolean isLabelProperty(Object element, String property) {
+    public boolean isLabelProperty(final Object element, final String property) {
         if (property.equals(Column.LABEL.name())) {
             return false;
         } else if (property.equals(Column.MODE.name())) {
@@ -44,12 +50,12 @@ class ActionInvocationModeTableLabelProvider extends BaseLabelProvider
     /**
      * Returns <code>null</code>.
      */
-    public Image getColumnImage(Object element, int columnIndex) {
+    public Image getColumnImage(final Object element, final int columnIndex) {
         return null;
     }
 
     // see base
-    public String getColumnText(Object element, int columnIndex) {
+    public String getColumnText(final Object element, final int columnIndex) {
         final ActionOnWrongInvocationMode mode =
                 (ActionOnWrongInvocationMode) element;
         if (columnIndex == Column.LABEL.ordinal()) {

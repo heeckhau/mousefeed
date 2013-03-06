@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -113,7 +113,7 @@ class ActionInvocationModeControl extends Composite {
      * @param parent the container where to create the UI.
      * Not <code>null</code>.
      */
-    public ActionInvocationModeControl(Composite parent) {
+    public ActionInvocationModeControl(final Composite parent) {
         super(parent, SWT.NONE);
         this.setLayout(new FormLayout());
 
@@ -123,7 +123,7 @@ class ActionInvocationModeControl extends Composite {
         table.addKeyListener(new KeyAdapter() {
 
             @Override
-            public void keyPressed(KeyEvent e) {
+            public void keyPressed(final KeyEvent e) {
                 if (e.character == SWT.DEL && e.stateMask == 0) {
                     removeSelected();
                     e.doit = false;
@@ -132,7 +132,7 @@ class ActionInvocationModeControl extends Composite {
         });
         tableViewer.addSelectionChangedListener(
                 new ISelectionChangedListener() {
-                    public void selectionChanged(SelectionChangedEvent event) {
+                    public void selectionChanged(final SelectionChangedEvent event) {
                         onTableSelectionChanged();
                     }
                 });
@@ -181,7 +181,7 @@ class ActionInvocationModeControl extends Composite {
      * Can be <code>null</code> if this is the topmost control in the container.
      * @return the table control.
      */
-    private Table createTable(Control aboveControl) {
+    private Table createTable(final Control aboveControl) {
         final Table t = new Table(this,
                 SWT.V_SCROLL | SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
         t.setLinesVisible(true);
@@ -258,7 +258,7 @@ class ActionInvocationModeControl extends Composite {
         b.setText(MESSAGES.get("removeButton.label"));
         b.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 removeSelected();
             }
         });
@@ -270,7 +270,7 @@ class ActionInvocationModeControl extends Composite {
      * @param rightControl the control to the right.
      * @return the label control. Not <code>null</code>.
      */
-    private Label createAddReminder(Control rightControl) {
+    private Label createAddReminder(final Control rightControl) {
         final Label label = new Label(this, SWT.WRAP | SWT.LEFT);
         label.setText(MESSAGES.get("label.addActionConfigReminder"));
 
@@ -288,7 +288,7 @@ class ActionInvocationModeControl extends Composite {
      * @param belowControl the control below this one.
      * Assumed not <code>null</code>.
      */
-    private void layoutTable(Control belowControl) {
+    private void layoutTable(final Control belowControl) {
         final FormData formData = new FormData();
         formData.left = new FormAttachment(0, 0);
         formData.top = new FormAttachment(0, 0);

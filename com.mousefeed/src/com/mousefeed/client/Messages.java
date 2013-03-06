@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -25,11 +25,10 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * Provides localized messages.
- * Messages are retrieved with {@link #get(String, Object...)}.
- * If it is be provided with a class to retrieve the messages for, one can drop
- * this class name from the key names.  
- *
+ * Provides localized messages. Messages are retrieved with
+ * {@link #get(String, Object...)}. If it is be provided with a class to
+ * retrieve the messages for, one can drop this class name from the key names.
+ * 
  * @see #get(String, Object...)
  * @author Andriy Palamarchuk
  */
@@ -37,27 +36,28 @@ public class Messages {
     /**
      * The base name of the messages properties file for {@link #BUNDLE}.
      */
-    private static final String MESSAGES_BASE =
-            Messages.class.getPackage().getName() + ".messages";
+    private static final String MESSAGES_BASE = Messages.class.getPackage()
+            .getName() + ".messages";
 
     /**
-     * The messages resource bundle. 
+     * The messages resource bundle.
      */
-    private static final ResourceBundle BUNDLE =
-            ResourceBundle.getBundle(MESSAGES_BASE);
-    
+    private static final ResourceBundle BUNDLE = ResourceBundle
+            .getBundle(MESSAGES_BASE);
+
     /**
      * The class to find messages for by using keys missing class name.
      */
     private final Class<?> forClass;
 
     /**
-     * Constructor. For an object created by this constructor it is necessary
-     * to pass full message key to {@link #get(String, Object...)}.
+     * Constructor. For an object created by this constructor it is necessary to
+     * pass full message key to {@link #get(String, Object...)}.
+     * 
      * @see #Messages(Class)
      */
     public Messages() {
-        this(NoForClassIsSpecified.class);
+        this(AbstractNoForClassIsSpecified.class);
     }
 
     /**
@@ -65,62 +65,70 @@ public class Messages {
      * associated with the specified class can be retrieved by passing a key
      * part after class base name as well as full message key to
      * {@link #get(String, Object...)}.
-     * @param forClass the class to retrieve messages for.
-     * Passing <code>null</code> value is equivalent to {@link #Messages()}.
+     * 
+     * @param forClass
+     *            the class to retrieve messages for. Passing <code>null</code>
+     *            value is equivalent to {@link #Messages()}.
      * @see #get(String, Object...)
      */
-    public Messages(Class<?> forClass) {
-        this.forClass =
-                forClass == null ? NoForClassIsSpecified.class : forClass;
+    public Messages(final Class<?> forClass) {
+        this.forClass = forClass == null ? AbstractNoForClassIsSpecified.class
+                : forClass;
     }
-    
+
     /**
-     * Returns the message for the defined key.
-     * If the object is provided with a class to retrieve messages for
-     * (e.g. is created with {@link #Messages(Class)}),
-     * this method tries to retrieve the message on a key composed with that
-     * class name and the provided key. If the message is not found, it finds
-     * the message using the provided key as is.
-     * If no class is provided, the method returns searches the message using
-     * the provided key.
-     * @param key the message id.
-     * Not <code>null</code> or empty string.
-     * @param arguments the message arguments when the message will be 
-     * formatted by {@link MessageFormat#format}.
+     * Returns the message for the defined key. If the object is provided with a
+     * class to retrieve messages for (e.g. is created with
+     * {@link #Messages(Class)}), this method tries to retrieve the message on a
+     * key composed with that class name and the provided key. If the message is
+     * not found, it finds the message using the provided key as is. If no class
+     * is provided, the method returns searches the message using the provided
+     * key.
+     * 
+     * @param key
+     *            the message id. Not <code>null</code> or empty string.
+     * @param arguments
+     *            the message arguments when the message will be formatted by
+     *            {@link MessageFormat#format}.
      * @return the message for the defined key. Never <code>null</code>.
-     * @throws NullPointerException if the provided key is blank.
-     * @throws MissingResourceException if the provided key is not found. 
+     * @throws NullPointerException
+     *             if the provided key is blank.
+     * @throws MissingResourceException
+     *             if the provided key is not found.
      */
-    public String get(String key, Object... arguments)
+    public String get(final String key, final Object... arguments)
             throws NullPointerException, MissingResourceException {
         if (isBlank(key)) {
-            throw new NullPointerException(
-                    "Blank key was provided: '" + key + "'");
+            throw new NullPointerException("Blank key was provided: '" + key
+                    + "'");
         }
         try {
             final String forClassKey = forClass.getSimpleName() + "." + key;
             return getFromBundle(forClassKey, arguments);
-        } catch (MissingResourceException e) {
+        } catch (final MissingResourceException e) {
             return getFromBundle(key, arguments);
         }
     }
 
     /**
      * Retrieves the string specified by the key from bundle.
-     * @param key the message key. Not blank.
-     * @return the message by the key.
-     * The message is formatted with {@link MessageFormat#format(Object)} if
-     * any arguments are provided.
+     * 
+     * @param key
+     *            the message key. Not blank.
+     * @return the message by the key. The message is formatted with
+     *         {@link MessageFormat#format(Object)} if any arguments are
+     *         provided.
      */
-    private String getFromBundle(String key, Object... arguments) {
+    private String getFromBundle(final String key, final Object... arguments) {
         final String pattern = BUNDLE.getString(key);
-        return arguments.length == 0
-                ? pattern : MessageFormat.format(pattern, arguments);
+        return arguments.length == 0 ? pattern : MessageFormat.format(pattern,
+                arguments);
     }
 
     /**
      * A "null" class used to initialize {@link Messages#forClass} if no class
-     * is specified. 
+     * is specified.
      */
-    private abstract static class NoForClassIsSpecified { }
+    private abstract static class AbstractNoForClassIsSpecified {
+    }
 }

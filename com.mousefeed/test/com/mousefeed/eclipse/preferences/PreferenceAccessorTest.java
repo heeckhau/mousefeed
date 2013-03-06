@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.mousefeed.client.OnWrongInvocationMode;
-import com.mousefeed.eclipse.ActionEventImpl;
+import com.mousefeed.eclipse.ActionDescImpl;
 import java.io.File;
 import java.io.IOException;
 import org.junit.After;
@@ -69,7 +69,7 @@ public class PreferenceAccessorTest {
                 preferences.getOnWrongInvocationMode(ID1));
         
         {
-            final ActionEventImpl actionDesc = new ActionEventImpl();
+            final ActionDescImpl actionDesc = new ActionDescImpl();
             actionDesc.setDef(ID2);
             actionDesc.setLabel("Label");
             

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007, Robert Wloch 2012.
  *
  * This file is part of MouseFeed.
  *
@@ -28,9 +28,16 @@ import com.mousefeed.eclipse.Activator;
  * Initializes default preference values.
  *
  * @author Andriy Palamarchuk
+ * @author Robert Wloch
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
+    /**
+     * Default constructor does nothing.
+     */
+    public PreferenceInitializer() {
+    }
+    
     /** {@inheritDoc} */
     @Override
     public void initializeDefaultPreferences() {
@@ -42,5 +49,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(
                 PreferenceConstants.P_INVOCATION_CONTROL_ENABLED,
                 PreferenceConstants.INVOCATION_CONTROL_ENABLED_DEFAULT);
+        store.setDefault(
+                PreferenceConstants.P_CONFIGURE_KEYBOARD_SHORTCUT_ENABLED,
+                PreferenceConstants.CONFIGURE_KEYBOARD_SHORTCUT_ENABLED_DEFAULT);
+        store.setDefault(
+                PreferenceConstants.P_CONFIGURE_KEYBOARD_SHORTCUT_THRESHOLD,
+                PreferenceConstants.CONFIGURE_KEYBOARD_SHORTCUT_THRESHOLD_DEFAULT);
     }
 }

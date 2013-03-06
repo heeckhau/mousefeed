@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -24,7 +24,7 @@ import static org.apache.commons.lang.Validate.notNull;
 
 import com.mousefeed.client.Messages;
 import com.mousefeed.client.OnWrongInvocationMode;
-import com.mousefeed.client.collector.ActionEvent;
+import com.mousefeed.client.collector.AbstractActionDesc;
 import com.mousefeed.eclipse.preferences.ActionOnWrongInvocationMode;
 import com.mousefeed.eclipse.preferences.PreferenceAccessor;
 import org.eclipse.jface.dialogs.Dialog;
@@ -57,7 +57,7 @@ public class ConfigureActionInvocationDialog extends Dialog {
     /**
      * The action description of the action to configure invocation mode for.
      */
-    private final ActionEvent actionDesc;
+    private final AbstractActionDesc actionDesc;
 
     /**
      * Setting what to do when user invokes an action using wrong invocation
@@ -83,8 +83,8 @@ public class ConfigureActionInvocationDialog extends Dialog {
      * @param actionDesc the action description to create the dialog for.
      * Not <code>null</code>. 
      */
-    public ConfigureActionInvocationDialog(Shell parentShell,
-            ActionEvent actionDesc) {
+    public ConfigureActionInvocationDialog(final Shell parentShell,
+            final AbstractActionDesc actionDesc) {
         super(parentShell);
         notNull(parentShell);
         notNull(actionDesc);
@@ -93,7 +93,7 @@ public class ConfigureActionInvocationDialog extends Dialog {
 
     // see base
     @Override
-    protected Control createDialogArea(Composite parent) {
+    protected Control createDialogArea(final Composite parent) {
         final Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new FormLayout());
         Control c;
@@ -113,7 +113,7 @@ public class ConfigureActionInvocationDialog extends Dialog {
     
     // see base
     @Override
-    protected void configureShell(Shell shell) {
+    protected void configureShell(final Shell shell) {
         super.configureShell(shell);
         shell.setText(MESSAGES.get("title", actionDesc.getLabel()));
     }
@@ -122,7 +122,7 @@ public class ConfigureActionInvocationDialog extends Dialog {
      * Creates a label for {@link #onWrongInvocationModeCombo}.
      */
     private Control createActionNameLabel(
-            Composite container, Control above) {
+            final Composite container, final Control above) {
         notNull(container);
         final Label label = new Label(container, SWT.NULL);
         final String text = MESSAGES.get(
@@ -153,7 +153,7 @@ public class ConfigureActionInvocationDialog extends Dialog {
      * @param mode the value to set the combo to. <code>null</code> means to use
      * global settings.
      */
-    private void updateOnWrongInvocationModeCombo(OnWrongInvocationMode mode) {
+    private void updateOnWrongInvocationModeCombo(final OnWrongInvocationMode mode) {
         onWrongInvocationModeCombo.setText(mode == null
                 ? getDefaultInvocationMode()
                 : mode.getLabel());

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007, Robert Wloch 2012.
  *
  * This file is part of MouseFeed.
  *
@@ -20,10 +20,12 @@ package com.mousefeed.eclipse.preferences;
 
 import static com.mousefeed.eclipse.preferences.PreferenceConstants.P_DEFAULT_ON_WRONG_INVOCATION_MODE;
 import static com.mousefeed.eclipse.preferences.PreferenceConstants.P_INVOCATION_CONTROL_ENABLED;
+import static com.mousefeed.eclipse.preferences.PreferenceConstants.P_CONFIGURE_KEYBOARD_SHORTCUT_ENABLED;
+import static com.mousefeed.eclipse.preferences.PreferenceConstants.P_CONFIGURE_KEYBOARD_SHORTCUT_THRESHOLD;
 import static org.apache.commons.lang.Validate.notNull;
 
 import com.mousefeed.client.OnWrongInvocationMode;
-import com.mousefeed.eclipse.PluginProvider;
+import com.mousefeed.eclipse.Activator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -38,13 +40,13 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * Provides access to the plugin preferences.
  * Singleton.
  * 
  * @author Andriy Palamarchuk
+ * @author Robert Wloch
  */
 public class PreferenceAccessor {
     /**
@@ -128,11 +130,56 @@ public class PreferenceAccessor {
      * @see #isInvocationControlEnabled()
      */
     public void storeInvocationControlEnabled(
-            boolean invocationControlEnabled) {
+            final boolean invocationControlEnabled) {
         getPreferenceStore().setValue(
                 P_INVOCATION_CONTROL_ENABLED, invocationControlEnabled);
     }
+    
+    /**
+     * Whether keyboard shortcut configuration is enabled preference.
+     * The preference indicates whether to show the Keys preference page
+     * for often used actions without a shortcut.
+     * @return current preference value whether keyboard shortcut configuration
+     * is enabled.
+     */
+    public boolean isConfigureKeyboardShortcutEnabled() {
+        return getPreferenceStore().getBoolean(
+                P_CONFIGURE_KEYBOARD_SHORTCUT_ENABLED);
+    }
 
+    /**
+     * @param configureKeyboardShortcutEnabled the new value for the setting returned by
+     * {@link #isConfigureKeyboardShortcutEnabled()}.
+     * @see #isConfigureKeyboardShortcutEnabled()
+     */
+    public void storeConfigureKeyboardShortcutEnabled(
+            final boolean configureKeyboardShortcutEnabled) {
+        getPreferenceStore().setValue(
+                P_CONFIGURE_KEYBOARD_SHORTCUT_ENABLED, configureKeyboardShortcutEnabled);
+    }
+    
+    /**
+     * The default preference of the threshold for the action invocation counter
+     * above which keyboard shortcut configuration is enabled.
+     * @return the global configure keyboard shortcut threshold preference.
+     * @see PreferenceConstants#P_CONFIGURE_KEYBOARD_SHORTCUT_THRESHOLD
+     */
+    public int getConfigureKeyboardShortcutThreshold() {
+        return getPreferenceStore().getInt(
+                P_CONFIGURE_KEYBOARD_SHORTCUT_THRESHOLD);
+    }
+
+    /**
+     * @param configureKeyboardShortcutThreshold the new value for the setting returned by
+     * {@link #getConfigureKeyboardShortcutThreshold()}.
+     * @see #getConfigureKeyboardShortcutThreshold()
+     */
+    public void storeConfigureKeyboardShortcutThreshold(
+            final int configureKeyboardShortcutThreshold) {
+        getPreferenceStore().setValue(
+                P_CONFIGURE_KEYBOARD_SHORTCUT_THRESHOLD, configureKeyboardShortcutThreshold);
+    }
+    
     /**
      * The default preference what to do by default on wrong invocation mode.
      * @return the global invocation mode preference. Never <code>null</code>.
@@ -155,7 +202,7 @@ public class PreferenceAccessor {
      * <code>null</code> if there is no action-specific setting.
      * In this case use the default preference value.
      */
-    public OnWrongInvocationMode getOnWrongInvocationMode(String actionId) {
+    public OnWrongInvocationMode getOnWrongInvocationMode(final String actionId) {
         notNull(actionId);
         final ActionOnWrongInvocationMode mode =
                 actionsOnWrongMode.get(actionId);
@@ -167,7 +214,7 @@ public class PreferenceAccessor {
      * @param settings the new value. Not <code>null</code>.
      */
     public void setOnWrongInvocationMode(
-            ActionOnWrongInvocationMode settings) {
+            final ActionOnWrongInvocationMode settings) {
         notNull(settings);
         actionsOnWrongMode.put(settings.getId(), settings);
         saveActionsOnWrongInvocationMode();
@@ -196,13 +243,13 @@ public class PreferenceAccessor {
      * @see #getActionsOnWrongInvocationMode()
      */
     public void setActionsOnWrongInvocationMode(
-            Collection<ActionOnWrongInvocationMode> settings) {
+            final Collection<ActionOnWrongInvocationMode> settings) {
         this.actionsOnWrongMode.clear();
         for (ActionOnWrongInvocationMode mode : settings) {
             final ActionOnWrongInvocationMode clone;
             try {
                 clone = (ActionOnWrongInvocationMode) mode.clone();
-            } catch (CloneNotSupportedException e) {
+            } catch (final CloneNotSupportedException e) {
                 throw new RuntimeException();
             }
             this.actionsOnWrongMode.put(clone.getId(), clone);
@@ -216,7 +263,7 @@ public class PreferenceAccessor {
      * handled using the default settings. 
      * @param actionId the action id. not <code>null</code>.
      */
-    public void removeOnWrongInvocaitonMode(String actionId) {
+    public void removeOnWrongInvocaitonMode(final String actionId) {
         notNull(actionId);
         actionsOnWrongMode.remove(actionId);
         saveActionsOnWrongInvocationMode();
@@ -226,7 +273,7 @@ public class PreferenceAccessor {
      * Stores the provided preference.
      * @param value the new value. Not <code>null</code>.
      */
-    public void storeOnWrongInvocationMode(OnWrongInvocationMode value) {
+    public void storeOnWrongInvocationMode(final OnWrongInvocationMode value) {
         notNull(value);
         getPreferenceStore().setValue(
                 P_DEFAULT_ON_WRONG_INVOCATION_MODE, value.name());
@@ -246,16 +293,16 @@ public class PreferenceAccessor {
             reader = new FileReader(file);
             final XMLMemento memento = XMLMemento.createReadRoot(reader);
             loadActionsOnWrongInvocationMode(memento);
-        } catch (FileNotFoundException ignore) {
+        } catch (final FileNotFoundException ignore) {
             // the file does not exist yet 
-        } catch (WorkbenchException e) {
+        } catch (final WorkbenchException e) {
             throw new RuntimeException(e);
         } finally {
             try {
                 if (reader != null) {
                     reader.close();
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -267,7 +314,7 @@ public class PreferenceAccessor {
      * Assumed not <code>null</code>.
      * @see #loadActionsOnWrongInvocationMode()
      */
-    private void loadActionsOnWrongInvocationMode(XMLMemento memento) {
+    private void loadActionsOnWrongInvocationMode(final XMLMemento memento) {
         actionsOnWrongMode.clear();
         final IMemento[] children = memento.getChildren(TAG_ACTION);
         for (IMemento child : children) {
@@ -291,14 +338,14 @@ public class PreferenceAccessor {
         try {
             writer = new FileWriter(getActionsWrongInvocationModeFile());
             memento.save(writer);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         } finally {
             try {
                 if (writer != null) {
                     writer.close();
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -326,7 +373,7 @@ public class PreferenceAccessor {
      * @return never <code>null</code>.
      */
     private IPreferenceStore getPreferenceStore() {
-        return PluginProvider.getInstance().getPlugin().getPreferenceStore(); 
+        return Activator.getDefault().getPreferenceStore();
     }
     
     /**
@@ -335,14 +382,11 @@ public class PreferenceAccessor {
      * invoked with a wrong invocation mode.
      */
     File getActionsWrongInvocationModeFile() {
-        final AbstractUIPlugin plugin;
-        try {
-            plugin = PluginProvider.getInstance().getPlugin();
-        } catch (IllegalStateException e) {
-            // this is a workaround to allow unit test the class;
+        if (Activator.getDefault() == null) {
             return new File("nonexisting");
         }
-        return plugin.getStateLocation()
+        return Activator.getDefault()
+                .getStateLocation()
                 .append(ACTIONS_WRONG_INVOCATION_MODE_FILE)
                 .toFile();
     }

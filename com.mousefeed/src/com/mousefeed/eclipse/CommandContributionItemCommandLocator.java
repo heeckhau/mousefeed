@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -37,12 +37,18 @@ public class CommandContributionItemCommandLocator {
     private static final String COMMAND_FIELD = "command";
 
     /**
+     * Default constructor does nothing.
+     */
+    public CommandContributionItemCommandLocator() {
+    }
+    
+    /**
      * Performs the actual retrieval.
      * @param item the command contribution item to retrieve command from.
      * @return the command stored in the command contribution item.
      * Can be <code>null</code> if the command can't be found. 
      */
-    public Command get(CommandContributionItem item) {
+    public Command get(final CommandContributionItem item) {
         final ParameterizedCommand parCommand = getItemParCommand(item);
         return parCommand == null ? null : parCommand.getCommand();
     }
@@ -53,16 +59,16 @@ public class CommandContributionItemCommandLocator {
      * @return the command or <code>null</code> if can't be found.
      */
     private ParameterizedCommand getItemParCommand(
-            CommandContributionItem item) {
+            final CommandContributionItem item) {
         final Field commandField = getCommandField();
         try {
             commandField.setAccessible(true);
             return (ParameterizedCommand) commandField.get(item);
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             throw new RuntimeException(e);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -78,9 +84,9 @@ public class CommandContributionItemCommandLocator {
                             COMMAND_FIELD);
             notNull(commandField);
             return commandField;
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             throw new RuntimeException(e);
-        } catch (NoSuchFieldException e) {
+        } catch (final NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
     }

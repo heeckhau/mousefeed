@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -20,13 +20,12 @@ package com.mousefeed.client.collector;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.commons.lang.Validate.isTrue;
-
 /**
  * Information about an action invoked by the user.
  * 
  * @author Andriy Palamarchuk
  */
-public abstract class ActionEvent extends Event {
+public abstract class AbstractActionDesc {
     /**
      * @see #getLabel()
      */
@@ -36,13 +35,6 @@ public abstract class ActionEvent extends Event {
      * @see #getAccelerator()
      */
     private String accelerator;
-
-    // see base
-    @Override
-    public String toString() {
-        return super.toString() + '\t' + getId() + '\t'
-                + "(" + getLabel() + ")";
-    }
 
     /**
      * The id of the user action.
@@ -68,7 +60,7 @@ public abstract class ActionEvent extends Event {
      * @param label the new label. Not blank.
      * @see #getLabel()
      */
-    public void setLabel(String label) {
+    public void setLabel(final String label) {
         isTrue(isNotBlank(label));
         this.label = label.replace("&", "");
     }
@@ -96,13 +88,7 @@ public abstract class ActionEvent extends Event {
      * @param accelerator the new shortcut value. Can be <code>null</code>.
      * @see #getAccelerator()
      */
-    public void setAccelerator(String accelerator) {
+    public void setAccelerator(final String accelerator) {
         this.accelerator = accelerator;
-    }
-
-    // see base
-    @Override
-    public EventType getType() {
-        return EventType.ACTION;
     }
 }

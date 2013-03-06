@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -29,6 +29,12 @@ import org.eclipse.ui.PlatformUI;
  */
 public class Startup implements IStartup {
 
+    /**
+     * Default constructor does nothing.
+     */
+    public Startup() {
+    }
+    
     /**
      * Hooks up event listeners.
      */

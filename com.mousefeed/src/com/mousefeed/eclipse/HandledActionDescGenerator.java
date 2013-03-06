@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -20,72 +20,71 @@ package com.mousefeed.eclipse;
 
 import static org.apache.commons.lang.Validate.notNull;
 
-import com.mousefeed.client.collector.ActionEvent;
+import com.mousefeed.client.collector.AbstractActionDesc;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.common.NotDefinedException;
+import org.eclipse.e4.ui.workbench.renderers.swt.HandledContributionItem;
 import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.keys.IBindingService;
-import org.eclipse.ui.menus.CommandContributionItem;
 
 /**
-/**
- * Generates {@link ActionEventImpl} from {@link CommandContributionItem}.
+ * /** Generates {@link ActionDescImpl} from {@link HandledContributionItem}.
  * Pure strategy.
- *
- * @author Andriy Palamarchuk
+ * 
+ * @author Robert Wloch (robert@rowlo.de)
  */
-class CommandActionEventGenerator {
+@SuppressWarnings("restriction")
+class HandledActionDescGenerator {
     /**
-     * Retrieves a command from a command contribution item. 
+     * Retrieves a command from a handled contribution item.
      */
-    private final CommandContributionItemCommandLocator locator =
-            new CommandContributionItemCommandLocator();
+    private final HandledContributionItemCommandLocator locator = new HandledContributionItemCommandLocator();
 
     /**
      * The binding service used to retrieve bindings data.
      */
     private final IBindingService bindingService;
-    
+
     /**
      * Constructor.
      */
-    public CommandActionEventGenerator() {
-        bindingService =
-            (IBindingService) PlatformUI.getWorkbench().getAdapter(
-                    IBindingService.class); 
+    public HandledActionDescGenerator() {
+        bindingService = (IBindingService) PlatformUI.getWorkbench()
+                .getAdapter(IBindingService.class);
     }
 
     /**
-     * Generates action description from the command contribution item.
-     * @param commandContributionItem the contribution item to generate
-     * an action description for.
-     * Not <code>null</code>.
+     * Generates action description from the handled contribution item.
+     * 
+     * @param handledContributionItem
+     *            the contribution item to generate an action description for.
+     *            Not <code>null</code>.
      * @return the action description for the provided action.
-     * Never <code>null</code>.
      */
-    public ActionEvent generate(
-            CommandContributionItem commandContributionItem) {
-        notNull(commandContributionItem);
+    public AbstractActionDesc generate(
+            final HandledContributionItem handledContributionItem) {
+        notNull(handledContributionItem);
 
-        final ActionEventImpl actionDesc = new ActionEventImpl();
-        final Command command = locator.get(commandContributionItem);
+        final ActionDescImpl actionDesc = new ActionDescImpl();
+        final Command command = locator.get(handledContributionItem);
         if (command == null) {
             return null;
         }
         try {
             actionDesc.setLabel(command.getName());
-        } catch (NotDefinedException e) {
+        } catch (final NotDefinedException e) {
             // should never happen
             throw new RuntimeException(e);
         }
         final String commandId = command.getId();
         actionDesc.setDef(commandId);
-        final TriggerSequence binding =
-                bindingService.getBestActiveBindingFor(commandId);
+        final TriggerSequence binding = bindingService
+                .getBestActiveBindingFor(commandId);
         if (binding != null) {
             actionDesc.setAccelerator(binding.format());
         }
         return actionDesc;
     }
+
 }

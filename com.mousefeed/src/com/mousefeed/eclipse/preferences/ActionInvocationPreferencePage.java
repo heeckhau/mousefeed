@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007, Robert Wloch 2012.
  *
  * This file is part of MouseFeed.
  *
@@ -22,6 +22,8 @@ import static com.mousefeed.eclipse.Layout.STACKED_V_OFFSET;
 import static com.mousefeed.eclipse.Layout.WHOLE_SIZE;
 import static com.mousefeed.eclipse.Layout.WINDOW_MARGIN;
 import static com.mousefeed.eclipse.Layout.placeUnder;
+import static com.mousefeed.eclipse.preferences.PreferenceConstants.CONFIGURE_KEYBOARD_SHORTCUT_ENABLED_DEFAULT;
+import static com.mousefeed.eclipse.preferences.PreferenceConstants.CONFIGURE_KEYBOARD_SHORTCUT_THRESHOLD_DEFAULT;
 import static com.mousefeed.eclipse.preferences.PreferenceConstants.INVOCATION_CONTROL_ENABLED_DEFAULT;
 import static org.apache.commons.lang.Validate.notNull;
 
@@ -42,6 +44,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -50,6 +53,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * Contains global as well as action-specific settings.
  * 
  * @author Andriy Palamarchuk
+ * @author Robert Wloch
  */
 public class ActionInvocationPreferencePage extends PreferencePage
         implements IWorkbenchPreferencePage {
@@ -75,6 +79,23 @@ public class ActionInvocationPreferencePage extends PreferencePage
      * If turned off, no other options on this page are used.
      */
     private Button invocationControlEnabledCheckbox;
+    
+    /**
+     * Setting whether to show Keys preference page for often used actions
+     * without a keyboard shortcut.
+     * If turned off, preference page will not be shown after action
+     * invocation.
+     */
+    private Button configureKeyboardShortcutCheckbox;
+    
+    /**
+     * Setting the limit of the action invocation counter for when to show
+     * Keys preference page for often used actions without a keyboard
+     * shortcut.
+     * Keys preference page will not be shown before action was invoked as
+     * many times as set in this spinner.
+     */
+    private Spinner configureKeyboardShortcutThreshold;
 
     /**
      * Setting what to do when user invokes an action using wrong invocation
@@ -104,7 +125,7 @@ public class ActionInvocationPreferencePage extends PreferencePage
     }
 
     // see base
-    protected Control createContents(Composite parent) {
+    protected Control createContents(final Composite parent) {
         initializeDialogUnits(parent);
         
         final Composite composite = new Composite(parent, SWT.NONE);
@@ -116,6 +137,14 @@ public class ActionInvocationPreferencePage extends PreferencePage
         ((FormData) invocationControlEnabledCheckbox.getLayoutData()).top =
                 new FormAttachment(0);
         c = invocationControlEnabledCheckbox;
+        
+        configureKeyboardShortcutCheckbox =
+                createConfigureKeyboardShortcutCheckbox(composite, c);
+        c = configureKeyboardShortcutCheckbox;
+        
+        configureKeyboardShortcutThreshold =
+                createConfigureKeyboardShortcutThreshold(composite, c);
+        c = configureKeyboardShortcutThreshold;
 
         c = onWrongInvocationModeUI.createLabel(composite, c,
                 MESSAGES.get("field.defaultOnWrongInvocationMode.label"));
@@ -126,6 +155,10 @@ public class ActionInvocationPreferencePage extends PreferencePage
                 preferences.getOnWrongInvocationMode());
         updateInvocationControlEnabled(
                 preferences.isInvocationControlEnabled());
+        updateConfigureKeyboardShortcutEnabled(
+                preferences.isConfigureKeyboardShortcutEnabled());
+        updateConfigureKeyboardShortcutThreshold(
+                preferences.getConfigureKeyboardShortcutThreshold());
         
         actionModeControl = createActionModeControl(composite);
         c = actionModeControl;
@@ -144,6 +177,10 @@ public class ActionInvocationPreferencePage extends PreferencePage
         updateOnWrongInvocationModeCombo(OnWrongInvocationMode.DEFAULT);
         updateInvocationControlEnabled(
                 INVOCATION_CONTROL_ENABLED_DEFAULT);
+        updateConfigureKeyboardShortcutEnabled(
+                CONFIGURE_KEYBOARD_SHORTCUT_ENABLED_DEFAULT);
+        updateConfigureKeyboardShortcutThreshold(
+                CONFIGURE_KEYBOARD_SHORTCUT_THRESHOLD_DEFAULT);
         actionModeControl.clearActionSettings();
     }
 
@@ -152,6 +189,8 @@ public class ActionInvocationPreferencePage extends PreferencePage
         preferences.storeOnWrongInvocationMode(
                 getSelectedOnWrongInvocationMode());
         preferences.storeInvocationControlEnabled(isInvocationControlEnabled());
+        preferences.storeConfigureKeyboardShortcutEnabled(isConfigureKeyboardShortcutEnabled());
+        preferences.storeConfigureKeyboardShortcutThreshold(getConfigureKeyboardShortcutThreshold());
         preferences.setActionsOnWrongInvocationMode(
                 actionModeControl.getActionModes());
         return super.performOk();
@@ -161,13 +200,13 @@ public class ActionInvocationPreferencePage extends PreferencePage
      * Does not do anything.
      * @param workbench not used.
      */
-    public void init(@SuppressWarnings("unused") IWorkbench workbench) {}
+    public void init(final IWorkbench workbench) {}
 
     /**
      * Creates the control for {@link #invocationControlEnabledCheckbox}.
      */
     private Button createInvocationControlEnabledCheckbox(
-            Composite container, Control above) {
+            final Composite container, final Control above) {
         notNull(container);
         
         final Button checkbox = new Button(container, SWT.CHECK | SWT.LEAD);
@@ -179,13 +218,13 @@ public class ActionInvocationPreferencePage extends PreferencePage
         checkbox.addSelectionListener(new SelectionAdapter() {
 
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 onInvocationControlEnabledCheckboxSelected();
             }
         });
         return checkbox;
     }
-
+    
     /**
      * Is called when the {@link #invocationControlEnabledCheckbox} selection
      * changed.
@@ -200,12 +239,64 @@ public class ActionInvocationPreferencePage extends PreferencePage
     }
 
     /**
+     * Creates the control for {@link #configureKeyboardShortcutCheckbox}.
+     */
+    private Button createConfigureKeyboardShortcutCheckbox(
+            final Composite container, final Control above) {
+        notNull(container);
+        
+        final Button checkbox = new Button(container, SWT.CHECK | SWT.LEAD);
+        checkbox.setText(
+                MESSAGES.get("field.configureKeyboardShortcutCheckbox.label"));
+        checkbox.setToolTipText(
+                MESSAGES.get("field.configureKeyboardShortcutCheckbox.tooltip"));
+        placeUnder(checkbox, above, STACKED_V_OFFSET);
+        checkbox.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                onConfigureKeyboardShortcutCheckboxSelected();
+            }
+        });
+        return checkbox;
+    }
+    
+    /**
+     * Is called when the {@link #configureKeyboardShortcutCheckbox} selection
+     * changed.
+     */
+    private void onConfigureKeyboardShortcutCheckboxSelected() {
+        final Control c = configureKeyboardShortcutThreshold;
+        c.setEnabled(isInvocationControlEnabled());
+    }
+
+    /**
+     * Creates the control for {@link #configureKeyboardShortcutThreshold}.
+     */
+    private Spinner createConfigureKeyboardShortcutThreshold(
+            final Composite container, final Control above) {
+        notNull(container);
+        
+        final Label label = new Label(container, SWT.NONE);
+        label.setText(
+                MESSAGES.get("field.configureKeyboardShortcutThreshold.label"));
+        placeUnder(label, above, STACKED_V_OFFSET);
+        
+        final Spinner spinner = new Spinner(container, SWT.NONE);
+        spinner.setToolTipText(
+                MESSAGES.get("field.configureKeyboardShortcutThreshold.tooltip"));
+        placeUnder(spinner, label, STACKED_V_OFFSET);
+
+        return spinner;
+    }
+
+    /**
      * Creates the action-specific invocation settings UI control. 
      * @param composite the container. Assumed not <code>null</code>.
      * @return the action invocation control. Not <code>null</code>.
      */
     private ActionInvocationModeControl createActionModeControl(
-            Composite composite) {
+            final Composite composite) {
         return new ActionInvocationModeControl(composite);
     }
 
@@ -215,7 +306,7 @@ public class ActionInvocationPreferencePage extends PreferencePage
      * @param belowControl the control below. Assumed not <code>null</code>.
      */
     private void layoutActionModeControl(
-            Control aboveControl, Control belowControl) {
+            final Control aboveControl, final Control belowControl) {
         final FormData formData = placeUnder(
                 actionModeControl, aboveControl,
                 STACKED_V_OFFSET);
@@ -232,8 +323,8 @@ public class ActionInvocationPreferencePage extends PreferencePage
      * Assumed not <code>null</code>.
      * @return the control separator. 
      */
-    private Control createHorizontalSeparator(Composite composite,
-            Control aboveControl) {
+    private Control createHorizontalSeparator(final Composite composite,
+            final Control aboveControl) {
         final Label separator = new Label(composite,
                 SWT.SEPARATOR | SWT.HORIZONTAL | SWT.LINE_SOLID
                 | SWT.SHADOW_OUT);
@@ -259,7 +350,7 @@ public class ActionInvocationPreferencePage extends PreferencePage
      * @param mode the value to set the combo to. Not <code>null</code>.
      */
     private void updateOnWrongInvocationModeCombo(
-            OnWrongInvocationMode mode) {
+            final OnWrongInvocationMode mode) {
         notNull(mode);
         onWrongInvocationModeCombo.setText(mode.getLabel());
     }
@@ -277,7 +368,41 @@ public class ActionInvocationPreferencePage extends PreferencePage
      * Make UI indicate whether to enable action control.
      * @param enabled the value shown by UI. 
      */
-    private void updateInvocationControlEnabled(boolean enabled) {
+    private void updateInvocationControlEnabled(final boolean enabled) {
         invocationControlEnabledCheckbox.setSelection(enabled);
+    }
+    
+    /**
+     * The currently selected value of the preference
+     * whether configure keyboard shortcut is enabled.
+     * @return the configure keyboard shortcut preference.
+     */
+    private boolean isConfigureKeyboardShortcutEnabled() {
+        return configureKeyboardShortcutCheckbox.getSelection();
+    }
+    
+    /**
+     * Make UI indicate whether to enable keyboard shortcut configuration.
+     * @param enabled the value shown by UI. 
+     */
+    private void updateConfigureKeyboardShortcutEnabled(final boolean enabled) {
+        configureKeyboardShortcutCheckbox.setSelection(enabled);
+    }
+    
+    /**
+     * The currently selected value of the preference
+     * for configure keyboard shortcut threshold.
+     * @return the configure keyboard shortcut threshold preference.
+     */
+    private int getConfigureKeyboardShortcutThreshold() {
+        return configureKeyboardShortcutThreshold.getSelection();
+    }
+    
+    /**
+     * Make UI indicate the current keyboard shortcut configuration threshold.
+     * @param enabled the value shown by UI. 
+     */
+    private void updateConfigureKeyboardShortcutThreshold(final int threshold) {
+        configureKeyboardShortcutThreshold.setSelection(threshold);
     }
 }

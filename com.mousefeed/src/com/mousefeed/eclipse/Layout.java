@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -81,8 +81,8 @@ public final class Layout {
      * Greater than 0.
      * @return the layout data of the control.
      */
-    public static FormData placeUnder(Control control, Control aboveControl,
-            int gap) {
+    public static FormData placeUnder(final Control control, final Control aboveControl,
+            final int gap) {
         notNull(control);
         isTrue(aboveControl == null
                 || control.getParent().equals(aboveControl.getParent()));

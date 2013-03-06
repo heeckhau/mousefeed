@@ -2,7 +2,7 @@
 <feature
       id="com.mousefeed.feature"
       label="%featureName"
-      version="1.0.0"
+      version="2.0.0"
       provider-name="%providerName">
 
    <description url="http://www.mousefeed.com/">
@@ -18,14 +18,14 @@
    </license>
 
    <url>
-      <update label="%updateSiteName" url="http://update.mousefeed.com"/>
+      <update label="%updateSiteName" url="http://www.rowlo.de/mousefeedfork/updatesite"/>
    </url>
 
    <plugin
          id="com.mousefeed"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="2.0.0"
          unpack="false"/>
 
 </feature>

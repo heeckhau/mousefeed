@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -29,7 +29,13 @@ import org.eclipse.jface.viewers.Viewer;
 public class ActionInvocationModeTableContentProvider implements
         IStructuredContentProvider {
 
-    public Object[] getElements(Object inputElement) {
+    /**
+     * Default constructor does nothing.
+     */
+    public ActionInvocationModeTableContentProvider() {
+    }
+    
+    public Object[] getElements(final Object inputElement) {
         return ((Collection<?>) inputElement).toArray();
     }
 
@@ -39,6 +45,6 @@ public class ActionInvocationModeTableContentProvider implements
     public void dispose() {}
 
     // see base
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+    public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
     }
 }

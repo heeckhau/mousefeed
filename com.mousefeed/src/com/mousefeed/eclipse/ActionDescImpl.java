@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -22,14 +22,14 @@ import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.commons.lang.Validate.isTrue;
 
-import com.mousefeed.client.collector.ActionEvent;
+import com.mousefeed.client.collector.AbstractActionDesc;
 
 /**
  * Eclipse-specific action description.
  *
  * @author Andriy Palamarchuk
  */
-public class ActionEventImpl extends ActionEvent {
+public class ActionDescImpl extends AbstractActionDesc {
     /**
      * @see #getClassName()
      */
@@ -40,6 +40,12 @@ public class ActionEventImpl extends ActionEvent {
      */
     private String def;
 
+    /**
+     * Default constructor does nothing.
+     */
+    public ActionDescImpl() {
+    }
+    
     /**
      * @return the id. Returns the first non-blank value of the following:
      * {@link #getDef()}, {@link #getClassName()}. If all of these are blank,
@@ -70,7 +76,7 @@ public class ActionEventImpl extends ActionEvent {
      * If blank, the existing value does not change.
      * @see #getClassName()
      */
-    public void setClassName(String className) {
+    public void setClassName(final String className) {
         if (isBlank(className)) {
             return;
         }
@@ -93,7 +99,7 @@ public class ActionEventImpl extends ActionEvent {
      * If blank, the existing value does not change.
      * @see #getDef()
      */
-    public void setDef(String def) {
+    public void setDef(final String def) {
         if (isBlank(def)) {
             return;
         }

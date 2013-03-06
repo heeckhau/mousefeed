@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -26,13 +26,13 @@ import org.junit.Test;
 /**
  * @author Andriy Palamarchuk
  */
-public class ActionEventImplTest {
+public class ActionDescImplTest {
     final static String label = "label 1";
     final static String className = "class 1";
     final static String def = "def 1";
     
     @Test public void setClassName() {
-        final ActionEventImpl desc = new ActionEventImpl();
+        final ActionDescImpl desc = new ActionDescImpl();
         assertNull(desc.getClassName());
         desc.setClassName(className);
         assertEquals(className, desc.getClassName());
@@ -41,7 +41,7 @@ public class ActionEventImplTest {
     }
     
     @Test public void setDef() {
-        final ActionEventImpl desc = new ActionEventImpl();
+        final ActionDescImpl desc = new ActionDescImpl();
         assertNull(desc.getDef());
         desc.setDef(def);
         assertEquals(def, desc.getDef());
@@ -50,7 +50,7 @@ public class ActionEventImplTest {
     }
 
     @Test public void  getId() {
-        final ActionEventImpl desc = new ActionEventImpl();
+        final ActionDescImpl desc = new ActionDescImpl();
         assertNull(desc.getId());
         desc.setLabel(label);
         assertEquals(label, desc.getId());

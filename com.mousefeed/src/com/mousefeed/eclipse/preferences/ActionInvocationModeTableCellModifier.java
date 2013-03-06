@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -43,7 +43,7 @@ public class ActionInvocationModeTableCellModifier implements ICellModifier {
      * @param tableViewer the table viewer backing the modifier table.
      * Not <code>null</code>.
      */
-    public ActionInvocationModeTableCellModifier(TableViewer tableViewer) {
+    public ActionInvocationModeTableCellModifier(final TableViewer tableViewer) {
         validateTableViewer(tableViewer);
         this.tableViewer = tableViewer;
     }
@@ -52,12 +52,12 @@ public class ActionInvocationModeTableCellModifier implements ICellModifier {
      * Validates table viewer constructor parameter.
      * @param viewer the object to validate.
      */
-    void validateTableViewer(TableViewer viewer) {
+    void validateTableViewer(final TableViewer viewer) {
         notNull(viewer);
     }
 
     // see base
-    public boolean canModify(Object element, String property) {
+    public boolean canModify(final Object element, final String property) {
         // non-existing properties are not modifiable
         // do this instead of throwing an exception because other
         // methods don't throw an exception in this situation
@@ -65,7 +65,7 @@ public class ActionInvocationModeTableCellModifier implements ICellModifier {
     }
 
     // see base
-    public Object getValue(Object element, String property) {
+    public Object getValue(final Object element, final String property) {
         final ActionOnWrongInvocationMode mode =
                 (ActionOnWrongInvocationMode) element;
         if (property.equals(Column.LABEL.name())) {
@@ -79,7 +79,7 @@ public class ActionInvocationModeTableCellModifier implements ICellModifier {
     }
 
     // see base
-    public void modify(Object element, String property, Object value) {
+    public void modify(final Object element, final String property, final Object value) {
         final Object actionModeObject = element instanceof Item
                 ? ((Item) element).getData()
                 : element;   
@@ -101,7 +101,7 @@ public class ActionInvocationModeTableCellModifier implements ICellModifier {
      * @param element the element to update. Assumed not null.
      * @param property the property to update. Assumed not null.
      */
-    void updateTableViewer(Object element, String property) {
+    void updateTableViewer(final Object element, final String property) {
         tableViewer.update(element, new String[] {property});
     }
 }

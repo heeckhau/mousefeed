@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software, Robert Wloch 2012.
  *
  * This file is part of MouseFeed.
  *
@@ -16,17 +16,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with MouseFeed.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.mousefeed.client.collector;
+package com.mousefeed.client;
+
+import com.mousefeed.client.collector.ActionDescTest;
+import com.mousefeed.client.collector.CollectorTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * Listener for the user activity events handled by {@link Collector}.
  * 
- * @author Andriy Palamarchuk
+ * @author Robert Wloch (robert@rowlo.de)
  */
-public interface IEventListener {
-    /**
-     * Is called on an event.
-     * @param event the event to be called on. Not <code>null</code>.
-     */
-    void event(Event event);
+@RunWith(Suite.class)
+@SuiteClasses({ AssertEnabledTest.class, MessagesTest.class,
+        OnWrongInvocationModeTest.class, ActionDescTest.class,
+        CollectorTest.class })
+public class AllClientTests {
+
 }

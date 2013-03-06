@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -21,7 +21,7 @@ package com.mousefeed.eclipse.commands;
 import static org.apache.commons.lang.Validate.notNull;
 
 import com.mousefeed.client.Messages;
-import com.mousefeed.client.collector.ActionEvent;
+import com.mousefeed.client.collector.AbstractActionDesc;
 import com.mousefeed.client.collector.Collector;
 import com.mousefeed.eclipse.Activator;
 import java.util.Map;
@@ -40,13 +40,6 @@ import org.eclipse.ui.menus.UIElement;
 public class ConfigureActionInvocationHandler extends AbstractHandler
         implements IElementUpdater {
     /**
-     * The id of the command/action to configure invocation mode for other
-     * actions.
-     */
-    public static final String CONFIGURE_ACTION_INVOCATION_DEF =
-            "com.mousefeed.commands.configureActionInvocation";
-
-    /**
      * Provides messages text.
      */
     private static final Messages MESSAGES =
@@ -58,8 +51,14 @@ public class ConfigureActionInvocationHandler extends AbstractHandler
     private final Collector collector =
         Activator.getDefault().getCollector();
 
+    /**
+     * Default constructor does nothing.
+     */
+    public ConfigureActionInvocationHandler() {
+    }
+    
     // see base
-    public Object execute(ExecutionEvent event) throws ExecutionException {
+    public Object execute(final ExecutionEvent event) throws ExecutionException {
         if (getLastAction() == null) {
             return null;
         }
@@ -79,8 +78,8 @@ public class ConfigureActionInvocationHandler extends AbstractHandler
      * Not <code>null</code>.
      * @param parameters not used.
      */
-    @SuppressWarnings("unchecked")
-    public void updateElement(UIElement element, Map parameters) {
+    @SuppressWarnings("rawtypes")
+    public void updateElement(final UIElement element, final Map parameters) {
         notNull(element);
         element.setText(MESSAGES.get("menuItem.lastActionInvocation.label",
                 getLastAction().getLabel()));
@@ -91,7 +90,7 @@ public class ConfigureActionInvocationHandler extends AbstractHandler
      * @return the last action. <code>null</code> if there was no action
      * called before since Eclipse started.
      */
-    private ActionEvent getLastAction() {
+    private AbstractActionDesc getLastAction() {
         return collector.getLastAction();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -61,5 +61,5 @@ public class PreferencePage
      * Does not do anything.
      * @param workbench not used.
      */
-    public void init(@SuppressWarnings("unused") IWorkbench workbench) {}
+    public void init(final IWorkbench workbench) {}
 }

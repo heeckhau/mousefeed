@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software, Robert Wloch 2012.
  *
  * This file is part of MouseFeed.
  *
@@ -16,22 +16,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with MouseFeed.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.mousefeed.client.collector;
+package com.mousefeed;
+
+import com.mousefeed.client.AllClientTests;
+import com.mousefeed.eclipse.AllEclipseTests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * User activity event types handled by {@link Collector}.
- *
- * @author Andriy Palamarchuk
+ * 
+ * @author Robert Wloch (robert@rowlo.de)
  */
-public enum EventType {
-    /**
-     * Event of the type {@link ActionEvent}.
-     */
-    ACTION,
-    
-    /**
-     * Event of the type mouse click.
-     * TODO - finish after implemented
-     */
-    MOUSE_CLICK
+@RunWith(Suite.class)
+@SuiteClasses({ AllClientTests.class, AllEclipseTests.class })
+public class AllTests {
+
 }

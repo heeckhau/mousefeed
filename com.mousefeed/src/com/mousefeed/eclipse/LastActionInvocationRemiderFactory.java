@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -42,6 +42,12 @@ public class LastActionInvocationRemiderFactory {
     private static final Messages MESSAGES = new Messages(
             LastActionInvocationRemiderFactory.class);
 
+    /**
+     * Default constructor does nothing.
+     */
+    public LastActionInvocationRemiderFactory() {
+    }
+    
     /**
      * The reminder text.
      * @return the reminder text. Not <code>null</code>.

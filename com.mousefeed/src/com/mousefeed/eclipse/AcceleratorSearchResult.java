@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -24,4 +24,9 @@ package com.mousefeed.eclipse;
  * @author Andriy Palamarchuk
  */
 public class AcceleratorSearchResult {
+    /**
+     * Default constructor does nothing.
+     */
+    public AcceleratorSearchResult() {
+    }
 }

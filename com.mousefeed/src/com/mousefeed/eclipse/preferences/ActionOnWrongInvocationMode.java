@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -23,14 +23,14 @@ import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 
 import com.mousefeed.client.OnWrongInvocationMode;
-import com.mousefeed.client.collector.ActionEvent;
+import com.mousefeed.client.collector.AbstractActionDesc;
 import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Stores action-specific preferences for handling action invocation using
  * wrong mode.
- * Data stored in this class somewhat overlaps with {@link ActionEvent}.
+ * Data stored in this class somewhat overlaps with {@link AbstractActionDesc}.
  *
  * @author Andriy Palamarchuk
  */
@@ -57,12 +57,12 @@ public class ActionOnWrongInvocationMode implements Cloneable {
     }
 
     /**
-     * Creates a new instance from the {@link ActionEvent} instance. Copies all
+     * Creates a new instance from the {@link AbstractActionDesc} instance. Copies all
      * the data.
      * @param actionDesc the instance to create this instance from.
      * Not <code>null</code>
      */
-    public ActionOnWrongInvocationMode(ActionEvent actionDesc) {
+    public ActionOnWrongInvocationMode(final AbstractActionDesc actionDesc) {
         notNull(actionDesc);
         setId(actionDesc.getId());
         setLabel(actionDesc.getLabel());
@@ -86,7 +86,7 @@ public class ActionOnWrongInvocationMode implements Cloneable {
      * @param id the id to set. Not <code>null</code>.
      * @see #getId()
      */
-    public void setId(String id) {
+    public void setId(final String id) {
         isTrue(isNotBlank(id));
         this.id = id;
     }
@@ -103,7 +103,7 @@ public class ActionOnWrongInvocationMode implements Cloneable {
      * @param label the label to set. Not blank.
      * @see #getLabel()
      */
-    public void setLabel(String label) {
+    public void setLabel(final String label) {
         isTrue(isNotBlank(label));
         this.label = label;
     }
@@ -121,7 +121,7 @@ public class ActionOnWrongInvocationMode implements Cloneable {
      * @see #getOnWrongInvocationMode()
      */
     public void setOnWrongInvocationMode(
-            OnWrongInvocationMode onWrongInvocationMode) {
+            final OnWrongInvocationMode onWrongInvocationMode) {
         notNull(onWrongInvocationMode);
         this.onWrongInvocationMode = onWrongInvocationMode;
     }
@@ -136,8 +136,14 @@ public class ActionOnWrongInvocationMode implements Cloneable {
          */
         static final long serialVersionUID = 1;
 
-        public int compare(ActionOnWrongInvocationMode mode1,
-                ActionOnWrongInvocationMode mode2) {
+        /**
+         * Default constructor does nothing.
+         */
+        public LabelComparator() {
+        }
+        
+        public int compare(final ActionOnWrongInvocationMode mode1,
+                final ActionOnWrongInvocationMode mode2) {
             return mode1.getLabel().compareTo(mode2.getLabel());
         }
 

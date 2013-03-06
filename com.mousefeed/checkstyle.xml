@@ -1,44 +1,18 @@
-<?xml version="1.0"?>
-<!DOCTYPE module PUBLIC
-    "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
-    "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 
 <!--
-  The project code conventions. Derived from the Sun
-  coding conventions configuration, distributed with Checkstyle.
-
-  Initial settings were set as strict as possible.
-  The plan is to loose restrictions as necessary.
-  Experience shows that it is much easier to loose control,
-  than to make it more strict.
+    This configuration file was written by the eclipse-cs plugin configuration editor
 -->
-
+<!--
+    Checkstyle-Configuration: Mousefeed Configuration
+    Description: 
+Mousefeed Checkstyle Configuration
+-->
 <module name="Checker">
-  <module name="PackageHtml"/>
-  <module name="Translation"/>
-  <module name="StrictDuplicateCode"/>
-
-  <!-- suppresses checks -->
-  <module name="SuppressionCommentFilter"/>
-  <module name="SuppressionCommentFilter">
-    <property name="offCommentFormat" value="RETURNCOUNT\:OFF"/>
-    <property name="onCommentFormat" value="RETURNCOUNT\:ON"/>
-    <property name="checkFormat" value="ReturnCount"/>
-  </module>
-  <module name="SuppressionCommentFilter">
-    <property name="offCommentFormat" value="COUPLING\:OFF"/>
-    <property name="onCommentFormat" value="COUPLING\:ON"/>
-    <property name="checkFormat" value="ClassDataAbstractionCoupling|ClassFanOutComplexity"/>
-  </module>
-  <module name="SuppressionFilter">
-    <property name="file" value="checkstyleSuppressions.xml"/>
-  </module>
-
+  <property name="severity" value="warning"/>
   <module name="TreeWalker">
-    <!-- needed for the checks suppression filter -->
     <module name="FileContentsHolder"/>
-
-    <!-- Javadoc comments. -->
     <module name="JavadocType">
       <property name="authorFormat" value="\S"/>
     </module>
@@ -48,11 +22,9 @@
     </module>
     <module name="JavadocVariable"/>
     <module name="JavadocStyle"/>
-    
-    <!-- non-Javadoc comments -->
-    <module name="TrailingComment"/>
-
-    <!-- Naming Conventions. -->
+    <module name="TrailingComment">
+      <property name="legalComment" value="^.*//\$NON-NLS-[\d]+\$"/>
+    </module>
     <module name="ConstantName"/>
     <module name="LocalFinalVariableName"/>
     <module name="LocalVariableName"/>
@@ -62,39 +34,15 @@
     <module name="ParameterName"/>
     <module name="StaticVariableName"/>
     <module name="TypeName"/>
-
-    <!-- Headers. -->
-    <!-- See http://checkstyle.sf.net/config_header.html   -->
-    <!-- <module name="Header">                            -->
-    <!-- The following property value demonstrates the ability  -->
-    <!-- to have access to ANT properties. In this case it uses -->
-    <!-- the ${basedir} property to allow Checkstyle to be run  -->
-    <!-- from any directory within a project. See property      -->
-    <!-- expansion,                                             -->
-    <!-- http://checkstyle.sf.net/config.html#properties        -->
-    <!-- <property                                              -->
-    <!--     name="headerFile"                                  -->
-    <!--     value="${basedir}/java.header"/>                   -->
-    <!-- </module> -->
-
-    <!-- Following interprets the header file as regular expressions. -->
-    <!-- <module name="RegexpHeader"/>                                -->
-
-
-    <!-- Imports. -->
     <module name="AvoidStarImport"/>
     <module name="IllegalImport"/>
     <module name="RedundantImport"/>
-
-    <!-- Size Violations. -->
-    <module name="FileLength"/>
     <module name="LineLength">
-        <property name="ignorePattern" value="^import"/>
+      <property name="ignorePattern" value="^import"/>
+      <property name="max" value="120"/>
     </module>
     <module name="MethodLength"/>
     <module name="ParameterNumber"/>
-
-    <!-- Whitespace. -->
     <module name="EmptyForIteratorPad"/>
     <module name="MethodParamPad"/>
     <module name="NoWhitespaceAfter"/>
@@ -102,26 +50,19 @@
     <module name="OperatorWrap"/>
     <module name="ParenPad"/>
     <module name="TypecastParenPad"/>
-    <module name="TabCharacter"/>
     <module name="WhitespaceAfter"/>
     <module name="WhitespaceAround">
       <property name="tokens" value="ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN, EQUAL, GE, GT, LAND, LCURLY, LE, LITERAL_ASSERT, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, RCURLY, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR, STAR_ASSIGN, TYPE_EXTENSION_AND"/>
       <property name="allowEmptyMethods" value="true"/>
     </module>
-
-    <!-- Modifier. -->
     <module name="ModifierOrder"/>
     <module name="RedundantModifier"/>
-
-    <!-- Blocks. -->
     <module name="EmptyBlock">
       <property name="option" value="text"/>
     </module>
     <module name="LeftCurly"/>
     <module name="NeedBraces"/>
     <module name="RightCurly"/>
-
-    <!-- Common coding problems. -->
     <module name="ParameterAssignment"/>
     <module name="DoubleCheckedLocking"/>
     <module name="EmptyStatement"/>
@@ -153,40 +94,90 @@
     <module name="IllegalThrows"/>
     <module name="JUnitTestCase"/>
     <module name="ReturnCount">
-       <property name="max" value="3"/>
-    </module>
-    <module name="IllegalType">
-       <property name="legalAbstractClassNames" value="AbstractUIPlugin"/>
+      <property name="max" value="3"/>
     </module>
     <module name="DeclarationOrder"/>
     <module name="ExplicitInitialization"/>
     <module name="DefaultComesLast"/>
     <module name="FallThrough"/>
-    <module name="MultipleStringLiterals"/>
+    <module name="MultipleStringLiterals">
+      <property name="ignoreStringsRegexp" value="unused"/>
+    </module>
     <module name="MultipleVariableDeclarations"/>
     <module name="UnnecessaryParentheses"/>
-
-    <!-- Class design. -->
     <module name="FinalClass"/>
     <module name="HideUtilityClassConstructor"/>
     <module name="InterfaceIsType"/>
     <module name="VisibilityModifier"/>
     <module name="MutableException"/>
-    
-    <!-- Metrics. -->
     <module name="BooleanExpressionComplexity"/>
     <module name="ClassDataAbstractionCoupling">
-    	<property name="max" value="10"/>
+      <property name="max" value="12"/>
     </module>
-    <module name="ClassFanOutComplexity"/>
-    <!-- 1-4 is considered good, 5-7 ok, 8-10 consider re-factoring -->
+    <module name="ClassFanOutComplexity">
+      <property name="max" value="25"/>
+    </module>
     <module name="CyclomaticComplexity"/>
     <module name="NPathComplexity"/>
-
-    <!-- Misc. -->
     <module name="ArrayTypeStyle"/>
     <module name="TodoComment"/>
     <module name="UpperEll"/>
     <module name="UncommentedMain"/>
+    <module name="MissingOverride"/>
+    <module name="MissingDeprecated"/>
+    <module name="ClassTypeParameterName"/>
+    <module name="AbstractClassName">
+      <property name="format" value="^Abstract.*$"/>
+    </module>
+    <module name="MethodTypeParameterName"/>
+    <module name="ImportOrder">
+      <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="UnusedImports"/>
+    <module name="ReturnNullInsteadOfBoolean"/>
+    <module name="ReturnBooleanFromTernary"/>
+    <module name="AbstractClassNameExtended"/>
+    <module name="AnonInnerLength"/>
+    <module name="GenericWhitespace"/>
+    <module name="EmptyForInitializerPad"/>
+    <module name="CovariantEquals"/>
+    <module name="EqualsAvoidNull"/>
+    <module name="FinalLocalVariable">
+      <property name="tokens" value="PARAMETER_DEF,VARIABLE_DEF"/>
+    </module>
+    <module name="MissingCtor"/>
+    <module name="PackageDeclaration"/>
+    <module name="FinalParameters"/>
+    <module name="OuterTypeFilename"/>
+  </module>
+  <module name="Translation"/>
+  <module name="StrictDuplicateCode"/>
+  <module name="SuppressionCommentFilter"/>
+  <module name="SuppressionCommentFilter">
+    <property name="offCommentFormat" value="RETURNCOUNT\:OFF"/>
+    <property name="onCommentFormat" value="RETURNCOUNT\:ON"/>
+    <property name="checkFormat" value="ReturnCount"/>
+  </module>
+  <module name="SuppressionCommentFilter">
+    <property name="offCommentFormat" value="COUPLING\:OFF"/>
+    <property name="onCommentFormat" value="COUPLING\:ON"/>
+    <property name="checkFormat" value="ClassDataAbstractionCoupling|ClassFanOutComplexity"/>
+  </module>
+  <module name="JavadocPackage">
+    <property name="allowLegacy" value="true"/>
+  </module>
+  <module name="Header">
+    <property name="headerFile" value="D:\devel\repos\projects\mousefeedfork\com.mousefeed\header.txt"/>
+    <property name="ignoreLines" value="2,18"/>
+    <property name="fileExtensions" value="*.java"/>
+  </module>
+  <module name="FileTabCharacter"/>
+  <module name="FileTabCharacter"/>
+  <module name="NewlineAtEndOfFile">
+    <property name="fileExtensions" value="*.java,*.properties,*.html,*.xml"/>
+  </module>
+  <module name="SuppressionFilter">
+    <property name="file" value="D:\devel\repos\projects\mousefeedfork\com.mousefeed\suppressions.xml"/>
   </module>
 </module>

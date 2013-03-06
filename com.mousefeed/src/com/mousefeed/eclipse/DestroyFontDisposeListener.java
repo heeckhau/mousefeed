@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -32,12 +32,11 @@ class DestroyFontDisposeListener implements DisposeListener {
      */
     private final Font newFont;
 
-    public DestroyFontDisposeListener(Font newFont) {
+    public DestroyFontDisposeListener(final Font newFont) {
         this.newFont = newFont;
     }
 
-    @SuppressWarnings("unused")
-    public void widgetDisposed(DisposeEvent e) {
+    public void widgetDisposed(final DisposeEvent e) {
         newFont.dispose();
     }
 }

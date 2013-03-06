@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007, Robert Wloch 2012.
  *
  * This file is part of MouseFeed.
  *
@@ -25,8 +25,13 @@ import static org.apache.commons.lang.Validate.notNull;
 import static org.apache.commons.lang.time.DateUtils.MILLIS_PER_SECOND;
 
 import com.mousefeed.client.Messages;
+import java.util.HashSet;
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.ParameterizedCommand;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.dialogs.PopupDialog;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -42,17 +47,61 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 
 //COUPLING:OFF - just uses a lot of other classes. It's Ok.
 /**
  * Pop-up dialog, which notifies a user about wrong mouse/accelerator usage. 
  *
  * @author Andriy Palamarchuk
+ * @author Robert Wloch
  */
 public class NagPopUp extends PopupDialog {
+    /**
+     * Launcher runnable to open preference dialog.
+     * 
+     * @author Robert Wloch
+     */
+    protected static class PreferenceDialogLauncher implements Runnable {
+        /**
+         * Data object used as data parameter to the keys preference page.
+         */
+        private final Object data;
+
+        /**
+         * Constructs a launcher to open the keys preference page with the optional data object as parameter.
+         * @param data optional data object used as data parameter to the keys preference page
+         */
+        protected PreferenceDialogLauncher(final Object data) {
+            this.data = data;
+        }
+
+        /**
+         * Creates and opens the Keys preference page.
+         */
+        public void run() {
+            final Display workbenchDisplay = PlatformUI.getWorkbench().getDisplay();
+            final Shell activeShell = workbenchDisplay.getActiveShell();
+            
+            final String id = ORG_ECLIPSE_UI_PREFERENCE_PAGES_KEYS_ID;
+            final String[] displayedIds = new String[] {id};
+            final PreferenceDialog preferenceDialog = 
+                    PreferencesUtil.createPreferenceDialogOn(activeShell, id, displayedIds, data);
+            preferenceDialog.open();
+        }
+    }
+
+    /**
+     * ID of keys preference page.
+     */
+    private static final String ORG_ECLIPSE_UI_PREFERENCE_PAGES_KEYS_ID = "org.eclipse.ui.preferencePages.Keys";
+
     /**
      * How close to cursor along X axis the popup will be shown.
      */
@@ -86,12 +135,17 @@ public class NagPopUp extends PopupDialog {
             new LastActionInvocationRemiderFactory();
 
     /**
-     * @see NagPopUp#NagPopUp(String, String)
+     * @see NagPopUp#NagPopUp(String, String, boolean)
      */
     private final String actionName;
-    
+
     /**
      * @see NagPopUp#NagPopUp(String, String)
+     */
+    private final String actionId;
+    
+    /**
+     * @see NagPopUp#NagPopUp(String, String, boolean)
      */
     private final String accelerator;
     
@@ -111,13 +165,20 @@ public class NagPopUp extends PopupDialog {
     private StyledText actionDescriptionText;
 
     /**
+     * The notification link.
+     */
+    @SuppressWarnings("unused")
+    private Link actionLink;
+    
+    /**
      * Closes the dialog on any outside action, such as click, key press, etc.
      */
     private Listener closeOnActionListener = new Listener() {
-        public void handleEvent(@SuppressWarnings("unused") Event event) {
+        public void handleEvent(final Event event) {
             NagPopUp.this.close();
         }
     };
+
 
     /**
      * Creates a pop-up with notification for the specified accelerator
@@ -129,9 +190,9 @@ public class NagPopUp extends PopupDialog {
      * the popup notifies about. 
      */
     public NagPopUp(
-            String actionName, String accelerator, boolean actionCancelled) {
+            final String actionName, final String accelerator, final boolean actionCancelled) {
         super((Shell) null, PopupDialog.HOVER_SHELLSTYLE,
-                false, false, false, false,
+                false, false, false, false, false,
                 getTitleText(actionCancelled),
                 getActionConfigurationReminder());
         isTrue(StringUtils.isNotBlank(actionName));
@@ -140,6 +201,29 @@ public class NagPopUp extends PopupDialog {
         this.actionName = actionName;
         this.accelerator = accelerator;
         this.actionCancelled = actionCancelled;
+        this.actionId = null;
+    }
+
+    /**
+     * Creates a pop-up with suggestion to open the Keys preference page to
+     * configure a keyboard shortcut for an action.
+     *
+     * @param actionName the action label. Not blank.
+     * @param actionId the contribution id. Not blank.
+     */
+    public NagPopUp(
+            final String actionName, final String actionId) {
+        super((Shell) null, PopupDialog.HOVER_SHELLSTYLE,
+                false, false, false, false, false,
+                getTitleText(false),
+                getActionConfigurationReminder());
+        isTrue(StringUtils.isNotBlank(actionName));
+        isTrue(StringUtils.isNotBlank(actionId));
+
+        this.actionName = actionName;
+        this.actionId = actionId;
+        this.actionCancelled = false;
+        this.accelerator = null;
     }
 
     /**
@@ -147,30 +231,39 @@ public class NagPopUp extends PopupDialog {
      * {@inheritDoc}
      */
     @Override
-    protected Control createDialogArea(Composite parent) {
+    protected Control createDialogArea(final Composite parent) {
         final Composite composite = new Composite(parent, SWT.NO_FOCUS);
         composite.setLayout(new FormLayout());
         
-        actionDescriptionText = createActionDescriptionText(composite);
+        if (isLinkPopup()) {
+            final String linkText = MESSAGES.get("message.configureShortcut", actionName);
+            actionLink = createLink(composite, linkText);
+        } else {
+            actionDescriptionText = createActionDescriptionText(composite);
+        }
+
         composite.pack(true);
 
         return composite;
     }
 
     /**
+     * Reusable check for actionId not null and accelerator being null.
+     * @return true if actionId != null && accelerator == null
+     */
+    protected boolean isLinkPopup() {
+        return actionId != null && accelerator == null;
+    }
+    
+    /**
      * Creates the text control to show action description.
      * @param parent the parent control. Not <code>null</code>. 
      * @return the text control. Not <code>null</code>.
      */
-    private StyledText createActionDescriptionText(Composite parent) {
+    private StyledText createActionDescriptionText(final Composite parent) {
         notNull(parent);
         final StyledText text = new StyledText(parent, SWT.READ_ONLY);
-        final FormData formData = new FormData();
-        formData.left = new FormAttachment(WINDOW_MARGIN);
-        formData.right = new FormAttachment(WHOLE_SIZE, -WINDOW_MARGIN);
-        formData.top = new FormAttachment(WINDOW_MARGIN);
-        formData.bottom = new FormAttachment(WHOLE_SIZE, -WINDOW_MARGIN);
-        text.setLayoutData(formData);
+        configureFormData(text);
         text.setText(accelerator + " (" + actionName + ")");
         if (actionCancelled) {
             final StyleRange style = new StyleRange();
@@ -185,12 +278,77 @@ public class NagPopUp extends PopupDialog {
         // since SWT.NO_FOCUS is only a hint...
         text.addFocusListener(new FocusAdapter() {
             @Override
-            @SuppressWarnings("unused")
-            public void focusGained(FocusEvent event) {
+            public void focusGained(final FocusEvent event) {
                 NagPopUp.this.close();
             }
         });
         return text;
+    }
+    
+    /**
+     * Creates the link control to show a hyperlink to the Keys
+     * preference page.
+     * 
+     * @param parent the parent control. Not <code>null</code>. 
+     * @param text the text of the link
+     * @return the link control. Not <code>null</code>.
+     */
+    protected Link createLink(final Composite parent, final String text) {
+        final Link link = new Link(parent, SWT.NONE);
+        link.setFont(parent.getFont());
+        link.setText("<A>" + text + "</A>");  //$NON-NLS-1$//$NON-NLS-2$
+        
+        configureFormData(link);
+        configureBigFont(link);
+
+        link.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(final FocusEvent e) {
+                doLinkActivated();
+            }
+        });
+
+        return link;
+    }
+    
+    /**
+     * Handle link activation.
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    final void doLinkActivated() {
+        Object data = null;
+        
+        final IWorkbench workbench = Activator.getDefault().getWorkbench();
+        final ICommandService commandService = (ICommandService) workbench.getService(ICommandService.class);
+        
+        final Command command = commandService.getCommand(actionId);
+        if (command != null) {
+            final HashSet allParameterizedCommands = new HashSet();
+            try {
+                allParameterizedCommands.addAll(ParameterizedCommand
+                        .generateCombinations(command));
+            } catch (final NotDefinedException e) {
+                // It is safe to just ignore undefined commands.
+            }
+            if (!allParameterizedCommands.isEmpty()) {
+                data = allParameterizedCommands.iterator().next();
+                
+                // only commands can be bound to keyboard shortcuts
+                openWorkspacePreferences(data);
+            }
+        }
+
+    }
+
+    /**
+     * Opens the preference dialog with optional data.
+     * 
+     * @param data an optional data object that can be handed as a parameter to the preference dialog. May be null.
+     */
+    protected final void openWorkspacePreferences(final Object data) {
+        final Display display = Display.getCurrent();
+        final PreferenceDialogLauncher runnable = new PreferenceDialogLauncher(data);
+        display.asyncExec(runnable);
     }
     
     /**
@@ -200,7 +358,7 @@ public class NagPopUp extends PopupDialog {
      * @return the super value.
      */
     @Override
-    protected Control createContents(Composite parent) {
+    protected Control createContents(final Composite parent) {
         final Control control = super.createContents(parent);
         if (actionCancelled) {
             actionDescriptionText.setForeground(
@@ -208,12 +366,25 @@ public class NagPopUp extends PopupDialog {
         }
         return control;
     }
+    
+    /**
+     * Configures sizes and margins for this. 
+     * @param c the control to set the form data for. Not <code>null</code>.
+     */
+    private void configureFormData(final Control c) {
+        final FormData formData = new FormData();
+        formData.left = new FormAttachment(WINDOW_MARGIN);
+        formData.right = new FormAttachment(WHOLE_SIZE, -WINDOW_MARGIN);
+        formData.top = new FormAttachment(WINDOW_MARGIN);
+        formData.bottom = new FormAttachment(WHOLE_SIZE, -WINDOW_MARGIN);
+        c.setLayoutData(formData);
+    }
 
     /**
      * Configures big font for this. 
      * @param c the control to increase font for. Not <code>null</code>.
      */
-    private void configureBigFont(Control c) {
+    private void configureBigFont(final Control c) {
         final FontData[] fontData = c.getFont().getFontData();
         for (int i = 0; i < fontData.length; i++) {
             fontData[i].setHeight(fontData[i].getHeight() * FONT_INCREASE_MULT);
@@ -294,7 +465,7 @@ public class NagPopUp extends PopupDialog {
 
     /** {@inheritDoc} */
     @Override
-    protected Point getInitialLocation(Point initialSize) {
+    protected Point getInitialLocation(final Point initialSize) {
         final Point p = getDisplay().getCursorLocation();
         p.x += DISTANCE_TO_CURSOR;
         p.y = Math.max(p.y - initialSize.y / 2, 0); 
@@ -308,8 +479,10 @@ public class NagPopUp extends PopupDialog {
      * @param canceled whether the action was canceled.
      * @return the title text. Can be <code>null</code>.
      */
-    private static String getTitleText(boolean canceled) {
-        return canceled ? MESSAGES.get("canceled") : null;
+    private static String getTitleText(final boolean canceled) {
+        return canceled
+                ? MESSAGES.get("title.canceled")
+                : MESSAGES.get("title.reminder");
     }
 
     /**

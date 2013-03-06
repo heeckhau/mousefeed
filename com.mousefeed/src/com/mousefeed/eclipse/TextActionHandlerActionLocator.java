@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Heavy Lifting Software 2007-2008.
+ * Copyright (C) Heavy Lifting Software 2007.
  *
  * This file is part of MouseFeed.
  *
@@ -57,13 +57,19 @@ public class TextActionHandlerActionLocator {
     }
 
     /**
+     * Default constructor does nothing.
+     */
+    public TextActionHandlerActionLocator() {
+    }
+    
+    /**
      * Indicates whether this class can search for an action inside
      * of the search target.
      * @param searchTarget where to search. Not <code>null</code>.
      * @return <code>true</code> if this class can search for an action inside
      * of the search target.
      */
-    public boolean isSearchable(IAction searchTarget) {
+    public boolean isSearchable(final IAction searchTarget) {
         notNull(searchTarget);
         return searchTarget.getClass().getName().startsWith(
                 HANDLER_CLASS_NAME + "$");
@@ -76,14 +82,14 @@ public class TextActionHandlerActionLocator {
      * @return the action definition id for the global action for the same
      * command as <code>action</code>, if it 
      */
-    public String findActionDefinitionId(IAction action, IAction searchTarget) {
+    public String findActionDefinitionId(final IAction action, final IAction searchTarget) {
         try {
             return doFindActionDefinitionId(action, searchTarget);
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             throw new AssertionError(e);
-        } catch (NoSuchFieldException e) {
+        } catch (final NoSuchFieldException e) {
             throw new AssertionError(e);
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new AssertionError(e);
         }
     }
@@ -93,8 +99,8 @@ public class TextActionHandlerActionLocator {
      * {@link #findActionDefinitionId(IAction, IAction)}, leaving to it only
      * exception handling.
      */
-    private String doFindActionDefinitionId(IAction action,
-            IAction searchTarget)
+    private String doFindActionDefinitionId(final IAction action,
+            final IAction searchTarget)
             throws NoSuchFieldException, IllegalAccessException {
         notNull(action);
         notNull(searchTarget);
@@ -117,7 +123,7 @@ public class TextActionHandlerActionLocator {
     /**
      * Retrieves an action from the provided action field.
      */
-    private IAction getActionFromField(Object o, String fieldName)
+    private IAction getActionFromField(final Object o, final String fieldName)
             throws NoSuchFieldException, IllegalAccessException {
         final Field actionField =
                 o.getClass().getDeclaredField(fieldName);
@@ -131,7 +137,7 @@ public class TextActionHandlerActionLocator {
      * @param action the action to retrieve handler from. Not <code>null</code>.
      * @return the handler. Never <code>null</code>.
      */
-    private Object getTextActionHandler(IAction action)
+    private Object getTextActionHandler(final IAction action)
             throws NoSuchFieldException, IllegalAccessException {
         notNull(action);
         final Field handlerField =
