@@ -2,7 +2,7 @@
 <feature
       id="com.mousefeed.feature"
       label="%featureName"
-      version="2.0.0"
+      version="2.0.0.qualifier"
       provider-name="%providerName">
 
    <description url="http://www.mousefeed.com/">
@@ -25,7 +25,7 @@
          id="com.mousefeed"
          download-size="0"
          install-size="0"
-         version="2.0.0"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
 </feature>

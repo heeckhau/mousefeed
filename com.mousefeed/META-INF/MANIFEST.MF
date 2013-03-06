@@ -2,7 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MouseFeed
 Bundle-SymbolicName: com.mousefeed; singleton:=true
+<<<<<<< HEAD
 Bundle-Version: 2.0.0
+=======
+Bundle-Version: 1.0.1.qualifier
+>>>>>>> 1871a68... Created Maven Tycho pom files
 Bundle-Activator: com.mousefeed.eclipse.Activator
 Bundle-Vendor: Heavy Lifting Software & Robert Wloch
 Bundle-Localization: plugin
