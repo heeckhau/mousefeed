@@ -81,7 +81,8 @@ public class ConfigureActionInvocationHandler extends AbstractHandler
     @SuppressWarnings("rawtypes")
     public void updateElement(final UIElement element, final Map parameters) {
         notNull(element);
-        element.setText(MESSAGES.get("menuItem.lastActionInvocation.label",
+        if (getLastAction() != null)
+            element.setText(MESSAGES.get("menuItem.lastActionInvocation.label",
                 getLastAction().getLabel()));
     }
 
