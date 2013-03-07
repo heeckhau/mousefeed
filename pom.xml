@@ -11,6 +11,7 @@
         <module>com.mousefeed</module>
         <module>com.mousefeed.test</module>
         <module>com.mousefeed.feature</module>
+        <module>com.mousefeed.update-site</module>
   </modules>
 
   <properties>
