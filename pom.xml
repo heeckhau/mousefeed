@@ -3,72 +3,119 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mousefeed</groupId>
   <artifactId>parent</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>2.0.1-SNAPSHOT</version>
   <name>Parent</name>
   <packaging>pom</packaging>
 
   <modules>
         <module>com.mousefeed</module>
+        <module>com.mousefeed.test</module>
         <module>com.mousefeed.feature</module>
   </modules>
 
   <properties>
-    <tycho-version>0.10.0</tycho-version>
+    <tycho-version>0.16.0</tycho-version>
+    <os-jvm-flags/>
   </properties>
   <repositories>
     <repository>
-      <id>eclipse-helios</id>
+      <id>eclipse-juno</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/helios</url>
+      <url>http://download.eclipse.org/releases/juno</url>
+    </repository>
+    <repository>
+      <id>eclipse-4.2</id>
+      <layout>p2</layout>
+      <url>http://download.eclipse.org/eclipse/updates/4.2</url>
     </repository>
   </repositories>
-  <build>
-    <plugins>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-compiler-plugin</artifactId>
+					<version>${tycho-version}</version>
+					<configuration>
+						<encoding>UTF-8</encoding>
+						<showWarnings>true</showWarnings>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<resolver>p2</resolver>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<!-- <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
+							</environment> <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
+							</environment> -->
+					</environments>
+				</configuration>
+			</plugin>
       <plugin>
-        <groupId>org.sonatype.tycho</groupId>
-        <artifactId>tycho-maven-plugin</artifactId>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-surefire-plugin</artifactId>
         <version>${tycho-version}</version>
-        <extensions>true</extensions>
         <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
+          <useUIHarness>false</useUIHarness>
+          <useUIThread>true</useUIThread>
+          <argLine>-enableassertions ${os-jvm-flags}</argLine>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.sonatype.tycho</groupId>
-        <artifactId>target-platform-configuration</artifactId>
-        <version>${tycho-version}</version>
-        <configuration>
-          <resolver>p2</resolver>
-          <environments>
-            <environment>
-              <os>linux</os>
-              <ws>gtk</ws>
-              <arch>x86</arch>
-            </environment>
-            <environment>
-              <os>linux</os>
-              <ws>gtk</ws>
-              <arch>x86_64</arch>
-            </environment>
-            <environment>
-              <os>win32</os>
-              <ws>win32</ws>
-              <arch>x86</arch>
-            </environment>
-            <environment>
-              <os>win32</os>
-              <ws>win32</ws>
-              <arch>x86_64</arch>
-            </environment>
-            <environment>
-              <os>macosx</os>
-              <ws>cocoa</ws>
-              <arch>x86_64</arch>
-            </environment>
-          </environments>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+		</plugins>
+	</build>
+
+  <profiles>
+    <profile>
+      <id>macosx-jvm-flags</id>
+      <activation>
+        <os><family>mac</family></os>
+      </activation>
+      <properties>
+        <os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
+      </properties>
+    </profile>
+  </profiles>
 </project>

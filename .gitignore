@@ -3,3 +3,10 @@
 /com.mousefeed/ztemp/test-build
 /com.mousefeed/ztemp/build
 /com.mousefeed/ztemp
+/com.mousefeed/target
+/com.mousefeed.test/target
+/com.mousefeed.test/bin
+/com.mousefeed.test/ztemp/testBin
+/com.mousefeed.test/ztemp/test-build
+/com.mousefeed.test/ztemp/build
+/com.mousefeed.feature/target

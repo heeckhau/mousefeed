@@ -6,27 +6,14 @@
 	<parent>
 		<groupId>com.mousefeed</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>2.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<groupId>com.mousefeed</groupId>
-	<artifactId>mousefeed.feature</artifactId>
+	<artifactId>com.mousefeed.feature</artifactId>
 	<name>Mousefeed Feature</name>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>2.0.1-SNAPSHOT</version>
 	
   <packaging>eclipse-feature</packaging>
-
-	<build>
-	  <plugins>
-	    <plugin>
-	      <groupId>org.sonatype.tycho</groupId>
-	      <artifactId>maven-osgi-packaging-plugin</artifactId>
-	      <version>${tycho-version}</version>
-	      <configuration>
-	        <deployableFeature>true</deployableFeature>
-	      </configuration>
-	    </plugin>
-	  </plugins>
-	</build>
 </project>

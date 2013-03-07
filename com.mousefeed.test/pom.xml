@@ -10,11 +10,9 @@
 	</parent>
 
 	<groupId>com.mousefeed</groupId>
-	<artifactId>com.mousefeed</artifactId>
+	<artifactId>com.mousefeed.test</artifactId>
 	<name>Mousefeed Plugin</name>
 	<version>2.0.1-SNAPSHOT</version>
 	
-	<packaging>eclipse-plugin</packaging>
-
-
+	<packaging>eclipse-test-plugin</packaging>
 </project>
