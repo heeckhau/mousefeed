@@ -6,7 +6,7 @@ Bundle-Version: 1.0.2.qualifier
 Bundle-Activator: com.mousefeed.eclipse.Activator
 Bundle-Vendor: Heavy Lifting Software, Sigasi
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui;bundle-version="[3.3.0,4.0.0)",
+Require-Bundle: org.eclipse.ui;bundle-version="[3.3.0,3.9.0)",
  org.eclipse.core.runtime;bundle-version="3.3.0"
 Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
