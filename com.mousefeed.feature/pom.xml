@@ -11,7 +11,7 @@
 	</parent>
 
 	<groupId>com.mousefeed</groupId>
-	<artifactId>mousefeed.feature</artifactId>
+	<artifactId>com.mousefeed.feature</artifactId>
 	<name>Mousefeed Feature</name>
 	<version>1.0.1-SNAPSHOT</version>
 	

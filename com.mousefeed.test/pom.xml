@@ -10,7 +10,7 @@
 	</parent>
 
 	<groupId>com.mousefeed</groupId>
-	<artifactId>mousefeed.test</artifactId>
+	<artifactId>com.mousefeed.test</artifactId>
 	<name>Mousefeed Test Plugin</name>
 	<version>1.0.1-SNAPSHOT</version>
 	
