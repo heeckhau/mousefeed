@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>com.mousefeed</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>1.0.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<groupId>com.mousefeed</groupId>
 	<artifactId>com.mousefeed</artifactId>
 	<name>Mousefeed Plugin</name>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.2-SNAPSHOT</version>
 	
 	<packaging>eclipse-plugin</packaging>
 
