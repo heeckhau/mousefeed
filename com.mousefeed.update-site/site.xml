@@ -8,7 +8,7 @@ Versions 2.x.x are for Eclipse 4, versions 1.x.x work up to Eclipse 3.8.
    <feature url="features/com.mousefeed.feature" id="com.mousefeed.feature" version="1.0.2.qualifier">
       <category name="MouseFeed 1.x.x"/>
    </feature>
-   <category-def name="MouseFeed 1.x.x" label="MouseFeed Plugin (up to Eclipse 3.7)">
+   <category-def name="MouseFeed 1.x.x" label="MouseFeed Plugin (up to Eclipse 3.8)">
       <description>
          MouseFeed Eclipse plugin. Helps to remember keyboard shortcuts. Shows a popup with the keyboard shortcut for the actions called with a menu or a toolbar button.
 

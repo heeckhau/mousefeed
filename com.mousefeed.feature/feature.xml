@@ -5,11 +5,11 @@
       version="1.0.2.qualifier"
       provider-name="%providerName">
 
-   <description url="http://www.mousefeed.com/">
+   <description url="http://www.assembla.com/wiki/show/mousefeed">
       %description
    </description>
 
-   <copyright url="http://www.hlsoft.com">
+   <copyright>
       %copyright
    </copyright>
 
@@ -18,7 +18,7 @@
    </license>
 
    <url>
-      <update label="%updateSiteName" url="http://update.mousefeed.com"/>
+      <update label="%updateSiteName" url="http://download.sigasi.com/update/mousefeed/"/>
    </url>
 
    <plugin
