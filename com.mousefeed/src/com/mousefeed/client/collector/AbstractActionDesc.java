@@ -18,7 +18,7 @@
  */
 package com.mousefeed.client.collector;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.Validate.isTrue;
 /**
  * Information about an action invoked by the user.
@@ -61,8 +61,11 @@ public abstract class AbstractActionDesc {
      * @see #getLabel()
      */
     public void setLabel(final String label) {
-        isTrue(isNotBlank(label));
-        this.label = label.replace("&", "");
+        isTrue(label != null);
+        if (isBlank(label))
+            this.label = "<no label>";
+        else
+            this.label = label.replace("&", "");
     }
     
     /**

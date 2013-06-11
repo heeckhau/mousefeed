@@ -31,8 +31,15 @@ import org.junit.Test;
 public class ActionDescTest {
 
     @Test(expected = IllegalArgumentException.class)
+    public void setLabel_null() {
+        new TestActionDesc().setLabel(null);
+    }
+    
+    @Test
     public void setLabel_blank() {
-        new TestActionDesc().setLabel(" \n\t");
+        final AbstractActionDesc d = new TestActionDesc();
+        d.setLabel(" \n\t");
+        assertEquals("<no label>", d.getLabel());
     }
 
     @Test public void setLabel() {
