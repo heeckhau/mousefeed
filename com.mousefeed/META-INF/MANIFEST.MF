@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MouseFeed
 Bundle-SymbolicName: com.mousefeed; singleton:=true
-Bundle-Version: 2.0.1.qualifier
+Bundle-Version: 2.0.2.qualifier
 Bundle-Activator: com.mousefeed.eclipse.Activator
 Bundle-Vendor: Heavy Lifting Software, Sigasi & Robert Wloch
 Bundle-Localization: plugin
