@@ -38,6 +38,7 @@ public class HandledContributionItemCommandLocator {
      * object.
      */
     private static final String MODEL_FIELD = "model";
+    private static final String MODELITEM_FIELD = "modelItem";
 
     /**
      * Default constructor does nothing.
@@ -69,7 +70,7 @@ public class HandledContributionItemCommandLocator {
             final HandledContributionItem item) {
         // the ParameterizedCommand is stored in the field
         // HandledContributionItem.model.wbCommand
-        final Field modelField = getModelField();
+        final Field modelField = getModelField(item);
         try {
             modelField.setAccessible(true);
             final MHandledItem mItem = (MHandledItem) modelField.get(item);
@@ -88,16 +89,24 @@ public class HandledContributionItemCommandLocator {
      * 
      * @return the model field. Never <code>null</code>.
      */
-    private Field getModelField() {
+    private Field getModelField(final HandledContributionItem item) {
         try {
-            final Field modelField = HandledContributionItem.class
-                    .getDeclaredField(MODEL_FIELD);
+            final Field modelField = item.getClass().getDeclaredField(MODEL_FIELD); //Eclipse 4.2-4.5 get model field in HandledContributionItem
             notNull(modelField);
             return modelField;
         } catch (final SecurityException e) {
             throw new RuntimeException(e);
         } catch (final NoSuchFieldException e) {
-            throw new RuntimeException(e);
+            try {
+                final Field modelItemField = item.getClass().getSuperclass() //Eclipse 4.6 get modelItem field in AbstractContributionItem
+                        .getDeclaredField(MODELITEM_FIELD);
+                notNull(modelItemField);
+                return modelItemField;
+            } catch (final SecurityException ee) {
+                throw new RuntimeException(ee);
+            } catch (final NoSuchFieldException ee) {
+                throw new RuntimeException(ee);
+            }
         }
     }
 }
