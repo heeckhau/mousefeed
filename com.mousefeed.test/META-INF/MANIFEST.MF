@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MouseFeed Test
 Bundle-SymbolicName: com.mousefeed.test;singleton:=true
-Bundle-Version: 2.0.2.qualifier
+Bundle-Version: 2.0.3.qualifier
 Bundle-Vendor: Heavy Lifting Software, Sigasi & Robert Wloch
 Bundle-Localization: plugin
 Fragment-Host: com.mousefeed
