@@ -9,8 +9,8 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.e4.ui.workbench.renderers.swt;bundle-version="0.10.0",
- org.eclipse.e4.ui.model.workbench;bundle-version="0.10.0"
+ org.eclipse.e4.ui.model.workbench;bundle-version="0.10.0",
+ org.apache.commons.lang;bundle-version="2.6.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ClassPath: lib/commons-lang-2.1.jar,
- .
+Bundle-ClassPath: .
