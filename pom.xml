@@ -95,6 +95,12 @@
 					</environments>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jarsigner-plugin</artifactId>
+				<version>1.4</version>
+			</plugin>
+
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-surefire-plugin</artifactId>
@@ -118,5 +124,44 @@
         <os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
       </properties>
     </profile>
+		<profile>
+			<id>sign</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jarsigner-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign</id>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>verify</id>
+								<goals>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<keystore>../com.sigasi.hdt.target/sigasiKeyStore</keystore>
+							<alias>${sigasi.keystore.alias}</alias>
+							<storepass>${sigasi.keystore.store.password}</storepass>
+							<keypass>${sigasi.keystore.key.password}</keypass>
+							<arguments>
+								<argument>-digestalg</argument>
+								<argument>SHA1</argument>
+								<argument>-sigalg</argument>
+								<argument>SHA1withRSA</argument>
+								<argument>-tsa</argument>
+								<argument>https://timestamp.geotrust.com/tsa</argument>
+							</arguments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
   </profiles>
 </project>
