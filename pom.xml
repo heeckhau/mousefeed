@@ -16,6 +16,7 @@
 
   <properties>
     <tycho-version>0.24.0</tycho-version>
+   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <os-jvm-flags/>
   </properties>
   <repositories>
@@ -146,7 +147,7 @@
 							</execution>
 						</executions>
 						<configuration>
-							<keystore>../com.sigasi.hdt.target/sigasiKeyStore</keystore>
+							<keystore>/home/heeckhau/workspace-xtext/sigasi.sigasi/com.sigasi.hdt.target/sigasiKeyStore</keystore>
 							<alias>${sigasi.keystore.alias}</alias>
 							<storepass>${sigasi.keystore.store.password}</storepass>
 							<keypass>${sigasi.keystore.key.password}</keypass>

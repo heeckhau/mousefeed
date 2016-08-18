@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description name="MouseFeed Fork" url="http://www.rowlo.de/mousefeedfork/updatesite">
+   <description name="MouseFeed plugin">
       The main MouseFeed Fork Eclipse Update server. Fork was started on branch 1.0.
 
 Versions 2.x.x are for Eclipse 4, versions 1.x.x work up to Eclipse 3.7.
